@@ -1,0 +1,19 @@
+graphhopper:
+  graph.location: graph-cache
+  datareader.file: western-zone.osm.pbf
+  profiles:
+    - name: car
+      vehicle: car
+      weighting: fastest
+      turn_costs: false
+
+server:
+  application_connectors:
+    - type: http
+      port: 8989
+  admin_connectors:
+    - type: http
+      port: 8990
+
+logging:
+  level: INFO
