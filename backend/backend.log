@@ -1,0 +1,4 @@
+nohup: ignoring input
+Database initialized successfully
+Backend server running on port 3001
+GraphHopper URL: http://localhost:8989

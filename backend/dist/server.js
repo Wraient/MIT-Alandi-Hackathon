@@ -8,6 +8,8 @@ const cors_1 = __importDefault(require("cors"));
 const axios_1 = __importDefault(require("axios"));
 const sqlite3_1 = __importDefault(require("sqlite3"));
 const util_1 = require("util");
+// Import polyline with type declaration
+const polyline = require('@mapbox/polyline');
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3001;
 // Middleware
@@ -84,7 +86,22 @@ const GRAPHHOPPER_URL = 'http://localhost:8989';
 // Helper function to call GraphHopper API
 async function callGraphHopper(endpoint, params) {
     try {
-        const response = await axios_1.default.get(`${GRAPHHOPPER_URL}${endpoint}`, { params });
+        // Handle multiple point parameters correctly
+        const urlParams = new URLSearchParams();
+        for (const [key, value] of Object.entries(params)) {
+            if (key === 'point' && Array.isArray(value)) {
+                // Add each point as a separate parameter
+                value.forEach((point) => {
+                    urlParams.append('point', point);
+                });
+            }
+            else {
+                urlParams.append(key, value);
+            }
+        }
+        const url = `${GRAPHHOPPER_URL}${endpoint}?${urlParams.toString()}`;
+        console.log('GraphHopper request URL:', url);
+        const response = await axios_1.default.get(url);
         return response.data;
     }
     catch (error) {
@@ -168,23 +185,41 @@ app.get('/api/drivers/:driverId/route', async (req, res) => {
         try {
             const routeData = await callGraphHopper('/route', {
                 point: points.map(([lat, lng]) => `${lat},${lng}`),
+                type: 'json',
+                locale: 'en-US',
+                key: '',
+                elevation: 'false',
                 profile: 'car',
-                optimize: 'true',
-                instructions: 'false',
-                calc_points: 'true',
-                debug: 'true'
+                optimize: 'true'
             });
             // Extract route coordinates
             let routeCoordinates = [];
-            if (routeData.paths && routeData.paths[0] && routeData.paths[0].points) {
-                // Decode the points if they're encoded
-                if (typeof routeData.paths[0].points === 'string') {
-                    // For encoded polyline, we'd need to decode it
-                    // For now, let's use the direct coordinates approach
-                    routeCoordinates = points;
+            if (routeData.paths && routeData.paths[0]) {
+                const path = routeData.paths[0];
+                if (path.points) {
+                    if (path.points_encoded && typeof path.points === 'string') {
+                        // Points are encoded as polyline string - decode them
+                        try {
+                            const decoded = polyline.decode(path.points);
+                            routeCoordinates = decoded;
+                        }
+                        catch (decodeError) {
+                            console.error('Driver route polyline decode error:', decodeError);
+                            routeCoordinates = points; // Fallback to input points
+                        }
+                    }
+                    else if (path.points.coordinates) {
+                        routeCoordinates = path.points.coordinates.map(([lng, lat]) => [lat, lng]);
+                    }
+                    else if (Array.isArray(path.points)) {
+                        routeCoordinates = path.points;
+                    }
+                    else {
+                        routeCoordinates = points;
+                    }
                 }
-                else if (routeData.paths[0].points.coordinates) {
-                    routeCoordinates = routeData.paths[0].points.coordinates.map(([lng, lat]) => [lat, lng]);
+                else {
+                    routeCoordinates = points;
                 }
             }
             const response = {
@@ -203,6 +238,97 @@ app.get('/api/drivers/:driverId/route', async (req, res) => {
                 distance: 0,
                 duration: 0,
                 deliveries: deliveries,
+                fallback: true
+            });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+// General route calculation endpoint
+app.post('/api/calculate-route', async (req, res) => {
+    try {
+        const { points } = req.body;
+        if (!points || !Array.isArray(points) || points.length < 2) {
+            return res.status(400).json({ error: 'At least 2 points are required' });
+        }
+        // Validate point format
+        for (const point of points) {
+            if (!Array.isArray(point) || point.length !== 2 || typeof point[0] !== 'number' || typeof point[1] !== 'number') {
+                return res.status(400).json({ error: 'Points must be arrays of [latitude, longitude] numbers' });
+            }
+        }
+        try {
+            const routeData = await callGraphHopper('/route', {
+                point: points.map(([lat, lng]) => `${lat},${lng}`),
+                type: 'json',
+                locale: 'en-US',
+                key: '',
+                elevation: 'false',
+                profile: 'car'
+            });
+            // Extract route coordinates from GraphHopper response
+            let routeCoordinates = [];
+            if (routeData.paths && routeData.paths[0]) {
+                const path = routeData.paths[0];
+                console.log('GraphHopper path data:', {
+                    distance: path.distance,
+                    time: path.time,
+                    points_encoded: path.points_encoded,
+                    points_type: typeof path.points,
+                    points_sample: typeof path.points === 'string' ? path.points.substring(0, 100) + '...' : path.points
+                });
+                if (path.points) {
+                    if (path.points_encoded && typeof path.points === 'string') {
+                        // Points are encoded as polyline string - decode them
+                        try {
+                            console.log('Decoding polyline string...');
+                            const decoded = polyline.decode(path.points);
+                            routeCoordinates = decoded; // polyline.decode returns [[lat, lng], [lat, lng], ...]
+                            console.log(`Successfully decoded ${routeCoordinates.length} route points`);
+                        }
+                        catch (decodeError) {
+                            console.error('Polyline decode error:', decodeError);
+                            routeCoordinates = points; // Fallback to input points
+                        }
+                    }
+                    else if (path.points.coordinates) {
+                        // Points are GeoJSON format [lng, lat] -> convert to [lat, lng]
+                        routeCoordinates = path.points.coordinates.map(([lng, lat]) => [lat, lng]);
+                        console.log(`Using GeoJSON coordinates: ${routeCoordinates.length} points`);
+                    }
+                    else if (Array.isArray(path.points)) {
+                        // Points are direct coordinate array
+                        routeCoordinates = path.points;
+                        console.log(`Using direct coordinate array: ${routeCoordinates.length} points`);
+                    }
+                    else {
+                        console.log('Unknown points format, using input points as fallback');
+                        routeCoordinates = points;
+                    }
+                }
+                else {
+                    console.log('No points found in GraphHopper response, using input points as fallback');
+                    routeCoordinates = points;
+                }
+            }
+            else {
+                console.log('No paths found in GraphHopper response');
+                routeCoordinates = points;
+            }
+            res.json({
+                route: routeCoordinates,
+                distance: routeData.paths?.[0]?.distance || 0,
+                duration: routeData.paths?.[0]?.time || 0
+            });
+        }
+        catch (apiError) {
+            console.warn('GraphHopper API error:', apiError);
+            res.json({
+                route: points, // Fallback to straight line
+                distance: 0,
+                duration: 0,
                 fallback: true
             });
         }

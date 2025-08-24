@@ -101,17 +101,18 @@ class ApiService {
 
     // GraphHopper Integration
     async calculateRoute(points: [number, number][]): Promise<any> {
-        // This would be used for direct GraphHopper API calls if needed
-        // For now, we use the backend proxy
-        const queryPoints = points.map(([lat, lng]) => `${lat},${lng}`).join('&point=');
-        const graphhopperUrl = `http://localhost:8989/route?point=${queryPoints}&profile=car&instructions=false&calc_points=true`;
-
         try {
-            const response = await axios.get(graphhopperUrl);
+            const response = await api.post('/calculate-route', { points });
             return response.data;
         } catch (error) {
-            console.error('Direct GraphHopper call failed:', error);
-            throw error;
+            console.error('Route calculation failed:', error);
+            // Return fallback straight-line route
+            return {
+                route: points,
+                distance: 0,
+                duration: 0,
+                fallback: true
+            };
         }
     }
 }

@@ -7,6 +7,9 @@ import MetricsPanel from './components/MetricsPanel';
 import ApiService from './services/api';
 import 'leaflet/dist/leaflet.css';
 
+// Initialize API service
+const apiService = ApiService;
+
 // Custom marker icons
 const createCustomIcon = (color: string) => {
   return new L.DivIcon({
@@ -37,6 +40,8 @@ interface ExtendedDriver {
   currentDeliveryIndex?: number;
   speed?: number; // km/h
   simulationPosition?: [number, number]; // Current position during simulation
+  currentRouteIndex?: number; // Track which route point we're heading to
+  activeRoute?: [number, number][]; // Current route being followed
 }
 
 interface Delivery {
@@ -79,7 +84,7 @@ const App: React.FC = () => {
   const [selectedDriver, setSelectedDriver] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Interactive placement state
   const [placementMode, setPlacementMode] = useState<PlacementMode>('none');
   const [pendingDriverName, setPendingDriverName] = useState<string>('');
@@ -136,7 +141,7 @@ const App: React.FC = () => {
 
       const extendedDriver: ExtendedDriver = { ...newDriver, deliveries: [] };
       setDrivers([...drivers, extendedDriver]);
-      
+
       // Reset placement mode
       setPlacementMode('none');
       setPendingDriverName('');
@@ -218,7 +223,7 @@ const App: React.FC = () => {
       };
 
       setDrivers(drivers.map(d => d.id === nearestDriver.id ? updatedDriver : d));
-      
+
       // Reset delivery pair state
       setCurrentDeliveryPair({ pickup: null, delivery: null });
       setPlacementMode('none');
@@ -233,13 +238,13 @@ const App: React.FC = () => {
 
     let nearestDriver = drivers[0];
     let minDistance = Math.sqrt(
-      Math.pow(nearestDriver.latitude - position[0], 2) + 
+      Math.pow(nearestDriver.latitude - position[0], 2) +
       Math.pow(nearestDriver.longitude - position[1], 2)
     );
 
     for (let i = 1; i < drivers.length; i++) {
       const distance = Math.sqrt(
-        Math.pow(drivers[i].latitude - position[0], 2) + 
+        Math.pow(drivers[i].latitude - position[0], 2) +
         Math.pow(drivers[i].longitude - position[1], 2)
       );
       if (distance < minDistance) {
@@ -255,14 +260,14 @@ const App: React.FC = () => {
   const calculateDistance = (pos1: [number, number], pos2: [number, number]): number => {
     const [lat1, lng1] = pos1;
     const [lat2, lng2] = pos2;
-    
+
     const R = 6371; // Earth's radius in km
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLng/2) * Math.sin(dLng/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
 
@@ -270,62 +275,84 @@ const App: React.FC = () => {
     const distance = calculateDistance(currentPos, targetPos);
     const speedKmPerMs = speedKmh / (1000 * 60 * 60); // Convert km/h to km/ms
     const moveDistance = speedKmPerMs * deltaTimeMs;
-    
+
     if (moveDistance >= distance) {
       return targetPos; // Reached target
     }
-    
+
     const ratio = moveDistance / distance;
     const newLat = currentPos[0] + (targetPos[0] - currentPos[0]) * ratio;
     const newLng = currentPos[1] + (targetPos[1] - currentPos[1]) * ratio;
-    
+
     return [newLat, newLng];
   };
 
-  const startSimulation = () => {
+  const startSimulation = async () => {
     if (isSimulating) return;
-    
+
     setIsSimulating(true);
-    
+
     // Initialize simulation state for drivers with deliveries
-    setDrivers(prevDrivers => prevDrivers.map(driver => {
-      if (driver.deliveries.length > 0 && !driver.isMoving) {
-        return {
-          ...driver,
-          isMoving: true,
-          currentTarget: 'pickup' as const,
-          currentDeliveryIndex: 0,
-          speed: simulationSpeed,
-          simulationPosition: [driver.latitude, driver.longitude]
-        };
-      }
-      return driver;
-    }));
-    
+    const updatedDrivers = await Promise.all(
+      drivers.map(async (driver) => {
+        if (driver.deliveries.length > 0 && !driver.isMoving) {
+          const currentDelivery = driver.deliveries[0];
+
+          // Calculate route from driver to pickup location
+          const routeRequestPoints = [
+            [driver.latitude, driver.longitude] as [number, number],
+            [currentDelivery.pickup_latitude, currentDelivery.pickup_longitude] as [number, number]
+          ];
+          console.log('Requesting route for driver', driver.name, 'from', routeRequestPoints[0], 'to', routeRequestPoints[1]);
+          const routeResult = await apiService.calculateRoute(routeRequestPoints);
+          console.log('Route result for driver', driver.name, ':', routeResult);
+
+          const routePoints = routeResult.route || [];
+          console.log('Route points for driver', driver.name, ':', routePoints.length, 'points');
+
+          return {
+            ...driver,
+            isMoving: true,
+            currentTarget: 'pickup' as const,
+            currentDeliveryIndex: 0,
+            speed: simulationSpeed,
+            simulationPosition: [driver.latitude, driver.longitude] as [number, number],
+            activeRoute: routePoints,
+            currentRouteIndex: 0
+          };
+        }
+        return driver;
+      })
+    );
+
+    setDrivers(updatedDrivers);
+
     const intervalId = setInterval(() => {
       updateDriverPositions();
     }, 100); // Update every 100ms for smooth animation
-    
+
     setSimulationIntervalId(intervalId);
   };
 
   const stopSimulation = () => {
     if (!isSimulating) return;
-    
+
     setIsSimulating(false);
-    
+
     if (simulationIntervalId) {
       clearInterval(simulationIntervalId);
       setSimulationIntervalId(null);
     }
-    
+
     // Reset simulation state
     setDrivers(prevDrivers => prevDrivers.map(driver => ({
       ...driver,
       isMoving: false,
       currentTarget: undefined,
       currentDeliveryIndex: undefined,
-      simulationPosition: undefined
+      simulationPosition: undefined,
+      activeRoute: undefined,
+      currentRouteIndex: undefined
     })));
   };
 
@@ -334,61 +361,171 @@ const App: React.FC = () => {
       if (!driver.isMoving || !driver.simulationPosition || driver.deliveries.length === 0) {
         return driver;
       }
-      
+
+      // If we have an active route, follow it
+      if (driver.activeRoute && driver.activeRoute.length > 0 && driver.currentRouteIndex !== undefined) {
+        const currentRouteIndex = driver.currentRouteIndex;
+        console.log(`Driver ${driver.name} following route: ${currentRouteIndex}/${driver.activeRoute.length} points`);
+
+        if (currentRouteIndex >= driver.activeRoute.length) {
+          // Reached end of current route
+          const currentDelivery = driver.deliveries[driver.currentDeliveryIndex || 0];
+          if (!currentDelivery) return driver;
+
+          if (driver.currentTarget === 'pickup') {
+            // Reached pickup, now calculate route to delivery
+            const calculateDeliveryRoute = async () => {
+              const routeRequestPoints = [
+                [currentDelivery.pickup_latitude, currentDelivery.pickup_longitude] as [number, number],
+                [currentDelivery.delivery_latitude, currentDelivery.delivery_longitude] as [number, number]
+              ];
+              const routeResult = await apiService.calculateRoute(routeRequestPoints);
+              const deliveryRoutePoints = routeResult.route || [];
+
+              setDrivers(prevDrivers => prevDrivers.map(d =>
+                d.id === driver.id ? {
+                  ...d,
+                  simulationPosition: [currentDelivery.pickup_latitude, currentDelivery.pickup_longitude] as [number, number],
+                  currentTarget: 'delivery' as const,
+                  activeRoute: deliveryRoutePoints,
+                  currentRouteIndex: 0,
+                  deliveries: d.deliveries.map((delivery, idx) =>
+                    idx === (d.currentDeliveryIndex || 0)
+                      ? { ...delivery, status: 'picked_up' as const }
+                      : delivery
+                  )
+                } : d
+              ));
+            };
+            calculateDeliveryRoute();
+            return driver;
+          } else {
+            // Reached delivery location
+            const nextDeliveryIndex = (driver.currentDeliveryIndex || 0) + 1;
+            const hasMoreDeliveries = nextDeliveryIndex < driver.deliveries.length;
+
+            if (hasMoreDeliveries) {
+              // Calculate route to next pickup
+              const nextDelivery = driver.deliveries[nextDeliveryIndex];
+              const calculateNextRoute = async () => {
+                const routeRequestPoints = [
+                  [currentDelivery.delivery_latitude, currentDelivery.delivery_longitude] as [number, number],
+                  [nextDelivery.pickup_latitude, nextDelivery.pickup_longitude] as [number, number]
+                ];
+                const routeResult = await apiService.calculateRoute(routeRequestPoints);
+                const nextRoutePoints = routeResult.route || [];
+
+                setDrivers(prevDrivers => prevDrivers.map(d =>
+                  d.id === driver.id ? {
+                    ...d,
+                    simulationPosition: [currentDelivery.delivery_latitude, currentDelivery.delivery_longitude] as [number, number],
+                    currentTarget: 'pickup' as const,
+                    currentDeliveryIndex: nextDeliveryIndex,
+                    activeRoute: nextRoutePoints,
+                    currentRouteIndex: 0,
+                    deliveries: d.deliveries.map((delivery, idx) =>
+                      idx === (d.currentDeliveryIndex || 0)
+                        ? { ...delivery, status: 'delivered' as const }
+                        : delivery
+                    )
+                  } : d
+                ));
+              };
+              calculateNextRoute();
+              return driver;
+            } else {
+              // All deliveries completed
+              return {
+                ...driver,
+                simulationPosition: [currentDelivery.delivery_latitude, currentDelivery.delivery_longitude] as [number, number],
+                isMoving: false,
+                currentTarget: undefined,
+                currentDeliveryIndex: undefined,
+                activeRoute: undefined,
+                currentRouteIndex: undefined,
+                deliveries: driver.deliveries.map((delivery, idx) =>
+                  idx === (driver.currentDeliveryIndex || 0)
+                    ? { ...delivery, status: 'delivered' as const }
+                    : delivery
+                )
+              };
+            }
+          }
+        }
+
+        // Move towards next route point
+        const targetPoint = driver.activeRoute[currentRouteIndex];
+        const newPos = moveTowardsTarget(driver.simulationPosition, targetPoint, driver.speed || simulationSpeed, 100);
+
+        // Check if reached current route point
+        const distanceToPoint = calculateDistance(newPos, targetPoint);
+        const hasReachedPoint = distanceToPoint < 0.01; // Within 10 meters
+
+        if (hasReachedPoint) {
+          return {
+            ...driver,
+            simulationPosition: targetPoint,
+            currentRouteIndex: currentRouteIndex + 1
+          };
+        }
+
+        return {
+          ...driver,
+          simulationPosition: newPos
+        };
+      }
+
+      // Fallback to old straight-line movement if no route
       const currentDelivery = driver.deliveries[driver.currentDeliveryIndex || 0];
       if (!currentDelivery) return driver;
-      
-      const targetPos: [number, number] = driver.currentTarget === 'pickup' 
+
+      const targetPos: [number, number] = driver.currentTarget === 'pickup'
         ? [currentDelivery.pickup_latitude, currentDelivery.pickup_longitude]
         : [currentDelivery.delivery_latitude, currentDelivery.delivery_longitude];
-      
+
       const newPos = moveTowardsTarget(driver.simulationPosition, targetPos, driver.speed || simulationSpeed, 100);
-      
+
       // Check if reached target
       const distanceToTarget = calculateDistance(newPos, targetPos);
       const hasReachedTarget = distanceToTarget < 0.01; // Within 10 meters
-      
+
       if (hasReachedTarget) {
         if (driver.currentTarget === 'pickup') {
-          // Reached pickup, now go to delivery
           return {
             ...driver,
             simulationPosition: targetPos,
             currentTarget: 'delivery' as const,
-            deliveries: driver.deliveries.map((delivery, idx) => 
-              idx === (driver.currentDeliveryIndex || 0) 
+            deliveries: driver.deliveries.map((delivery, idx) =>
+              idx === (driver.currentDeliveryIndex || 0)
                 ? { ...delivery, status: 'picked_up' as const }
                 : delivery
             )
           };
         } else {
-          // Reached delivery location
           const nextDeliveryIndex = (driver.currentDeliveryIndex || 0) + 1;
           const hasMoreDeliveries = nextDeliveryIndex < driver.deliveries.length;
-          
+
           if (hasMoreDeliveries) {
-            // Move to next delivery
             return {
               ...driver,
               simulationPosition: targetPos,
               currentTarget: 'pickup' as const,
               currentDeliveryIndex: nextDeliveryIndex,
-              deliveries: driver.deliveries.map((delivery, idx) => 
-                idx === (driver.currentDeliveryIndex || 0) 
+              deliveries: driver.deliveries.map((delivery, idx) =>
+                idx === (driver.currentDeliveryIndex || 0)
                   ? { ...delivery, status: 'delivered' as const }
                   : delivery
               )
             };
           } else {
-            // All deliveries completed
             return {
               ...driver,
               simulationPosition: targetPos,
               isMoving: false,
               currentTarget: undefined,
               currentDeliveryIndex: undefined,
-              deliveries: driver.deliveries.map((delivery, idx) => 
-                idx === (driver.currentDeliveryIndex || 0) 
+              deliveries: driver.deliveries.map((delivery, idx) =>
+                idx === (driver.currentDeliveryIndex || 0)
                   ? { ...delivery, status: 'delivered' as const }
                   : delivery
               )
@@ -396,7 +533,7 @@ const App: React.FC = () => {
           }
         }
       }
-      
+
       return {
         ...driver,
         simulationPosition: newPos
@@ -507,8 +644,8 @@ const App: React.FC = () => {
           <div className="text-red-500 text-6xl mb-4">⚠️</div>
           <h1 className="text-2xl font-bold text-red-800 mb-2">Error Loading Dashboard</h1>
           <p className="text-red-600">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
           >
             Retry
@@ -534,6 +671,11 @@ const App: React.FC = () => {
           selectedDriver={selectedDriver}
           placementMode={placementMode}
           onCancelPlacement={handleCancelPlacement}
+          isSimulating={isSimulating}
+          simulationSpeed={simulationSpeed}
+          onStartSimulation={startSimulation}
+          onStopSimulation={stopSimulation}
+          onSpeedChange={setSimulationSpeed}
         />
       </div>
 
@@ -557,27 +699,35 @@ const App: React.FC = () => {
             />
 
             {/* Map Click Handler */}
-            <MapClickHandler 
-              placementMode={placementMode} 
-              onMapClick={handleMapClick} 
+            <MapClickHandler
+              placementMode={placementMode}
+              onMapClick={handleMapClick}
             />
 
             {/* Driver Markers */}
-            {drivers.map((driver) => (
-              <Marker
-                key={driver.id}
-                position={[driver.latitude, driver.longitude]}
-                icon={driverIcon}
-              >
-                <Popup>
-                  <div>
-                    <strong>{driver.name}</strong><br />
-                    ID: {driver.id}<br />
-                    Deliveries: {driver.deliveries.length}
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
+            {drivers.map((driver) => {
+              const position = driver.simulationPosition || [driver.latitude, driver.longitude];
+              const isMoving = driver.isMoving && isSimulating;
+
+              return (
+                <Marker
+                  key={driver.id}
+                  position={position}
+                  icon={driverIcon}
+                >
+                  <Popup>
+                    <div>
+                      <strong>{driver.name}</strong><br />
+                      ID: {driver.id}<br />
+                      Deliveries: {driver.deliveries.length}<br />
+                      {isMoving && (
+                        <>Status: Moving to {driver.currentTarget === 'pickup' ? 'Pickup' : 'Delivery'}<br /></>
+                      )}
+                    </div>
+                  </Popup>
+                </Marker>
+              );
+            })}
 
             {/* Driver Routes */}
             {drivers.map((driver) =>

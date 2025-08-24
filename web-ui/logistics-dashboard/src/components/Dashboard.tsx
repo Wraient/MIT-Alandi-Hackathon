@@ -28,17 +28,22 @@ interface WeatherEvent {
 }
 
 interface DashboardProps {
-  drivers: Driver[];
-  weatherEvents: WeatherEvent[];
-  onAddDriver: (name: string) => void;
-  onSimulateTraffic: () => void;
-  onSimulateStorm: () => void;
-  onAddDelivery: () => void;
-  onToggleWeatherEvent: (eventId: string) => void;
-  onSelectDriver: (driverId: string | null) => void;
-  selectedDriver: string | null;
-  placementMode: string;
-  onCancelPlacement: () => void;
+    drivers: Driver[];
+    weatherEvents: WeatherEvent[];
+    onAddDriver: (name: string) => void;
+    onSimulateTraffic: () => void;
+    onSimulateStorm: () => void;
+    onAddDelivery: () => void;
+    onToggleWeatherEvent: (eventId: string) => void;
+    onSelectDriver: (driverId: string | null) => void;
+    selectedDriver: string | null;
+    placementMode: string;
+    onCancelPlacement: () => void;
+    isSimulating: boolean;
+    simulationSpeed: number;
+    onStartSimulation: () => void;
+    onStopSimulation: () => void;
+    onSpeedChange: (speed: number) => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -52,7 +57,12 @@ const Dashboard: React.FC<DashboardProps> = ({
     onSelectDriver,
     selectedDriver,
     placementMode,
-    onCancelPlacement
+    onCancelPlacement,
+    isSimulating,
+    simulationSpeed,
+    onStartSimulation,
+    onStopSimulation,
+    onSpeedChange
 }) => {
     const [showAddDriver, setShowAddDriver] = useState(false);
     // Remove manual coordinate inputs - now using map-based placement
@@ -73,7 +83,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <p className="text-sm text-gray-600">Real-time delivery management</p>
             </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+            <div className="flex-1 overflow-y-auto p-4 space-y-6">
                 {/* Current Mode Indicator */}
                 {placementMode !== 'none' && (
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
@@ -105,11 +115,10 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <button
                         onClick={() => setShowAddDriver(!showAddDriver)}
                         disabled={placementMode !== 'none'}
-                        className={`w-full px-4 py-2 rounded transition-colors ${
-                            placementMode !== 'none' 
+                        className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none'
                                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                 : 'bg-blue-500 text-white hover:bg-blue-600'
-                        }`}
+                            }`}
                     >
                         Add Driver
                     </button>
@@ -135,11 +144,10 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <button
                         onClick={onSimulateTraffic}
                         disabled={placementMode !== 'none'}
-                        className={`w-full px-4 py-2 rounded transition-colors ${
-                            placementMode !== 'none'
+                        className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none'
                                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                 : 'bg-orange-500 text-white hover:bg-orange-600'
-                        }`}
+                            }`}
                     >
                         Add Traffic (Click Map)
                     </button>
@@ -147,11 +155,10 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <button
                         onClick={onSimulateStorm}
                         disabled={placementMode !== 'none'}
-                        className={`w-full px-4 py-2 rounded transition-colors ${
-                            placementMode !== 'none'
+                        className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none'
                                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                 : 'bg-purple-500 text-white hover:bg-purple-600'
-                        }`}
+                            }`}
                     >
                         Add Storm (Click Map)
                     </button>
@@ -159,48 +166,121 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <button
                         onClick={onAddDelivery}
                         disabled={placementMode !== 'none'}
-                        className={`w-full px-4 py-2 rounded transition-colors ${
-                            placementMode !== 'none'
+                        className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none'
                                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                 : 'bg-green-500 text-white hover:bg-green-600'
-                        }`}
+                            }`}
                     >
                         Add Delivery (Click Map)
                     </button>
+                </div>
+
+                {/* Simulation Controls */}
+                <div className="space-y-3">
+                    <h2 className="text-lg font-semibold text-gray-900">Simulation Controls</h2>
+
+                    <div className="bg-gray-50 p-3 rounded space-y-3">
+                        <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium text-gray-700">Status:</span>
+                            <span className={`text-sm font-semibold ${isSimulating ? 'text-green-600' : 'text-red-600'}`}>
+                                {isSimulating ? 'Running' : 'Stopped'}
+                            </span>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-gray-700">
+                                Speed: {simulationSpeed} km/h
+                            </label>
+                            <input
+                                type="range"
+                                min="10"
+                                max="100"
+                                step="10"
+                                value={simulationSpeed}
+                                onChange={(e) => onSpeedChange(parseInt(e.target.value))}
+                                className="w-full"
+                            />
+                        </div>
+
+                        <div className="flex space-x-2">
+                            <button
+                                onClick={onStartSimulation}
+                                disabled={isSimulating || drivers.every(d => d.deliveries.length === 0)}
+                                className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${isSimulating || drivers.every(d => d.deliveries.length === 0)
+                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        : 'bg-green-500 text-white hover:bg-green-600'
+                                    }`}
+                            >
+                                Start Simulation
+                            </button>
+
+                            <button
+                                onClick={onStopSimulation}
+                                disabled={!isSimulating}
+                                className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${!isSimulating
+                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        : 'bg-red-500 text-white hover:bg-red-600'
+                                    }`}
+                            >
+                                Stop Simulation
+                            </button>
+                        </div>
+
+                        {drivers.every(d => d.deliveries.length === 0) && (
+                            <p className="text-xs text-gray-500">
+                                Add deliveries to drivers to start simulation
+                            </p>
+                        )}
+                    </div>
                 </div>
 
                 {/* Active Drivers */}
                 <div className="space-y-3">
                     <h2 className="text-lg font-semibold text-gray-900">Active Drivers ({drivers.length})</h2>
                     <div className="space-y-2">
-                        {drivers.map((driver) => (
-                            <div
-                                key={driver.id}
-                                onClick={() => onSelectDriver(selectedDriver === driver.id ? null : driver.id)}
-                                className={`p-3 border rounded cursor-pointer transition-colors ${selectedDriver === driver.id
+                        {drivers.map((driver) => {
+                            const movingDriver = driver as any; // Type assertion for simulation properties
+                            return (
+                                <div
+                                    key={driver.id}
+                                    onClick={() => onSelectDriver(selectedDriver === driver.id ? null : driver.id)}
+                                    className={`p-3 border rounded cursor-pointer transition-colors ${selectedDriver === driver.id
                                         ? 'border-blue-500 bg-blue-50'
                                         : 'border-gray-200 hover:border-gray-300'
-                                    }`}
-                            >
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <h3 className="font-semibold text-gray-900">{driver.name}</h3>
-                                        <p className="text-sm text-gray-600">ID: {driver.id}</p>
-                                        <p className="text-sm text-gray-600">
-                                            Location: {driver.latitude.toFixed(4)}, {driver.longitude.toFixed(4)}
-                                        </p>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="text-sm font-medium text-gray-900">
-                                            {driver.deliveries.length} deliveries
+                                        }`}
+                                >
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <div className="flex items-center space-x-2">
+                                                <h3 className="font-semibold text-gray-900">{driver.name}</h3>
+                                                {movingDriver.isMoving && isSimulating && (
+                                                    <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
+                                                        Moving
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-sm text-gray-600">ID: {driver.id}</p>
+                                            <p className="text-sm text-gray-600">
+                                                Location: {driver.latitude.toFixed(4)}, {driver.longitude.toFixed(4)}
+                                            </p>
+                                            {movingDriver.isMoving && isSimulating && (
+                                                <p className="text-xs text-blue-600">
+                                                    → {movingDriver.currentTarget === 'pickup' ? 'Going to pickup' : 'Delivering'}
+                                                </p>
+                                            )}
                                         </div>
-                                        <div className="text-xs text-gray-500">
-                                            {driver.deliveries.filter(d => d.status === 'delivered').length} completed
+                                        <div className="text-right">
+                                            <div className="text-sm font-medium text-gray-900">
+                                                {driver.deliveries.length} deliveries
+                                            </div>
+                                            <div className="text-xs text-gray-500">
+                                                {driver.deliveries.filter(d => d.status === 'delivered').length} completed
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 
@@ -222,8 +302,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                                     <button
                                         onClick={() => onToggleWeatherEvent(event.id)}
                                         className={`px-3 py-1 text-xs rounded ${event.active
-                                                ? 'bg-red-500 text-white hover:bg-red-600'
-                                                : 'bg-green-500 text-white hover:bg-green-600'
+                                            ? 'bg-red-500 text-white hover:bg-red-600'
+                                            : 'bg-green-500 text-white hover:bg-green-600'
                                             }`}
                                     >
                                         {event.active ? 'Deactivate' : 'Activate'}
