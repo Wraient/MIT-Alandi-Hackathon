@@ -30,7 +30,7 @@ interface WeatherEvent {
 interface DashboardProps {
     drivers: Driver[];
     weatherEvents: WeatherEvent[];
-    onAddDriver: (name: string) => void;
+    onAddDriver: () => void; // Changed: no longer needs name parameter
     onSimulateTraffic: () => void;
     onSimulateStorm: () => void;
     onAddDelivery: () => void;
@@ -44,6 +44,8 @@ interface DashboardProps {
     onStartSimulation: () => void;
     onStopSimulation: () => void;
     onSpeedChange: (speed: number) => void;
+    onAddRandomDriver: () => void;
+    onAddRandomDelivery: () => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -62,18 +64,16 @@ const Dashboard: React.FC<DashboardProps> = ({
     simulationSpeed,
     onStartSimulation,
     onStopSimulation,
-    onSpeedChange
+    onSpeedChange,
+    onAddRandomDriver,
+    onAddRandomDelivery
 }) => {
     const [showAddDriver, setShowAddDriver] = useState(false);
-    // Remove manual coordinate inputs - now using map-based placement
-    const [newDriverName, setNewDriverName] = useState('');
+    // Removed manual name input - now uses random names
 
     const handleAddDriver = () => {
-        if (newDriverName.trim()) {
-            onAddDriver(newDriverName.trim());
-            setNewDriverName('');
-            setShowAddDriver(false);
-        }
+        onAddDriver(); // No name parameter needed
+        setShowAddDriver(false);
     };
 
     return (
@@ -120,18 +120,14 @@ const Dashboard: React.FC<DashboardProps> = ({
                                 : 'bg-blue-500 text-white hover:bg-blue-600'
                             }`}
                     >
-                        Add Driver
+                        Add Driver (Random Name)
                     </button>
 
                     {showAddDriver && placementMode === 'none' && (
                         <div className="bg-gray-50 p-3 rounded space-y-2">
-                            <input
-                                type="text"
-                                placeholder="Driver Name"
-                                value={newDriverName}
-                                onChange={(e) => setNewDriverName(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
+                            <p className="text-sm text-gray-600">
+                                Click on the map to place a driver with a randomly generated name.
+                            </p>
                             <button
                                 onClick={handleAddDriver}
                                 className="w-full px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
@@ -173,6 +169,40 @@ const Dashboard: React.FC<DashboardProps> = ({
                     >
                         Add Delivery (Click Map)
                     </button>
+
+                    {/* Random Generation Buttons */}
+                    <div className="border-t pt-3 mt-3">
+                        <h3 className="text-sm font-medium text-gray-700 mb-2">Quick Generate</h3>
+                        <div className="space-y-2">
+                            <button
+                                onClick={onAddRandomDriver}
+                                disabled={placementMode !== 'none'}
+                                className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none'
+                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        : 'bg-indigo-500 text-white hover:bg-indigo-600'
+                                    }`}
+                            >
+                                🎲 Add Random Driver
+                            </button>
+                            
+                            <button
+                                onClick={onAddRandomDelivery}
+                                disabled={placementMode !== 'none' || drivers.length === 0}
+                                className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none' || drivers.length === 0
+                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        : 'bg-teal-500 text-white hover:bg-teal-600'
+                                    }`}
+                            >
+                                🎯 Add Random Delivery
+                            </button>
+                            
+                            {drivers.length === 0 && (
+                                <p className="text-xs text-gray-500">
+                                    Add drivers first to create random deliveries
+                                </p>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
                 {/* Simulation Controls */}
@@ -188,18 +218,56 @@ const Dashboard: React.FC<DashboardProps> = ({
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-700">
-                                Speed: {simulationSpeed} km/h
-                            </label>
+                            <div className="flex justify-between items-center">
+                                <label className="text-sm font-medium text-gray-700">
+                                    Speed: {simulationSpeed} km/h
+                                </label>
+                                {isSimulating && (
+                                    <span className="text-xs text-green-600 font-medium">
+                                        LIVE UPDATE
+                                    </span>
+                                )}
+                            </div>
                             <input
                                 type="range"
                                 min="10"
-                                max="100"
+                                max="500"
                                 step="10"
                                 value={simulationSpeed}
                                 onChange={(e) => onSpeedChange(parseInt(e.target.value))}
                                 className="w-full"
                             />
+                            <div className="flex justify-between text-xs text-gray-500">
+                                <span>10 km/h</span>
+                                <span>250 km/h</span>
+                                <span>500 km/h</span>
+                            </div>
+                            <div className="flex space-x-1">
+                                <button
+                                    onClick={() => onSpeedChange(50)}
+                                    className="flex-1 px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                                >
+                                    Normal (50)
+                                </button>
+                                <button
+                                    onClick={() => onSpeedChange(100)}
+                                    className="flex-1 px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                                >
+                                    Fast (100)
+                                </button>
+                                <button
+                                    onClick={() => onSpeedChange(250)}
+                                    className="flex-1 px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                                >
+                                    Super (250)
+                                </button>
+                                <button
+                                    onClick={() => onSpeedChange(500)}
+                                    className="flex-1 px-2 py-1 text-xs bg-red-200 hover:bg-red-300 rounded text-red-800"
+                                >
+                                    MAX (500)
+                                </button>
+                            </div>
                         </div>
 
                         <div className="flex space-x-2">
@@ -318,11 +386,13 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <div className="bg-gray-50 p-3 rounded">
                     <h3 className="text-sm font-semibold text-gray-900 mb-2">How to Use:</h3>
                     <ul className="text-xs text-gray-600 space-y-1">
-                        <li>• Click "Add Driver" → Enter name → Click map to place</li>
-                        <li>• Click "Add Traffic/Storm" → Click map to place event</li>
-                        <li>• Click "Add Delivery" → Click pickup → Click delivery location</li>
-                        <li>• Nearest driver will automatically get the new delivery</li>
-                        <li>• Click driver card to view optimized route</li>
+                        <li>• <strong>Add Driver:</strong> Click "Add Driver" → Click map (auto-generates random name)</li>
+                        <li>• <strong>Quick Driver:</strong> Click "🎲 Add Random Driver" for instant placement</li>
+                        <li>• <strong>Weather:</strong> Click "Add Traffic/Storm" → Click map to place event</li>
+                        <li>• <strong>Manual Delivery:</strong> Click "Add Delivery" → Click pickup → Click delivery</li>
+                        <li>• <strong>Smart Delivery:</strong> Click "🎯 Add Random Delivery" for connected routes &lt;50km</li>
+                        <li>• <strong>Routes:</strong> Click driver card to view optimized route</li>
+                        <li>• <strong>Simulation:</strong> Adjust speed (10-500 km/h) even while running</li>
                     </ul>
                 </div>
             </div>

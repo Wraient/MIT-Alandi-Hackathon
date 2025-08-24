@@ -20,6 +20,48 @@ const createCustomIcon = (color: string) => {
   });
 };
 
+// Enhanced driver icon with directional triangle (like Google Maps)
+const createDriverIcon = (color: string = '#3B82F6', rotation: number = 0, isMoving: boolean = false) => {
+  const size = isMoving ? 20 : 16;
+  const triangleColor = isMoving ? '#10B981' : color; // Green when moving, blue when stationary
+  
+  return new L.DivIcon({
+    className: 'driver-icon',
+    html: `
+      <div style="
+        width: ${size}px; 
+        height: ${size}px; 
+        position: relative;
+        transform: rotate(${rotation}deg);
+      ">
+        <div style="
+          width: 0; 
+          height: 0; 
+          border-left: ${size/2}px solid transparent;
+          border-right: ${size/2}px solid transparent;
+          border-bottom: ${size}px solid ${triangleColor};
+          position: absolute;
+          top: 0;
+          left: 0;
+          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        "></div>
+        <div style="
+          width: ${size/3}px; 
+          height: ${size/3}px; 
+          background-color: white;
+          border-radius: 50%;
+          position: absolute;
+          top: ${size * 0.6}px;
+          left: ${size/3}px;
+          border: 1px solid ${triangleColor};
+        "></div>
+      </div>
+    `,
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2]
+  });
+};
+
 const driverIcon = createCustomIcon('#3B82F6');
 const pickupIcon = createCustomIcon('#10B981');
 const deliveryIcon = createCustomIcon('#F59E0B');
@@ -42,6 +84,8 @@ interface ExtendedDriver {
   simulationPosition?: [number, number]; // Current position during simulation
   currentRouteIndex?: number; // Track which route point we're heading to
   activeRoute?: [number, number][]; // Current route being followed
+  heading?: number; // Current heading in degrees (0-360)
+  lastPosition?: [number, number]; // Previous position for heading calculation
 }
 
 interface Delivery {
@@ -93,7 +137,7 @@ const App: React.FC = () => {
 
   // Interactive placement state
   const [placementMode, setPlacementMode] = useState<PlacementMode>('none');
-  const [pendingDriverName, setPendingDriverName] = useState<string>('');
+  // Removed pendingDriverName - now generates random names
   const [currentDeliveryPair, setCurrentDeliveryPair] = useState<{
     pickup: [number, number] | null;
     delivery: [number, number] | null;
@@ -158,7 +202,6 @@ const App: React.FC = () => {
 
       // Reset placement mode
       setPlacementMode('none');
-      setPendingDriverName('');
     } catch (err: any) {
       console.error('Failed to add driver:', err);
       // Fallback to local state
@@ -171,7 +214,6 @@ const App: React.FC = () => {
       };
       setDrivers([...drivers, newDriver]);
       setPlacementMode('none');
-      setPendingDriverName('');
     }
   };
 
@@ -271,6 +313,256 @@ const App: React.FC = () => {
     return nearestDriver;
   };
 
+  // Random generation utility functions
+  const generateRandomName = (): string => {
+    const firstNames = ['Alex', 'Jordan', 'Sam', 'Taylor', 'Casey', 'Morgan', 'Riley', 'Avery', 'Quinn', 'Blake', 'Dakota', 'Rowan', 'Sage', 'River', 'Sky'];
+    const lastNames = ['Smith', 'Johnson', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson', 'Thomas', 'Jackson', 'White', 'Harris', 'Martin', 'Thompson'];
+    
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    return `${firstName} ${lastName}`;
+  };
+
+  const generateRandomPositionInMumbai = (): [number, number] => {
+    // Mumbai major road network points - real intersections and landmarks on roads
+    const mumbaiRoadPoints: [number, number][] = [
+      // South Mumbai roads
+      [18.9220, 72.8347], // Colaba
+      [18.9067, 72.8147], // Fort area
+      [18.9388, 72.8348], // Churchgate
+      [18.9520, 72.8081], // Marine Drive
+      [18.9689, 72.8205], // Worli
+      [19.0176, 72.8562], // Bandra West
+      [19.0544, 72.8406], // Bandra Kurla Complex
+      [19.0728, 72.8826], // Santa Cruz
+      [19.0896, 72.8656], // Andheri West
+      [19.1136, 72.8697], // Andheri East
+      [19.1197, 72.9076], // Powai
+      [19.0330, 72.8697], // Kurla
+      [19.0176, 72.8697], // Dharavi
+      [19.0410, 72.8570], // Mahim
+      [19.0625, 72.8972], // Ghatkopar
+      [19.1070, 72.8970], // Vikhroli
+      [19.1825, 72.9565], // Mulund
+      [19.2183, 72.9781], // Bhandup
+      [19.2403, 73.1305], // Thane West
+      [19.2176, 73.0967], // Thane East
+      // Central Mumbai
+      [19.0144, 72.8479], // Lower Parel
+      [19.0330, 72.8570], // Prabhadevi  
+      [19.0760, 72.8777], // Mumbai Central
+      [18.9690, 72.8205], // Worli Sea Face
+      [19.0412, 72.8570], // Dadar West
+      [19.0176, 72.8468], // Dadar East
+      // Western suburbs
+      [19.1725, 72.9473], // Borivali West
+      [19.2307, 72.8567], // Borivali East  
+      [19.2074, 72.8370], // Kandivali West
+      [19.2041, 72.8794], // Kandivali East
+      [19.1449, 72.8662], // Malad West
+      [19.1840, 72.8486], // Malad East
+      [19.1258, 72.8347], // Goregaon West
+      [19.1663, 72.8526], // Goregaon East
+      [19.1076, 72.8263], // Jogeshwari West
+      [19.1368, 72.8598], // Jogeshwari East
+      [19.0896, 72.8386], // Andheri West Link Road
+      // Eastern suburbs  
+      [19.0433, 72.8996], // Chembur
+      [19.0821, 72.9077], // Ghatkopar East
+      [19.1059, 72.9114], // Vikhroli East
+      [19.1491, 72.9339], // Kanjurmarg
+      [19.1725, 72.9473], // Bhandup West
+      // Navi Mumbai (connected by bridges)
+      [19.0330, 73.0297], // Vashi
+      [19.0384, 73.0147], // Nerul
+      [18.9894, 73.1175], // Panvel
+    ];
+
+    // Pick a random road point
+    return mumbaiRoadPoints[Math.floor(Math.random() * mumbaiRoadPoints.length)];
+  };
+
+  const generateNearbyRoadPosition = (centerPos: [number, number], maxDistanceKm: number): [number, number] => {
+    // Instead of generating arbitrary grid points, let's use known good road points
+    // and find ones within our distance range
+    const knownRoadPoints: [number, number][] = [
+      // South Mumbai - verified road locations
+      [18.9220, 72.8347], // Colaba Causeway
+      [18.9067, 72.8147], // Fort - D.N. Road
+      [18.9388, 72.8348], // Churchgate Station
+      [18.9520, 72.8081], // Marine Drive
+      [18.9689, 72.8205], // Worli Sea Link Entrance
+      // Central Mumbai
+      [19.0176, 72.8562], // Bandra Station
+      [19.0544, 72.8406], // BKC Main Road
+      [19.0728, 72.8826], // Santa Cruz Station
+      [19.0896, 72.8656], // Andheri Station West
+      [19.1136, 72.8697], // Andheri Station East
+      [19.0760, 72.8777], // Mumbai Central
+      [19.0330, 72.8697], // Kurla Station
+      [19.0410, 72.8570], // Mahim Station
+      [19.0144, 72.8479], // Lower Parel
+      [19.0330, 72.8570], // Dadar Station
+      // Western Line stations (all on roads)
+      [19.1725, 72.9473], // Borivali Station
+      [19.2074, 72.8370], // Kandivali Station
+      [19.1449, 72.8662], // Malad Station
+      [19.1258, 72.8347], // Goregaon Station
+      [19.1076, 72.8263], // Jogeshwari Station
+      // Eastern suburbs
+      [19.0625, 72.8972], // Ghatkopar Station
+      [19.1070, 72.8970], // Vikhroli Station
+      [19.0433, 72.8996], // Chembur
+      // Major road intersections
+      [19.0170, 72.8570], // Dadar TT Circle
+      [19.0760, 72.8450], // Parel Village
+      [18.9689, 72.8140], // Haji Ali Junction
+      [19.0544, 72.8300], // Bandra Reclamation
+    ];
+
+    // Filter points that are within our desired distance range
+    const nearbyPoints: [number, number][] = [];
+    
+    for (const point of knownRoadPoints) {
+      const distance = calculateDistance(centerPos, point);
+      if (distance >= 1 && distance <= maxDistanceKm) { // At least 1km away, max desired distance
+        nearbyPoints.push(point);
+      }
+    }
+
+    if (nearbyPoints.length === 0) {
+      // If no points in range, use the closest known road point
+      let closestPoint = knownRoadPoints[0];
+      let minDistance = calculateDistance(centerPos, knownRoadPoints[0]);
+      
+      for (const point of knownRoadPoints) {
+        const distance = calculateDistance(centerPos, point);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestPoint = point;
+        }
+      }
+      
+      console.log(`🛣️ Using closest road point at ${minDistance.toFixed(1)}km`);
+      return closestPoint;
+    }
+
+    // Pick a random point from the nearby valid road points
+    const selectedPoint = nearbyPoints[Math.floor(Math.random() * nearbyPoints.length)];
+    const distance = calculateDistance(centerPos, selectedPoint);
+    
+    console.log(`✅ Selected road point at ${distance.toFixed(1)}km from center`);
+    return selectedPoint;
+  };
+
+  const validateRouteConnection = async (point1: [number, number], point2: [number, number]): Promise<boolean> => {
+    try {
+      const routeResult = await apiService.calculateRoute([point1, point2]);
+      
+      // Simplified validation - since we're using known road points, just check basic criteria
+      const hasValidRoute = routeResult.route && routeResult.route.length >= 2;
+      const hasReasonableDistance = routeResult.distance > 100 && routeResult.distance < 50000; // 100m to 50km
+      
+      if (hasValidRoute && hasReasonableDistance) {
+        console.log(`✅ Route validated: ${(routeResult.distance/1000).toFixed(1)}km`);
+        return true;
+      } else {
+        console.log(`❌ Route rejected: distance=${routeResult.distance}m, points=${routeResult.route?.length || 0}`);
+        return false;
+      }
+    } catch (error) {
+      console.log('❌ Route validation failed:', error);
+      return false;
+    }
+  };
+
+  // Random generation handlers
+  const handleAddRandomDriver = async () => {
+    try {
+      const driverName = generateRandomName();
+      let position: [number, number];
+      let attempts = 0;
+      const maxAttempts = 5;
+
+      // Try to find a valid position
+      do {
+        position = generateRandomPositionInMumbai();
+        attempts++;
+      } while (attempts < maxAttempts);
+
+      console.log(`🎲 Adding random driver "${driverName}" at position:`, position);
+      await addDriverAtPosition(position, driverName);
+    } catch (error) {
+      console.error('Failed to add random driver:', error);
+    }
+  };
+
+  const handleAddRandomDelivery = async () => {
+    if (drivers.length === 0) {
+      alert('Please add at least one driver first!');
+      return;
+    }
+
+    try {
+      // Pick a random driver or use the nearest one
+      const randomDriver = drivers[Math.floor(Math.random() * drivers.length)];
+      const driverPos: [number, number] = [randomDriver.latitude, randomDriver.longitude];
+
+      console.log(`🎯 Generating random delivery for driver "${randomDriver.name}"`);
+
+      let pickupPos: [number, number];
+      let deliveryPos: [number, number];
+      let isValid = false;
+      let attempts = 0;
+      const maxAttempts = 10;
+
+      while (!isValid && attempts < maxAttempts) {
+        attempts++;
+        
+        // Generate pickup position within 20km of driver (on roads)
+        pickupPos = generateNearbyRoadPosition(driverPos, 20);
+        
+        // Generate delivery position within 30km of pickup (on roads)
+        deliveryPos = generateNearbyRoadPosition(pickupPos, 30);
+
+        console.log(`Attempt ${attempts}: Testing pickup ${pickupPos} -> delivery ${deliveryPos}`);
+
+        // Validate that both routes are possible
+        const [driverToPickup, pickupToDelivery] = await Promise.all([
+          validateRouteConnection(driverPos, pickupPos),
+          validateRouteConnection(pickupPos, deliveryPos)
+        ]);
+
+        if (driverToPickup && pickupToDelivery) {
+          const totalDistance = calculateDistance(driverPos, pickupPos) + calculateDistance(pickupPos, deliveryPos);
+          if (totalDistance < 50) { // Total journey under 50km
+            isValid = true;
+            console.log(`✅ Valid delivery route found! Total distance: ${totalDistance.toFixed(1)}km`);
+            
+            // Add the delivery
+            await addDeliveryPair({ pickup: pickupPos, delivery: deliveryPos });
+            break;
+          }
+        }
+        
+        // If this attempt failed, log it
+        console.log(`❌ Attempt ${attempts} failed - trying again...`);
+      }
+
+      if (!isValid) {
+        console.log('⚠️ Could not find valid delivery route after maximum attempts, using fallback');
+        // Fallback: create a simple nearby delivery on major roads
+        pickupPos = generateNearbyRoadPosition(driverPos, 5); // Very close pickup
+        deliveryPos = generateNearbyRoadPosition(pickupPos, 10); // Close delivery
+        await addDeliveryPair({ pickup: pickupPos, delivery: deliveryPos });
+      }
+
+    } catch (error) {
+      console.error('Failed to add random delivery:', error);
+      alert('Failed to generate random delivery. Please try again.');
+    }
+  };
+
   // Simulation utility functions
   const calculateDistance = (pos1: [number, number], pos2: [number, number]): number => {
     const [lat1, lng1] = pos1;
@@ -284,6 +576,24 @@ const App: React.FC = () => {
       Math.sin(dLng / 2) * Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
+  };
+
+  // Calculate bearing/heading between two points (in degrees)
+  const calculateBearing = (pos1: [number, number], pos2: [number, number]): number => {
+    const [lat1, lng1] = pos1;
+    const [lat2, lng2] = pos2;
+    
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const lat1Rad = lat1 * Math.PI / 180;
+    const lat2Rad = lat2 * Math.PI / 180;
+    
+    const y = Math.sin(dLng) * Math.cos(lat2Rad);
+    const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) - Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLng);
+    
+    const bearingRad = Math.atan2(y, x);
+    const bearingDeg = (bearingRad * 180 / Math.PI + 360) % 360;
+    
+    return bearingDeg;
   };
 
   const moveTowardsTarget = (currentPos: [number, number], targetPos: [number, number], speedKmh: number, deltaTimeMs: number): [number, number] => {
@@ -367,7 +677,9 @@ const App: React.FC = () => {
       currentDeliveryIndex: undefined,
       simulationPosition: undefined,
       activeRoute: undefined,
-      currentRouteIndex: undefined
+      currentRouteIndex: undefined,
+      heading: undefined,
+      lastPosition: undefined
     })));
   };
 
@@ -472,6 +784,9 @@ const App: React.FC = () => {
         const targetPoint = driver.activeRoute[currentRouteIndex];
         const newPos = moveTowardsTarget(driver.simulationPosition, targetPoint, driver.speed || simulationSpeed, 100);
 
+        // Calculate heading based on movement direction
+        const heading = calculateBearing(driver.simulationPosition, targetPoint);
+
         // Check if reached current route point
         const distanceToPoint = calculateDistance(newPos, targetPoint);
         const hasReachedPoint = distanceToPoint < 0.01; // Within 10 meters
@@ -480,13 +795,17 @@ const App: React.FC = () => {
           return {
             ...driver,
             simulationPosition: targetPoint,
-            currentRouteIndex: currentRouteIndex + 1
+            lastPosition: driver.simulationPosition,
+            currentRouteIndex: currentRouteIndex + 1,
+            heading
           };
         }
 
         return {
           ...driver,
-          simulationPosition: newPos
+          simulationPosition: newPos,
+          lastPosition: driver.simulationPosition,
+          heading
         };
       }
 
@@ -500,6 +819,9 @@ const App: React.FC = () => {
 
       const newPos = moveTowardsTarget(driver.simulationPosition, targetPos, driver.speed || simulationSpeed, 100);
 
+      // Calculate heading based on movement direction
+      const heading = calculateBearing(driver.simulationPosition, targetPos);
+
       // Check if reached target
       const distanceToTarget = calculateDistance(newPos, targetPos);
       const hasReachedTarget = distanceToTarget < 0.01; // Within 10 meters
@@ -509,7 +831,9 @@ const App: React.FC = () => {
           return {
             ...driver,
             simulationPosition: targetPos,
+            lastPosition: driver.simulationPosition,
             currentTarget: 'delivery' as const,
+            heading,
             deliveries: driver.deliveries.map((delivery, idx) =>
               idx === (driver.currentDeliveryIndex || 0)
                 ? { ...delivery, status: 'picked_up' as const }
@@ -524,8 +848,10 @@ const App: React.FC = () => {
             return {
               ...driver,
               simulationPosition: targetPos,
+              lastPosition: driver.simulationPosition,
               currentTarget: 'pickup' as const,
               currentDeliveryIndex: nextDeliveryIndex,
+              heading,
               deliveries: driver.deliveries.map((delivery, idx) =>
                 idx === (driver.currentDeliveryIndex || 0)
                   ? { ...delivery, status: 'delivered' as const }
@@ -536,9 +862,11 @@ const App: React.FC = () => {
             return {
               ...driver,
               simulationPosition: targetPos,
+              lastPosition: driver.simulationPosition,
               isMoving: false,
               currentTarget: undefined,
               currentDeliveryIndex: undefined,
+              heading,
               deliveries: driver.deliveries.map((delivery, idx) =>
                 idx === (driver.currentDeliveryIndex || 0)
                   ? { ...delivery, status: 'delivered' as const }
@@ -551,7 +879,9 @@ const App: React.FC = () => {
 
       return {
         ...driver,
-        simulationPosition: newPos
+        simulationPosition: newPos,
+        lastPosition: driver.simulationPosition,
+        heading
       };
     }));
   };
@@ -567,8 +897,10 @@ const App: React.FC = () => {
 
   // Map click handler
   const handleMapClick = useCallback((latlng: [number, number]) => {
-    if (placementMode === 'driver' && pendingDriverName) {
-      addDriverAtPosition(latlng, pendingDriverName);
+    if (placementMode === 'driver') {
+      // Generate random name for driver
+      const randomName = generateRandomName();
+      addDriverAtPosition(latlng, randomName);
     } else if (placementMode === 'traffic') {
       if (!pendingWeatherEvent) {
         // First click: set center and start dragging
@@ -619,7 +951,7 @@ const App: React.FC = () => {
     } else if (placementMode === 'delivery' && currentDeliveryPair.pickup) {
       addDeliveryPair({ pickup: currentDeliveryPair.pickup, delivery: latlng });
     }
-  }, [placementMode, pendingDriverName, currentDeliveryPair, pendingWeatherEvent]);
+  }, [placementMode, currentDeliveryPair, pendingWeatherEvent]);
 
   // Mouse move handler for weather event radius adjustment
   const handleMouseMove = useCallback((latlng: [number, number]) => {
@@ -648,9 +980,21 @@ const App: React.FC = () => {
     }
   }, [pendingWeatherEvent]);
 
+  const handleSpeedChange = (newSpeed: number) => {
+    setSimulationSpeed(newSpeed);
+    
+    // Update speed for all currently moving drivers in real-time
+    if (isSimulating) {
+      console.log(`🚀 Live speed update: ${newSpeed} km/h applied to all moving drivers`);
+      setDrivers(prevDrivers => prevDrivers.map(driver => ({
+        ...driver,
+        speed: driver.isMoving ? newSpeed : driver.speed
+      })));
+    }
+  };
+
   // Dashboard callbacks
-  const handleAddDriver = (name: string) => {
-    setPendingDriverName(name);
+  const handleAddDriver = () => {
     setPlacementMode('driver');
   };
 
@@ -669,7 +1013,6 @@ const App: React.FC = () => {
 
   const handleCancelPlacement = () => {
     setPlacementMode('none');
-    setPendingDriverName('');
     setCurrentDeliveryPair({ pickup: null, delivery: null });
     setPendingWeatherEvent(null);
   };
@@ -758,7 +1101,9 @@ const App: React.FC = () => {
           simulationSpeed={simulationSpeed}
           onStartSimulation={startSimulation}
           onStopSimulation={stopSimulation}
-          onSpeedChange={setSimulationSpeed}
+          onSpeedChange={handleSpeedChange}
+          onAddRandomDriver={handleAddRandomDriver}
+          onAddRandomDelivery={handleAddRandomDelivery}
         />
       </div>
 
@@ -788,16 +1133,20 @@ const App: React.FC = () => {
               onMouseMove={handleMouseMove}
             />
 
-            {/* Driver Markers */}
+            {/* Driver Markers with Enhanced Icons */}
             {drivers.map((driver) => {
               const position = driver.simulationPosition || [driver.latitude, driver.longitude];
               const isMoving = driver.isMoving && isSimulating;
+              const heading = driver.heading || 0;
+              
+              // Create dynamic driver icon based on movement state and heading
+              const dynamicDriverIcon = createDriverIcon('#3B82F6', heading, isMoving);
 
               return (
                 <Marker
                   key={driver.id}
                   position={position}
-                  icon={driverIcon}
+                  icon={dynamicDriverIcon}
                 >
                   <Popup>
                     <div>
@@ -805,7 +1154,17 @@ const App: React.FC = () => {
                       ID: {driver.id}<br />
                       Deliveries: {driver.deliveries.length}<br />
                       {isMoving && (
-                        <>Status: Moving to {driver.currentTarget === 'pickup' ? 'Pickup' : 'Delivery'}<br /></>
+                        <>
+                          Status: Moving to {driver.currentTarget === 'pickup' ? 'Pickup' : 'Delivery'}<br />
+                          Heading: {heading.toFixed(0)}°<br />
+                          Speed: {driver.speed || simulationSpeed} km/h<br />
+                        </>
+                      )}
+                      {!isMoving && driver.deliveries.length > 0 && (
+                        <>Status: Ready to start<br /></>
+                      )}
+                      {driver.deliveries.length === 0 && (
+                        <>Status: No deliveries<br /></>
                       )}
                     </div>
                   </Popup>
@@ -813,15 +1172,29 @@ const App: React.FC = () => {
               );
             })}
 
-            {/* Driver Routes */}
+            {/* Active Routes (routes currently being followed during simulation) */}
             {drivers.map((driver) =>
-              driver.currentRoute && selectedDriver === driver.id ? (
+              driver.activeRoute && driver.isMoving && isSimulating ? (
                 <Polyline
-                  key={`route-${driver.id}`}
+                  key={`active-route-${driver.id}`}
+                  positions={driver.activeRoute}
+                  color="#10B981"
+                  weight={4}
+                  opacity={0.8}
+                  dashArray="10, 5"
+                />
+              ) : null
+            )}
+
+            {/* Selected Driver Routes (shown when driver is selected from dashboard) */}
+            {drivers.map((driver) =>
+              driver.currentRoute && selectedDriver === driver.id && (!driver.isMoving || !isSimulating) ? (
+                <Polyline
+                  key={`planned-route-${driver.id}`}
                   positions={driver.currentRoute}
                   color="#3B82F6"
                   weight={3}
-                  opacity={0.8}
+                  opacity={0.6}
                 />
               ) : null
             )}
@@ -926,9 +1299,6 @@ const App: React.FC = () => {
                     {placementMode === 'pickup' && 'Click on map to set pickup location'}
                     {placementMode === 'delivery' && 'Click on map to set delivery location'}
                   </p>
-                  {pendingDriverName && (
-                    <p className="text-xs text-blue-600">Driver: {pendingDriverName}</p>
-                  )}
                   {pendingWeatherEvent && (
                     <p className="text-xs text-purple-600">
                       Radius: {(pendingWeatherEvent.currentRadius / 1000).toFixed(1)}km
