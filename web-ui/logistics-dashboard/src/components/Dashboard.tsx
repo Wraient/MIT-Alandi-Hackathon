@@ -118,8 +118,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                         onClick={() => setShowAddDriver(!showAddDriver)}
                         disabled={placementMode !== 'none'}
                         className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none'
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : 'bg-blue-500 text-white hover:bg-blue-600'
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-blue-500 text-white hover:bg-blue-600'
                             }`}
                     >
                         Add Driver (Random Name)
@@ -143,8 +143,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                         onClick={onSimulateTraffic}
                         disabled={placementMode !== 'none'}
                         className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none'
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : 'bg-orange-500 text-white hover:bg-orange-600'
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-orange-500 text-white hover:bg-orange-600'
                             }`}
                     >
                         Add Traffic (Click Map)
@@ -154,8 +154,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                         onClick={onSimulateStorm}
                         disabled={placementMode !== 'none'}
                         className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none'
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : 'bg-purple-500 text-white hover:bg-purple-600'
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-purple-500 text-white hover:bg-purple-600'
                             }`}
                     >
                         Add Storm (Click Map)
@@ -165,8 +165,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                         onClick={onAddDelivery}
                         disabled={placementMode !== 'none'}
                         className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none'
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : 'bg-green-500 text-white hover:bg-green-600'
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-green-500 text-white hover:bg-green-600'
                             }`}
                     >
                         Add Delivery (Click Map)
@@ -180,24 +180,24 @@ const Dashboard: React.FC<DashboardProps> = ({
                                 onClick={onAddRandomDriver}
                                 disabled={placementMode !== 'none'}
                                 className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none'
-                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                        : 'bg-indigo-500 text-white hover:bg-indigo-600'
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    : 'bg-indigo-500 text-white hover:bg-indigo-600'
                                     }`}
                             >
                                 🎲 Add Random Driver
                             </button>
-                            
+
                             <button
                                 onClick={onAddRandomDelivery}
                                 disabled={placementMode !== 'none' || drivers.length === 0}
                                 className={`w-full px-4 py-2 rounded transition-colors ${placementMode !== 'none' || drivers.length === 0
-                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                        : 'bg-teal-500 text-white hover:bg-teal-600'
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    : 'bg-teal-500 text-white hover:bg-teal-600'
                                     }`}
                             >
                                 🎯 Add Random Delivery
                             </button>
-                            
+
                             {drivers.length === 0 && (
                                 <p className="text-xs text-gray-500">
                                     Add drivers first to create random deliveries
@@ -285,8 +285,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                                 onClick={onStartSimulation}
                                 disabled={isSimulating || drivers.every(d => d.deliveries.length === 0)}
                                 className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${isSimulating || drivers.every(d => d.deliveries.length === 0)
-                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                        : 'bg-green-500 text-white hover:bg-green-600'
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    : 'bg-green-500 text-white hover:bg-green-600'
                                     }`}
                             >
                                 Start Simulation
@@ -296,8 +296,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                                 onClick={onStopSimulation}
                                 disabled={!isSimulating}
                                 className={`flex-1 px-3 py-2 rounded text-sm font-medium transition-colors ${!isSimulating
-                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                        : 'bg-red-500 text-white hover:bg-red-600'
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    : 'bg-red-500 text-white hover:bg-red-600'
                                     }`}
                             >
                                 Stop Simulation

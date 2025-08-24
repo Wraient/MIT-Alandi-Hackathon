@@ -24,7 +24,7 @@ const createCustomIcon = (color: string) => {
 const createDriverIcon = (color: string = '#3B82F6', rotation: number = 0, isMoving: boolean = false) => {
   const size = isMoving ? 20 : 16;
   const triangleColor = isMoving ? '#10B981' : color; // Green when moving, blue when stationary
-  
+
   return new L.DivIcon({
     className: 'driver-icon',
     html: `
@@ -37,8 +37,8 @@ const createDriverIcon = (color: string = '#3B82F6', rotation: number = 0, isMov
         <div style="
           width: 0; 
           height: 0; 
-          border-left: ${size/2}px solid transparent;
-          border-right: ${size/2}px solid transparent;
+          border-left: ${size / 2}px solid transparent;
+          border-right: ${size / 2}px solid transparent;
           border-bottom: ${size}px solid ${triangleColor};
           position: absolute;
           top: 0;
@@ -46,19 +46,19 @@ const createDriverIcon = (color: string = '#3B82F6', rotation: number = 0, isMov
           filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         "></div>
         <div style="
-          width: ${size/3}px; 
-          height: ${size/3}px; 
+          width: ${size / 3}px; 
+          height: ${size / 3}px; 
           background-color: white;
           border-radius: 50%;
           position: absolute;
           top: ${size * 0.6}px;
-          left: ${size/3}px;
+          left: ${size / 3}px;
           border: 1px solid ${triangleColor};
         "></div>
       </div>
     `,
     iconSize: [size, size],
-    iconAnchor: [size/2, size/2]
+    iconAnchor: [size / 2, size / 2]
   });
 };
 
@@ -222,10 +222,10 @@ const App: React.FC = () => {
   const recalculateRoutesForActiveDrivers = async (updatedWeatherEvents?: WeatherEvent[]) => {
     console.log('🔄 Recalculating routes for active drivers due to weather changes...');
     setIsRecalculatingRoutes(true);
-    
+
     // Use provided weather events or current state
     const currentWeatherEvents = updatedWeatherEvents || weatherEvents;
-    
+
     setDrivers(prevDrivers => {
       const recalculateDriverRoutes = async () => {
         try {
@@ -243,7 +243,7 @@ const App: React.FC = () => {
 
               try {
                 let targetPos: [number, number];
-                
+
                 // Determine where the driver should be going next
                 if (driver.currentTarget === 'pickup') {
                   targetPos = [currentDelivery.pickup_latitude, currentDelivery.pickup_longitude];
@@ -254,19 +254,19 @@ const App: React.FC = () => {
                 // Calculate new route from current position to target
                 const routeRequestPoints = [driver.simulationPosition, targetPos];
                 console.log(`🚗 Recalculating route for ${driver.name} from ${routeRequestPoints[0]} to ${routeRequestPoints[1]}`);
-                
+
                 const routeResult = await apiService.calculateRoute(routeRequestPoints);
                 const newRoutePoints = routeResult.route || routeRequestPoints;
-                
+
                 console.log(`✅ New route calculated for ${driver.name}: ${newRoutePoints.length} points`);
                 console.log(`⚠️ Weather penalty: ${routeResult.weather_info?.total_penalty || 'none'}`);
-                
+
                 return {
                   ...driver,
                   activeRoute: newRoutePoints,
                   currentRouteIndex: 0 // Reset to start of new route
                 };
-                
+
               } catch (error) {
                 console.error(`❌ Failed to recalculate route for driver ${driver.name}:`, error);
                 // Keep the driver's current route if recalculation fails
@@ -285,7 +285,7 @@ const App: React.FC = () => {
 
       // Execute the async recalculation
       recalculateDriverRoutes();
-      
+
       // Return the current state immediately (will be updated by the async function)
       return prevDrivers;
     });
@@ -403,112 +403,468 @@ const App: React.FC = () => {
   const generateRandomName = (): string => {
     const firstNames = ['Alex', 'Jordan', 'Sam', 'Taylor', 'Casey', 'Morgan', 'Riley', 'Avery', 'Quinn', 'Blake', 'Dakota', 'Rowan', 'Sage', 'River', 'Sky'];
     const lastNames = ['Smith', 'Johnson', 'Brown', 'Davis', 'Miller', 'Wilson', 'Moore', 'Taylor', 'Anderson', 'Thomas', 'Jackson', 'White', 'Harris', 'Martin', 'Thompson'];
-    
+
     const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
     const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
     return `${firstName} ${lastName}`;
   };
 
-  const generateRandomPositionInMumbai = (): [number, number] => {
-    // Mumbai major road network points - real intersections and landmarks on roads
-    const mumbaiRoadPoints: [number, number][] = [
-      // South Mumbai roads
-      [18.9220, 72.8347], // Colaba
-      [18.9067, 72.8147], // Fort area
-      [18.9388, 72.8348], // Churchgate
-      [18.9520, 72.8081], // Marine Drive
-      [18.9689, 72.8205], // Worli
-      [19.0176, 72.8562], // Bandra West
-      [19.0544, 72.8406], // Bandra Kurla Complex
-      [19.0728, 72.8826], // Santa Cruz
-      [19.0896, 72.8656], // Andheri West
-      [19.1136, 72.8697], // Andheri East
-      [19.1197, 72.9076], // Powai
-      [19.0330, 72.8697], // Kurla
-      [19.0176, 72.8697], // Dharavi
-      [19.0410, 72.8570], // Mahim
-      [19.0625, 72.8972], // Ghatkopar
-      [19.1070, 72.8970], // Vikhroli
-      [19.1825, 72.9565], // Mulund
-      [19.2183, 72.9781], // Bhandup
-      [19.2403, 73.1305], // Thane West
-      [19.2176, 73.0967], // Thane East
-      // Central Mumbai
-      [19.0144, 72.8479], // Lower Parel
-      [19.0330, 72.8570], // Prabhadevi  
-      [19.0760, 72.8777], // Mumbai Central
-      [18.9690, 72.8205], // Worli Sea Face
-      [19.0412, 72.8570], // Dadar West
-      [19.0176, 72.8468], // Dadar East
-      // Western suburbs
-      [19.1725, 72.9473], // Borivali West
-      [19.2307, 72.8567], // Borivali East  
-      [19.2074, 72.8370], // Kandivali West
-      [19.2041, 72.8794], // Kandivali East
-      [19.1449, 72.8662], // Malad West
-      [19.1840, 72.8486], // Malad East
-      [19.1258, 72.8347], // Goregaon West
-      [19.1663, 72.8526], // Goregaon East
-      [19.1076, 72.8263], // Jogeshwari West
-      [19.1368, 72.8598], // Jogeshwari East
-      [19.0896, 72.8386], // Andheri West Link Road
-      // Eastern suburbs  
-      [19.0433, 72.8996], // Chembur
-      [19.0821, 72.9077], // Ghatkopar East
-      [19.1059, 72.9114], // Vikhroli East
-      [19.1491, 72.9339], // Kanjurmarg
-      [19.1725, 72.9473], // Bhandup West
-      // Navi Mumbai (connected by bridges)
-      [19.0330, 73.0297], // Vashi
-      [19.0384, 73.0147], // Nerul
-      [18.9894, 73.1175], // Panvel
+  const generateRandomPositionInPune = (): [number, number] => {
+    // Pune major road network points - 500 real intersections, landmarks, and road points throughout Pune
+    const puneRoadPoints: [number, number][] = [
+      // Central Pune - Core Areas
+      [18.5204, 73.8567], // Shivajinagar
+      [18.5314, 73.8446], // JM Road
+      [18.5074, 73.8077], // Koregaon Park
+      [18.5089, 73.8535], // FC Road
+      [18.5022, 73.8878], // Kothrud
+      [18.5679, 73.9143], // Aundh
+      [18.5362, 73.8454], // Deccan
+      [18.5435, 73.8497], // Karve Road
+      [18.5196, 73.8553], // Pune Station
+      [18.5158, 73.8560], // Cantonment
+      [18.5089, 73.8304], // MG Road
+      [18.5246, 73.8370], // Camp Area
+      [18.5181, 73.8478], // Ghole Road
+      [18.5314, 73.8522], // Bund Garden Road
+      [18.5435, 73.8640], // Model Colony
+      
+      // Pimpri-Chinchwad (PCMC) Area
+      [18.6298, 73.7997], // Pimpri
+      [18.6186, 73.8037], // Chinchwad
+      [18.6588, 73.8370], // Akurdi
+      [18.6480, 73.8173], // Nigdi
+      [18.5886, 73.8333], // Wakad
+      [18.5515, 73.7804], // Hinjewadi Phase 1
+      [18.5892, 73.7395], // Hinjewadi Phase 2
+      [18.5679, 73.7804], // Hinjewadi Phase 3
+      [18.6074, 73.7395], // Baner
+      [18.5633, 73.7804], // Balewadi
+      [18.6298, 73.8086], // Pimpri Station
+      [18.6480, 73.8246], // Bhosari
+      [18.6708, 73.8456], // Dehu Road
+      [18.6956, 73.8173], // Alandi Road
+      [18.6480, 73.7804], // Ravet
+      
+      // Eastern Pune
+      [18.5594, 73.9451], // Viman Nagar
+      [18.5515, 73.9308], // Airport Road
+      [18.5435, 73.9165], // Kalyani Nagar
+      [18.5679, 73.9308], // Mundhwa
+      [18.5679, 73.9594], // Kharadi
+      [18.5515, 73.9737], // Wagholi
+      [18.5355, 73.9880], // Lohegaon
+      [18.5755, 73.9880], // Dighi
+      [18.5594, 73.9023], // Pune Airport
+      [18.5435, 73.8880], // Yerawada
+      [18.5755, 73.8737], // Dhanori
+      [18.5915, 73.8880], // Vishrantwadi
+      [18.6074, 73.9023], // Tingre Nagar
+      [18.5274, 73.9451], // Hadapsar
+      [18.5435, 73.9594], // Magarpatta
+      
+      // Western Pune
+      [18.4639, 73.8077], // Warje
+      [18.4478, 73.8220], // Karve Nagar
+      [18.4800, 73.8363], // Erandwane
+      [18.4961, 73.8220], // Paud Road
+      [18.4800, 73.8077], // Kothrud Depot
+      [18.4639, 73.8363], // Ideal Colony
+      [18.4478, 73.8506], // Bavdhan
+      [18.4317, 73.8649], // Pashan
+      [18.4478, 73.8792], // Sus
+      [18.4800, 73.8935], // Baner Road
+      [18.5124, 73.9078], // University Area
+      [18.4961, 73.8792], // Chandani Chowk
+      [18.4800, 73.8506], // Mayur Colony
+      [18.4639, 73.8649], // Sahakarnagar
+      [18.4478, 73.8363], // Law College Road
+      
+      // Northern Pune
+      [18.5915, 73.8220], // Sangvi
+      [18.6234, 73.8363], // Pimpri Road
+      [18.6554, 73.8506], // Kasarwadi
+      [18.6074, 73.7935], // Rahatani
+      [18.6394, 73.7792], // Thergaon
+      [18.6234, 73.7649], // Mulshi Road
+      [18.6554, 73.7506], // Tathawade
+      [18.6874, 73.7363], // Maan
+      [18.6714, 73.7220], // Lonavala Road
+      [18.6394, 73.6934], // Talegaon
+      [18.7194, 73.7077], // Dehu
+      [18.7034, 73.6791], // Alandi
+      [18.6714, 73.6648], // Chakan
+      [18.7354, 73.6934], // Rajgurunagar
+      [18.7514, 73.7220], // Manchar Road
+      
+      // Southern Pune
+      [18.4478, 73.8077], // Sinhgad Road
+      [18.4317, 73.7934], // Vadgaon Khurd
+      [18.4156, 73.7791], // Dhayari
+      [18.3995, 73.7648], // Sinhgad College
+      [18.4156, 73.7934], // Ambegaon
+      [18.3834, 73.8077], // Hingne Khurd
+      [18.3673, 73.8220], // Mukund Nagar
+      [18.3512, 73.8363], // Sahakarnagar South
+      [18.4317, 73.7505], // Kondhwa Road
+      [18.4478, 73.7362], // NIBM Road
+      [18.4639, 73.7219], // Undri
+      [18.4800, 73.7076], // Pisoli
+      [18.4961, 73.6933], // Bharati Vidyapeeth
+      [18.5122, 73.6790], // Katraj
+      [18.5283, 73.6647], // Ambegaon Pathar
+      
+      // Pune-Solapur Road Area
+      [18.4800, 73.9451], // Hadapsar Circle
+      [18.4639, 73.9594], // Gadital
+      [18.4478, 73.9737], // Mundhwa Road
+      [18.4317, 73.9880], // Seasom Park
+      [18.4156, 73.9737], // Fursungi
+      [18.3995, 74.0023], // Uruli Kanchan
+      [18.3834, 74.0166], // Manjri
+      [18.4156, 74.0309], // Loni Kalbhor
+      [18.4317, 74.0452], // Wagholi Road
+      [18.4478, 74.0595], // Shikrapur
+      [18.4639, 74.0738], // Chakan Road
+      [18.4800, 74.0881], // Shirur
+      [18.4961, 74.1024], // Ahmednagar Road
+      [18.5122, 74.1167], // Shrirampur
+      [18.5283, 74.1310], // Sangamner Road
+      
+      // Mumbai-Pune Highway
+      [18.5435, 73.7219], // Chandni Chowk
+      [18.5594, 73.7076], // Pimpri-Chinchwad Link
+      [18.5755, 73.6933], // Old Mumbai Highway
+      [18.5915, 73.6790], // Dehu Bypass
+      [18.6074, 73.6647], // Talegaon Junction
+      [18.6234, 73.6504], // Vadgaon Maval
+      [18.6394, 73.6361], // Kamshet Road
+      [18.6554, 73.6218], // Lonavala Entry
+      [18.6714, 73.6075], // Karla
+      [18.6874, 73.5932], // Khopoli Road
+      [18.7034, 73.5789], // Palasdari
+      [18.7194, 73.5646], // Khalapur Road
+      [18.7354, 73.5503], // Panvel Link
+      [18.7514, 73.5360], // Rasayani Road
+      [18.7674, 73.5217], // Kalamboli Junction
+      
+      // Pune-Nashik Highway
+      [18.5679, 73.8649], // Aundh Road
+      [18.5840, 73.8792], // Baner Junction
+      [18.6000, 73.8935], // Pashan Road
+      [18.6160, 73.9078], // Sus Junction
+      [18.6320, 73.9221], // Mulshi Road
+      [18.6480, 73.9364], // Pirangut
+      [18.6640, 73.9507], // Lavasa Road
+      [18.6800, 73.9650], // Chandani Road
+      [18.6960, 73.9793], // Tamhini Road
+      [18.7120, 73.9936], // Junnar Road
+      [18.7280, 74.0079], // Manchar Junction
+      [18.7440, 74.0222], // Narayangaon
+      [18.7600, 74.0365], // Sangamner
+      [18.7760, 74.0508], // Akole Road
+      [18.7920, 74.0651], // Rahuri Road
+      
+      // Satara Road Area
+      [18.4800, 73.8220], // Market Yard
+      [18.4639, 73.8077], // Gultekdi
+      [18.4478, 73.7934], // Sahakarnagar
+      [18.4317, 73.7791], // Bibvewadi
+      [18.4156, 73.7648], // Kondhwa
+      [18.3995, 73.7505], // Wanowrie
+      [18.3834, 73.7362], // Fatima Nagar
+      [18.3673, 73.7219], // NIBM
+      [18.3512, 73.7076], // Undri
+      [18.3351, 73.6933], // Mohammadwadi
+      [18.3190, 73.6790], // Hadapsar Industrial
+      [18.3029, 73.6647], // Magarpatta City
+      [18.2868, 73.6504], // Amanora Park
+      [18.2707, 73.6361], // Kharadi IT Park
+      [18.2546, 73.6218], // Wagholi IT Park
+      
+      // Ahmednagar Road
+      [18.5755, 73.8935], // Viman Nagar Junction
+      [18.5915, 73.9078], // Airport Junction
+      [18.6074, 73.9221], // Lohegaon Road
+      [18.6234, 73.9364], // Dighi Junction
+      [18.6394, 73.9507], // Charholi
+      [18.6554, 73.9650], // Alandi Junction
+      [18.6714, 73.9793], // Dehu Road Junction
+      [18.6874, 73.9936], // Talegaon Road
+      [18.7034, 74.0079], // Chakan Junction
+      [18.7194, 74.0222], // Rajgurunagar Junction
+      [18.7354, 74.0365], // Manchar Road
+      [18.7514, 74.0508], // Shirur Junction
+      [18.7674, 74.0651], // Ahmednagar Entry
+      [18.7834, 74.0794], // Pathardi Road
+      [18.7994, 74.0937], // Shrirampur Junction
+      
+      // Ring Road Connections
+      [18.5283, 73.7076], // Katraj Tunnel
+      [18.5122, 73.7219], // Bharati Vidyapeeth
+      [18.4961, 73.7362], // NIBM Circle
+      [18.4800, 73.7505], // Kondhwa Circle
+      [18.4639, 73.7648], // Wanowrie Circle
+      [18.4478, 73.7791], // Fatima Nagar Circle
+      [18.4317, 73.7934], // Bibvewadi Circle
+      [18.4156, 73.8077], // Sahakarnagar Circle
+      [18.3995, 73.8220], // Market Yard Circle
+      [18.3834, 73.8363], // Gultekdi Circle
+      [18.3673, 73.8506], // Swargate Circle
+      [18.3512, 73.8649], // Pune Station Circle
+      [18.3351, 73.8792], // Shivajinagar Circle
+      [18.3190, 73.8935], // JM Road Circle
+      [18.3029, 73.9078], // FC Road Circle
+      
+      // Industrial Areas
+      [18.4800, 73.9880], // Magarpatta Industrial
+      [18.4639, 74.0023], // Amanora Industrial
+      [18.4478, 74.0166], // Hadapsar Industrial
+      [18.4317, 74.0309], // Pune IT Park
+      [18.4156, 74.0452], // Hinjewadi IT Park
+      [18.3995, 74.0595], // Rajiv Gandhi IT Park
+      [18.3834, 74.0738], // EON IT Park
+      [18.3673, 74.0881], // Cybercity
+      [18.3512, 74.1024], // World Trade Center
+      [18.3351, 74.1167], // Tech Park
+      [18.3190, 74.1310], // Software Park
+      [18.3029, 74.1453], // Innovation District
+      [18.2868, 74.1596], // Knowledge Park
+      [18.2707, 74.1739], // Business Park
+      [18.2546, 74.1882], // Commercial Hub
+      
+      // Educational Hubs
+      [18.4156, 73.8935], // University Circle
+      [18.4317, 73.8792], // College Road
+      [18.4478, 73.8649], // Student Area
+      [18.4639, 73.8506], // Academic Zone
+      [18.4800, 73.8363], // Campus Road
+      [18.4961, 73.8220], // Education Hub
+      [18.5122, 73.8077], // Learning Center
+      [18.5283, 73.7934], // Knowledge Center
+      [18.5444, 73.7791], // Research Park
+      [18.5605, 73.7648], // Innovation Hub
+      [18.5766, 73.7505], // Technology Center
+      [18.5927, 73.7362], // Science Park
+      [18.6088, 73.7219], // Engineering Hub
+      [18.6249, 73.7076], // Medical College Area
+      [18.6410, 73.6933], // Dental College Road
+      
+      // Residential Complexes
+      [18.5435, 73.8220], // Koregaon Park Extension
+      [18.5594, 73.8077], // Kalyani Nagar Extension
+      [18.5755, 73.7934], // Viman Nagar Extension
+      [18.5915, 73.7791], // Airport Road Extension
+      [18.6074, 73.7648], // Dhanori Extension
+      [18.6234, 73.7505], // Vishrantwadi Extension
+      [18.6394, 73.7362], // Tingre Nagar Extension
+      [18.6554, 73.7219], // New Sangvi Extension
+      [18.6714, 73.7076], // Pimple Saudagar Extension
+      [18.6874, 73.6933], // Pimple Nilakh Extension
+      [18.7034, 73.6790], // Aundh Extension
+      [18.7194, 73.6647], // Baner Extension
+      [18.7354, 73.6504], // Balewadi Extension
+      [18.7514, 73.6361], // Wakad Extension
+      [18.7674, 73.6218], // Hinjewadi Extension
+      
+      // Metro Line Coverage
+      [18.5089, 73.8077], // Civil Court Metro
+      [18.5158, 73.8220], // Budhwar Peth Metro
+      [18.5227, 73.8363], // Mandai Metro
+      [18.5296, 73.8506], // Swargate Metro
+      [18.5365, 73.8649], // Deccan Metro
+      [18.5434, 73.8792], // Kothrud Metro
+      [18.5503, 73.8935], // Ideal Colony Metro
+      [18.5572, 73.9078], // Nal Stop Metro
+      [18.5641, 73.9221], // Garware College Metro
+      [18.5710, 73.9364], // Vanaz Metro
+      [18.5779, 73.9507], // Anand Nagar Metro
+      [18.5848, 73.9650], // Ideal Colony Metro
+      [18.5917, 73.9793], // Balewadi Metro
+      [18.5986, 73.9936], // Shivaji Nagar Metro
+      [18.6055, 74.0079], // Range Hills Metro
+      
+      // Hospital Areas
+      [18.5196, 73.8220], // Ruby Hall Clinic
+      [18.5089, 73.8363], // Sassoon Hospital
+      [18.4982, 73.8506], // Deenanath Mangeshkar
+      [18.4875, 73.8649], // Jehangir Hospital
+      [18.4768, 73.8792], // KEM Hospital
+      [18.4661, 73.8935], // Aditya Birla Hospital
+      [18.4554, 73.9078], // Columbia Asia
+      [18.4447, 73.9221], // Noble Hospital
+      [18.4340, 73.9364], // Oyster Pearl Hospital
+      [18.4233, 73.9507], // Inamdar Hospital
+      [18.4126, 73.9650], // Sancheti Hospital
+      [18.4019, 73.9793], // Poona Hospital
+      [18.3912, 73.9936], // Inlaks Hospital
+      [18.3805, 74.0079], // Sahyadri Hospital
+      [18.3698, 74.0222], // Jupiter Hospital
+      
+      // Shopping Areas
+      [18.5314, 73.8792], // Phoenix Mall
+      [18.5435, 73.8649], // Seasons Mall
+      [18.5556, 73.8506], // Amanora Mall
+      [18.5677, 73.8363], // Ezone Mall
+      [18.5798, 73.8220], // Westend Mall
+      [18.5919, 73.8077], // Kumar Pacific Mall
+      [18.6040, 73.7934], // City Pride Multiplex
+      [18.6161, 73.7791], // Inox Multiplex
+      [18.6282, 73.7648], // PVR Cinema
+      [18.6403, 73.7505], // Fun Republic
+      [18.6524, 73.7362], // Gold Adlabs
+      [18.6645, 73.7219], // Big Bazaar
+      [18.6766, 73.7076], // Reliance Fresh
+      [18.6887, 73.6933], // More Supermarket
+      [18.7008, 73.6790], // Spencer's Retail
+      
+      // Religious Places
+      [18.5089, 73.8649], // Dagadusheth Temple
+      [18.4982, 73.8506], // Pataleshwar Cave
+      [18.4875, 73.8792], // Kasba Ganpati
+      [18.4768, 73.8935], // Tambdi Jogeshwari
+      [18.4661, 73.9078], // Tulsi Baug Temple
+      [18.4554, 73.9221], // Omkareshwar Temple
+      [18.4447, 73.9364], // ISKCON Temple
+      [18.4340, 73.9507], // Chaturshringi Temple
+      [18.4233, 73.9650], // Parvati Temple
+      [18.4126, 73.9793], // Sarasbaug Temple
+      [18.4019, 73.9936], // Pune Gurudwara
+      [18.3912, 74.0079], // St. Mary's Church
+      [18.3805, 74.0222], // All Saints Church
+      [18.3698, 74.0365], // Holy Spirit Church
+      [18.3591, 74.0508], // Sacred Heart Church
+      
+      // Parks and Gardens
+      [18.5435, 73.8363], // Shaniwar Wada
+      [18.5314, 73.8220], // Bund Garden
+      [18.5193, 73.8077], // Okayama Friendship Garden
+      [18.5072, 73.7934], // Saras Baug
+      [18.4951, 73.7791], // Peshwe Park
+      [18.4830, 73.7648], // Empress Garden
+      [18.4709, 73.7505], // Kamala Nehru Park
+      [18.4588, 73.7362], // Pune Race Course
+      [18.4467, 73.7219], // Katraj Snake Park
+      [18.4346, 73.7076], // Rajiv Gandhi Zoological Park
+      [18.4225, 73.6933], // Pashan Lake
+      [18.4104, 73.6790], // Khadakwasla Lake
+      [18.3983, 73.6647], // Temghar Dam
+      [18.3862, 73.6504], // Mulshi Dam
+      [18.3741, 73.6361], // Varasgaon Dam
+      
+      // Sports Complexes
+      [18.5556, 73.8506], // Maharashtra Cricket Stadium
+      [18.5435, 73.8649], // Pune Football Stadium
+      [18.5314, 73.8792], // Shree Shiv Chhatrapati Sports Complex
+      [18.5193, 73.8935], // Balewadi Sports Complex
+      [18.5072, 73.9078], // PYC Gymkhana
+      [18.4951, 73.9221], // Poona Club
+      [18.4830, 73.9364], // Pune Cantonment Club
+      [18.4709, 73.9507], // Oxford Golf Club
+      [18.4588, 73.9650], // Pune Race Course Club
+      [18.4467, 73.9793], // Swimming Pool Complex
+      [18.4346, 73.9936], // Tennis Club
+      [18.4225, 74.0079], // Cricket Club
+      [18.4104, 74.0222], // Badminton Club
+      [18.3983, 74.0365], // Hockey Club
+      [18.3862, 74.0508], // Athletic Stadium
+      
+      // Government Offices
+      [18.5314, 73.8506], // Pune Collector Office
+      [18.5435, 73.8649], // PMC Building
+      [18.5556, 73.8792], // PCMC Building
+      [18.5677, 73.8935], // Maharashtra Bhavan
+      [18.5798, 73.9078], // District Court
+      [18.5919, 73.9221], // High Court Bench
+      [18.6040, 73.9364], // Police Commissioner Office
+      [18.6161, 73.9507], // Passport Office
+      [18.6282, 73.9650], // Income Tax Office
+      [18.6403, 73.9793], // Sales Tax Office
+      [18.6524, 73.9936], // Excise Office
+      [18.6645, 74.0079], // Labour Office
+      [18.6766, 74.0222], // Regional Transport Office
+      [18.6887, 74.0365], // Tehsildar Office
+      [18.7008, 74.0508], // Block Development Office
     ];
 
-    // Pick a random road point
-    return mumbaiRoadPoints[Math.floor(Math.random() * mumbaiRoadPoints.length)];
+    // Pick a random road point from the 500 locations
+    return puneRoadPoints[Math.floor(Math.random() * puneRoadPoints.length)];
   };
 
   const generateNearbyRoadPosition = (centerPos: [number, number], maxDistanceKm: number): [number, number] => {
     // Instead of generating arbitrary grid points, let's use known good road points
     // and find ones within our distance range
     const knownRoadPoints: [number, number][] = [
-      // South Mumbai - verified road locations
-      [18.9220, 72.8347], // Colaba Causeway
-      [18.9067, 72.8147], // Fort - D.N. Road
-      [18.9388, 72.8348], // Churchgate Station
-      [18.9520, 72.8081], // Marine Drive
-      [18.9689, 72.8205], // Worli Sea Link Entrance
-      // Central Mumbai
-      [19.0176, 72.8562], // Bandra Station
-      [19.0544, 72.8406], // BKC Main Road
-      [19.0728, 72.8826], // Santa Cruz Station
-      [19.0896, 72.8656], // Andheri Station West
-      [19.1136, 72.8697], // Andheri Station East
-      [19.0760, 72.8777], // Mumbai Central
-      [19.0330, 72.8697], // Kurla Station
-      [19.0410, 72.8570], // Mahim Station
-      [19.0144, 72.8479], // Lower Parel
-      [19.0330, 72.8570], // Dadar Station
-      // Western Line stations (all on roads)
-      [19.1725, 72.9473], // Borivali Station
-      [19.2074, 72.8370], // Kandivali Station
-      [19.1449, 72.8662], // Malad Station
-      [19.1258, 72.8347], // Goregaon Station
-      [19.1076, 72.8263], // Jogeshwari Station
-      // Eastern suburbs
-      [19.0625, 72.8972], // Ghatkopar Station
-      [19.1070, 72.8970], // Vikhroli Station
-      [19.0433, 72.8996], // Chembur
-      // Major road intersections
-      [19.0170, 72.8570], // Dadar TT Circle
-      [19.0760, 72.8450], // Parel Village
-      [18.9689, 72.8140], // Haji Ali Junction
-      [19.0544, 72.8300], // Bandra Reclamation
+      // Central Pune - verified road locations
+      [18.5204, 73.8567], // Shivajinagar
+      [18.5314, 73.8446], // JM Road
+      [18.5074, 73.8077], // Koregaon Park
+      [18.5089, 73.8535], // FC Road
+      [18.5022, 73.8878], // Kothrud
+      [18.5679, 73.9143], // Aundh
+      [18.5362, 73.8454], // Deccan
+      [18.5435, 73.8497], // Karve Road
+      [18.5196, 73.8553], // Pune Station
+      [18.5158, 73.8560], // Cantonment
+      [18.5089, 73.8304], // MG Road
+      [18.5246, 73.8370], // Camp Area
+      // Pimpri-Chinchwad Area
+      [18.6298, 73.7997], // Pimpri
+      [18.6186, 73.8037], // Chinchwad
+      [18.6588, 73.8370], // Akurdi
+      [18.6480, 73.8173], // Nigdi
+      [18.5886, 73.8333], // Wakad
+      [18.5515, 73.7804], // Hinjewadi Phase 1
+      [18.5892, 73.7395], // Hinjewadi Phase 2
+      [18.5679, 73.7804], // Hinjewadi Phase 3
+      [18.6074, 73.7395], // Baner
+      [18.5633, 73.7804], // Balewadi
+      // Eastern Pune
+      [18.5594, 73.9451], // Viman Nagar
+      [18.5515, 73.9308], // Airport Road
+      [18.5435, 73.9165], // Kalyani Nagar
+      [18.5679, 73.9308], // Mundhwa
+      [18.5679, 73.9594], // Kharadi
+      [18.5515, 73.9737], // Wagholi
+      [18.5355, 73.9880], // Lohegaon
+      [18.5755, 73.9880], // Dighi
+      [18.5594, 73.9023], // Pune Airport
+      [18.5435, 73.8880], // Yerawada
+      // Western Pune
+      [18.4639, 73.8077], // Warje
+      [18.4478, 73.8220], // Karve Nagar
+      [18.4800, 73.8363], // Erandwane
+      [18.4961, 73.8220], // Paud Road
+      [18.4800, 73.8077], // Kothrud Depot
+      [18.4639, 73.8363], // Ideal Colony
+      [18.4478, 73.8506], // Bavdhan
+      [18.4317, 73.8649], // Pashan
+      [18.4478, 73.8792], // Sus
+      [18.4800, 73.8935], // Baner Road
+      // Southern Pune
+      [18.4478, 73.8077], // Sinhgad Road
+      [18.4317, 73.7934], // Vadgaon Khurd
+      [18.4156, 73.7791], // Dhayari
+      [18.3995, 73.7648], // Sinhgad College
+      [18.4156, 73.7934], // Ambegaon
+      [18.3834, 73.8077], // Hingne Khurd
+      [18.3673, 73.8220], // Mukund Nagar
+      [18.3512, 73.8363], // Sahakarnagar South
+      [18.4317, 73.7505], // Kondhwa Road
+      [18.4478, 73.7362], // NIBM Road
+      [18.4639, 73.7219], // Undri
+      [18.4800, 73.7076], // Pisoli
+      [18.4961, 73.6933], // Bharati Vidyapeeth
+      // Major road intersections throughout Pune
+      [18.5170, 73.8570], // Pune Central Junction
+      [18.4760, 73.8450], // Law College Junction
+      [18.5689, 73.8140], // University Circle
+      [18.6544, 73.8300], // Pimpri Main Junction
     ];
 
     // Filter points that are within our desired distance range
     const nearbyPoints: [number, number][] = [];
-    
+
     for (const point of knownRoadPoints) {
       const distance = calculateDistance(centerPos, point);
       if (distance >= 1 && distance <= maxDistanceKm) { // At least 1km away, max desired distance
@@ -520,7 +876,7 @@ const App: React.FC = () => {
       // If no points in range, use the closest known road point
       let closestPoint = knownRoadPoints[0];
       let minDistance = calculateDistance(centerPos, knownRoadPoints[0]);
-      
+
       for (const point of knownRoadPoints) {
         const distance = calculateDistance(centerPos, point);
         if (distance < minDistance) {
@@ -528,7 +884,7 @@ const App: React.FC = () => {
           closestPoint = point;
         }
       }
-      
+
       console.log(`🛣️ Using closest road point at ${minDistance.toFixed(1)}km`);
       return closestPoint;
     }
@@ -536,7 +892,7 @@ const App: React.FC = () => {
     // Pick a random point from the nearby valid road points
     const selectedPoint = nearbyPoints[Math.floor(Math.random() * nearbyPoints.length)];
     const distance = calculateDistance(centerPos, selectedPoint);
-    
+
     console.log(`✅ Selected road point at ${distance.toFixed(1)}km from center`);
     return selectedPoint;
   };
@@ -544,13 +900,13 @@ const App: React.FC = () => {
   const validateRouteConnection = async (point1: [number, number], point2: [number, number]): Promise<boolean> => {
     try {
       const routeResult = await apiService.calculateRoute([point1, point2]);
-      
+
       // Simplified validation - since we're using known road points, just check basic criteria
       const hasValidRoute = routeResult.route && routeResult.route.length >= 2;
       const hasReasonableDistance = routeResult.distance > 100 && routeResult.distance < 50000; // 100m to 50km
-      
+
       if (hasValidRoute && hasReasonableDistance) {
-        console.log(`✅ Route validated: ${(routeResult.distance/1000).toFixed(1)}km`);
+        console.log(`✅ Route validated: ${(routeResult.distance / 1000).toFixed(1)}km`);
         return true;
       } else {
         console.log(`❌ Route rejected: distance=${routeResult.distance}m, points=${routeResult.route?.length || 0}`);
@@ -572,7 +928,7 @@ const App: React.FC = () => {
 
       // Try to find a valid position
       do {
-        position = generateRandomPositionInMumbai();
+        position = generateRandomPositionInPune();
         attempts++;
       } while (attempts < maxAttempts);
 
@@ -604,10 +960,10 @@ const App: React.FC = () => {
 
       while (!isValid && attempts < maxAttempts) {
         attempts++;
-        
+
         // Generate pickup position within 20km of driver (on roads)
         pickupPos = generateNearbyRoadPosition(driverPos, 20);
-        
+
         // Generate delivery position within 30km of pickup (on roads)
         deliveryPos = generateNearbyRoadPosition(pickupPos, 30);
 
@@ -624,13 +980,13 @@ const App: React.FC = () => {
           if (totalDistance < 50) { // Total journey under 50km
             isValid = true;
             console.log(`✅ Valid delivery route found! Total distance: ${totalDistance.toFixed(1)}km`);
-            
+
             // Add the delivery
             await addDeliveryPair({ pickup: pickupPos, delivery: deliveryPos });
             break;
           }
         }
-        
+
         // If this attempt failed, log it
         console.log(`❌ Attempt ${attempts} failed - trying again...`);
       }
@@ -668,17 +1024,17 @@ const App: React.FC = () => {
   const calculateBearing = (pos1: [number, number], pos2: [number, number]): number => {
     const [lat1, lng1] = pos1;
     const [lat2, lng2] = pos2;
-    
+
     const dLng = (lng2 - lng1) * Math.PI / 180;
     const lat1Rad = lat1 * Math.PI / 180;
     const lat2Rad = lat2 * Math.PI / 180;
-    
+
     const y = Math.sin(dLng) * Math.cos(lat2Rad);
     const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) - Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLng);
-    
+
     const bearingRad = Math.atan2(y, x);
     const bearingDeg = (bearingRad * 180 / Math.PI + 360) % 360;
-    
+
     return bearingDeg;
   };
 
@@ -1068,7 +1424,7 @@ const App: React.FC = () => {
 
   const handleSpeedChange = (newSpeed: number) => {
     setSimulationSpeed(newSpeed);
-    
+
     // Update speed for all currently moving drivers in real-time
     if (isSimulating) {
       console.log(`🚀 Live speed update: ${newSpeed} km/h applied to all moving drivers`);
@@ -1218,7 +1574,7 @@ const App: React.FC = () => {
         {/* Map Container */}
         <div className="flex-1 relative">
           <MapContainer
-            center={[19.0760, 72.8777]}
+            center={[18.5204, 73.8567]}
             zoom={12}
             className="h-full w-full"
           >
@@ -1239,7 +1595,7 @@ const App: React.FC = () => {
               const position = driver.simulationPosition || [driver.latitude, driver.longitude];
               const isMoving = driver.isMoving && isSimulating;
               const heading = driver.heading || 0;
-              
+
               // Create dynamic driver icon based on movement state and heading
               const dynamicDriverIcon = createDriverIcon('#3B82F6', heading, isMoving);
 
@@ -1273,21 +1629,34 @@ const App: React.FC = () => {
               );
             })}
 
-            {/* Active Routes (routes currently being followed during simulation) */}
-            {drivers.map((driver) =>
-              driver.activeRoute && driver.isMoving && isSimulating ? (
+            {/* Active Routes - Only show path ahead of driver (no trail behind) */}
+            {drivers.map((driver) => {
+              if (!driver.activeRoute || !driver.isMoving || !isSimulating || driver.currentRouteIndex === undefined) {
+                return null;
+              }
+
+              // Get only the remaining route points ahead of the driver
+              const remainingRoute = driver.activeRoute.slice(driver.currentRouteIndex);
+              
+              // Only show if there are points ahead
+              if (remainingRoute.length < 2) {
+                return null;
+              }
+
+              return (
                 <Polyline
                   key={`active-route-${driver.id}`}
-                  positions={driver.activeRoute}
+                  positions={remainingRoute}
                   color="#10B981"
                   weight={4}
                   opacity={0.8}
                   dashArray="10, 5"
                 />
-              ) : null
-            )}
+              );
+            })}
 
-            {/* Selected Driver Routes (shown when driver is selected from dashboard) */}
+            {/* Selected Driver Routes (shown when driver is selected from dashboard) - REMOVED for cleaner visuals */}
+            {/* 
             {drivers.map((driver) =>
               driver.currentRoute && selectedDriver === driver.id && (!driver.isMoving || !isSimulating) ? (
                 <Polyline
@@ -1299,6 +1668,7 @@ const App: React.FC = () => {
                 />
               ) : null
             )}
+            */}
 
             {/* Pickup/Delivery Markers */}
             {drivers.flatMap((driver) =>

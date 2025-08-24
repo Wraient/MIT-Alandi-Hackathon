@@ -109,13 +109,13 @@ function isPointInWeatherEvent(lat: number, lon: number, event: any): boolean {
 // Helper function to generate avoid areas for GraphHopper
 function generateAvoidAreas(weatherEvents: any[]): string[] {
     const avoidAreas: string[] = [];
-    
+
     for (const event of weatherEvents) {
         // Create a polygon around the weather event center
         const radius = event.radius / 111.32; // Convert km to approximate degrees
         const centerLat = event.latitude;
         const centerLon = event.longitude;
-        
+
         // Create a square around the weather event (GraphHopper accepts polygon format)
         const polygon = [
             `${centerLat + radius},${centerLon - radius}`, // top-left
@@ -124,51 +124,51 @@ function generateAvoidAreas(weatherEvents: any[]): string[] {
             `${centerLat - radius},${centerLon - radius}`, // bottom-left
             `${centerLat + radius},${centerLon - radius}`  // close polygon
         ].join(' ');
-        
+
         avoidAreas.push(polygon);
         console.log(`Created avoid area for ${event.type}: ${polygon}`);
     }
-    
+
     return avoidAreas;
 }
 
 // Helper function to generate strategic waypoints around weather events
 function generateSafeWaypoints(startPoint: [number, number], endPoint: [number, number], weatherEvents: any[]): [number, number][] {
     const waypoints: [number, number][] = [startPoint];
-    
+
     for (const event of weatherEvents) {
         const eventLat = event.latitude;
         const eventLon = event.longitude;
         const radius = event.radius / 111.32; // Convert km to degrees
-        
+
         // Calculate if the direct line from start to end passes near the weather event
         const midLat = (startPoint[0] + endPoint[0]) / 2;
         const midLon = (startPoint[1] + endPoint[1]) / 2;
-        
+
         const distanceToEvent = calculateDistance(midLat, midLon, eventLat, eventLon);
-        
+
         if (distanceToEvent < event.radius * 2) { // If route might pass near the weather event
             console.log(`Route may pass near ${event.type} event, adding detour waypoints`);
-            
+
             // Determine which side to detour (left or right of the weather event)
             const bearing = Math.atan2(endPoint[1] - startPoint[1], endPoint[0] - startPoint[0]);
             const perpBearing = bearing + Math.PI / 2; // 90 degrees perpendicular
-            
+
             // Create waypoints that go around the weather event
             const detourDistance = radius * 2; // Go well around the event
-            
+
             const waypoint1Lat = eventLat + Math.cos(perpBearing) * detourDistance;
             const waypoint1Lon = eventLon + Math.sin(perpBearing) * detourDistance;
-            
+
             const waypoint2Lat = eventLat - Math.cos(perpBearing) * detourDistance;
             const waypoint2Lon = eventLon - Math.sin(perpBearing) * detourDistance;
-            
+
             // Choose the waypoint that's closer to the general direction of travel
             const dist1 = calculateDistance(startPoint[0], startPoint[1], waypoint1Lat, waypoint1Lon) +
-                         calculateDistance(waypoint1Lat, waypoint1Lon, endPoint[0], endPoint[1]);
+                calculateDistance(waypoint1Lat, waypoint1Lon, endPoint[0], endPoint[1]);
             const dist2 = calculateDistance(startPoint[0], startPoint[1], waypoint2Lat, waypoint2Lon) +
-                         calculateDistance(waypoint2Lat, waypoint2Lon, endPoint[0], endPoint[1]);
-            
+                calculateDistance(waypoint2Lat, waypoint2Lon, endPoint[0], endPoint[1]);
+
             if (dist1 < dist2) {
                 waypoints.push([waypoint1Lat, waypoint1Lon]);
             } else {
@@ -176,7 +176,7 @@ function generateSafeWaypoints(startPoint: [number, number], endPoint: [number, 
             }
         }
     }
-    
+
     waypoints.push(endPoint);
     return waypoints;
 }
@@ -185,10 +185,10 @@ function generateSafeWaypoints(startPoint: [number, number], endPoint: [number, 
 async function getBestWeatherAwareRoute(points: [number, number][], optimize: boolean = false): Promise<any> {
     try {
         console.log('Getting weather-aware routes with active avoidance...');
-        
+
         // Get active weather events first
         const weatherEvents = await dbAll('SELECT * FROM weather_events WHERE active = 1');
-        
+
         if (weatherEvents.length === 0) {
             console.log('No active weather events, using standard routing');
             return await callGraphHopper('/route', {
@@ -205,12 +205,12 @@ async function getBestWeatherAwareRoute(points: [number, number][], optimize: bo
                 calc_points: 'true'
             });
         }
-        
+
         const routeOptions = [];
-        
+
         // Generate avoid areas for GraphHopper
         const avoidAreas = generateAvoidAreas(weatherEvents);
-        
+
         // Strategy 1: Use avoid areas to exclude weather zones
         console.log('Trying route with avoid areas...');
         try {
@@ -227,12 +227,12 @@ async function getBestWeatherAwareRoute(points: [number, number][], optimize: bo
                 instructions: 'false',
                 calc_points: 'true'
             };
-            
+
             // Add avoid areas
             avoidAreas.forEach((area, index) => {
                 avoidParams[`avoid_polygon`] = area;
             });
-            
+
             const avoidRoute = await callGraphHopper('/route', avoidParams);
             const penalizedAvoid = await applyWeatherPenalties(avoidRoute, points);
             routeOptions.push({ ...penalizedAvoid, routeType: 'avoid_areas' });
@@ -240,14 +240,14 @@ async function getBestWeatherAwareRoute(points: [number, number][], optimize: bo
         } catch (e) {
             console.log('Avoid areas route failed:', e);
         }
-        
+
         // Strategy 2: Use strategic waypoints to force routes around weather
         if (points.length === 2) { // Only for simple point-to-point routes
             console.log('Trying route with strategic waypoints...');
             try {
                 const safeWaypoints = generateSafeWaypoints(points[0], points[1], weatherEvents);
                 console.log(`Generated ${safeWaypoints.length} waypoints:`, safeWaypoints);
-                
+
                 const waypointRoute = await callGraphHopper('/route', {
                     point: safeWaypoints.map(([lat, lng]) => `${lat},${lng}`),
                     type: 'json',
@@ -261,7 +261,7 @@ async function getBestWeatherAwareRoute(points: [number, number][], optimize: bo
                     instructions: 'false',
                     calc_points: 'true'
                 });
-                
+
                 const penalizedWaypoint = await applyWeatherPenalties(waypointRoute, safeWaypoints);
                 routeOptions.push({ ...penalizedWaypoint, routeType: 'safe_waypoints' });
                 console.log('Safe waypoints route penalty:', penalizedWaypoint.paths?.[0]?.weather_penalties?.total_penalty || 0);
@@ -269,7 +269,7 @@ async function getBestWeatherAwareRoute(points: [number, number][], optimize: bo
                 console.log('Safe waypoints route failed:', e);
             }
         }
-        
+
         // Strategy 3: Try different weighting algorithms
         const weightings = ['fastest', 'shortest'];
         for (const weighting of weightings) {
@@ -289,7 +289,7 @@ async function getBestWeatherAwareRoute(points: [number, number][], optimize: bo
                     calc_points: 'true',
                     weighting: weighting
                 });
-                
+
                 const penalizedWeighted = await applyWeatherPenalties(weightedRoute, points);
                 routeOptions.push({ ...penalizedWeighted, routeType: weighting });
                 console.log(`${weighting} route penalty:`, penalizedWeighted.paths?.[0]?.weather_penalties?.total_penalty || 0);
@@ -297,7 +297,7 @@ async function getBestWeatherAwareRoute(points: [number, number][], optimize: bo
                 console.log(`${weighting} route failed`);
             }
         }
-        
+
         // Strategy 4: Force alternative routes with different parameters
         try {
             console.log('Trying alternative route algorithm...');
@@ -318,7 +318,7 @@ async function getBestWeatherAwareRoute(points: [number, number][], optimize: bo
                 'alternative_route.max_weight_factor': '3',
                 'alternative_route.max_share_factor': '0.8'
             });
-            
+
             // Process all alternative paths if available
             if (alternativeRoute.paths && alternativeRoute.paths.length > 0) {
                 for (let i = 0; i < Math.min(alternativeRoute.paths.length, 3); i++) {
@@ -334,7 +334,7 @@ async function getBestWeatherAwareRoute(points: [number, number][], optimize: bo
         } catch (e) {
             console.log('Alternative routes failed');
         }
-        
+
         if (routeOptions.length === 0) {
             console.log('All weather-aware strategies failed, falling back to default route');
             const fallbackRoute = await callGraphHopper('/route', {
@@ -349,27 +349,27 @@ async function getBestWeatherAwareRoute(points: [number, number][], optimize: bo
             });
             return await applyWeatherPenalties(fallbackRoute, points);
         }
-        
+
         // Select the route with the lowest penalty (or lowest time if no penalties)
         const bestRoute = routeOptions.reduce((best, current) => {
             const bestPenalty = best.paths?.[0]?.weather_penalties?.total_penalty || 0;
             const currentPenalty = current.paths?.[0]?.weather_penalties?.total_penalty || 0;
-            
+
             console.log(`Comparing ${best.routeType} (penalty: ${bestPenalty}) vs ${current.routeType} (penalty: ${currentPenalty})`);
-            
+
             // If both have no penalty, choose the faster one
             if (bestPenalty === 0 && currentPenalty === 0) {
                 return (best.paths?.[0]?.time || Infinity) < (current.paths?.[0]?.time || Infinity) ? best : current;
             }
-            
+
             // Otherwise, choose the one with lower penalty
             return bestPenalty <= currentPenalty ? best : current;
         });
-        
+
         console.log(`SELECTED: ${bestRoute.routeType} route with penalty: ${bestRoute.paths?.[0]?.weather_penalties?.total_penalty || 0}`);
-        
+
         return bestRoute;
-        
+
     } catch (error) {
         console.error('Error getting weather-aware route:', error);
         throw error;
@@ -516,13 +516,13 @@ async function callGraphHopper(endpoint: string, params: any) {
             'ch.disable': 'true',          // Disable contraction hierarchies
             'lm.disable': 'true',          // Disable landmarks
             'block_area': 'false',         // Don't block any areas
-            
+
             // Force the most flexible routing algorithm
             'algorithm': 'dijkstra',       // Use basic Dijkstra - ignores most restrictions
-            
+
             // Use profile only (compatible with modern GraphHopper API)
             'profile': 'car',
-            
+
             // Force all roads to be accessible
             'encoded_values': 'road_class,road_environment,max_speed'
         };
@@ -545,12 +545,12 @@ async function callGraphHopper(endpoint: string, params: any) {
         console.log('🛣️ GraphHopper bidirectional request:', url);
 
         const response = await axios.get(url);
-        
+
         // Log successful response
         if (response.data.paths && response.data.paths.length > 0) {
             console.log('✅ Bidirectional route found:', response.data.paths.length, 'path(s)');
         }
-        
+
         return response.data;
     } catch (error: any) {
         console.error('❌ GraphHopper API error:', error.response?.data || error.message);
