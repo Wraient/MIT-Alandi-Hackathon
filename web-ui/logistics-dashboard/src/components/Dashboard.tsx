@@ -81,8 +81,22 @@ const Dashboard: React.FC<DashboardProps> = ({
     return (
         <div className="h-full flex flex-col bg-white">
             <div className="p-4 border-b border-gray-200">
-                <h1 className="text-2xl font-bold text-gray-900">Logistics Dashboard</h1>
-                <p className="text-sm text-gray-600">Real-time delivery management</p>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900">Logistics Dashboard</h1>
+                        <p className="text-sm text-gray-600">Real-time delivery management</p>
+                    </div>
+                    <div className="flex space-x-2">
+                        <a
+                            href="/driver"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-2 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition-colors"
+                        >
+                            📱 Mobile Driver View
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 space-y-6">

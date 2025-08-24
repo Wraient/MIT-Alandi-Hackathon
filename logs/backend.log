@@ -1,0 +1,2400 @@
+
+> backend@1.0.0 start
+> node dist/server.js
+
+Database initialized successfully
+Backend server running on port 3001
+GraphHopper URL: http://localhost:9000
+🛣️  BIDIRECTIONAL ROUTING ENABLED - All roads are treated as two-way
+💡 If routes seem restricted, restart GraphHopper with: java -jar graphhopper-web-6.2.jar server config.yml
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.6394%2C73.7792&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.5435%2C73.8497&point=18.5089%2C73.8304&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.6394%2C73.7792&point=18.5515%2C73.9308&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.5515%2C73.9308&point=18.4317%2C73.7934&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 6622.483,
+  time: 445446,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'yydpBuzvaMgBKF_GGACPQTSFUAIIIWSyAKOmBiA]WYOPGpDhBh@Rb@VhA@fH\\hHr@vBb@lKdBAP~APRElAHrB_@Px@j@lAzB`CdC...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 106 route points
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 17030.703,
+  time: 1088756,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: '{qwpBqeiaMoDe@tAuOtCZ`ALnLvBvAPdE?n@@`@Bf@HfDt@^Vd@{BHSHOd@a@X]HQd@sBXiBZiC?SJmAyAcBMUuBeGMSSQcLmHqB...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 127 route points
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.6074%2C73.6647&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+Getting weather-aware routes with active avoidance...
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 24331.675,
+  time: 1427255,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: '{qwpBqeiaMoDe@tAuOtCZ`ALnLvBvAPdE?n@@`@Bf@HfDt@^Vd@{BHSHOd@a@X]HQd@sBXiBZiC?SJmAyAcBMUuBeGMSSQcLmHqB...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 186 route points
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 19589.782,
+  time: 1285791,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'sjxoBg}z`MsAXiEnAYFaADsBGkFeAe@Mc@[w@c@aA_Ae@]cE_BmAm@gAs@c@_@a@e@mA_BYg@oAaB_@{@q@kB[mAeEwK_AiB[g@o...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 291 route points
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 25731.794,
+  time: 1685886,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'wifpBoqfbM{@FZzIsE^cKd@kKr@kEPIFqENuCFqA?eCC_C@kH\\JpFPlGJrBLjA^`Cp@pDnAhI`BtH?Ln@fD`@hCbCjLlCtJfDtNn...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 316 route points
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 30793.072,
+  time: 2270878,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'ufqpBewr`MmGi@qFIi@C[IEpAOn@EJQ`AGtAaCSuCIeAKyAe@wDs@uAOcAW]YkC[u@Oy@Li@CkBa@oAHkDGcD]i@i@aAiBsAwD@_...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 488 route points
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.5158%2C73.856&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.5158%2C73.856&point=18.5679%2C73.9308&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 12619.932,
+  time: 751940,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'ok_pB{~waMCy@v@ANr@N^vAdCJj@dAxBNj@DXBt@}EAcDSkI]e@M[WOYEg@oHHOCMGg@o@_A}@c@Sg@Ca@De@Nq@sAc@w@sA_Bq@...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 147 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.4478%2C73.7362&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4478%2C73.7362&point=18.6544%2C73.83&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 36895.814,
+  time: 2285826,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'ydqoB{u`aMAGHe@`@wAN[^_@`Ak@\\Yh@m@h@w@f@eA\\yAVi@PSr@o@FMHo@Tg@V_@zAyAzAqBfFkFnA}AjAs@DOCKCAa@C}@Lg@T...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 476 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.4478%2C73.8506&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4478%2C73.8506&point=18.6544%2C73.83&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 28162.452,
+  time: 1812794,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'uaroBg}vaMyAUwCY{C@B_BgA@AFeBB@k@XwAHOVM^FvAyHcBU_FGgGBu@EiINIm@Z{OX}JoAKqBA{EZu@Hy@P_BVeBLuBVcAHy@@...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 262 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.3673%2C73.822&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.3673%2C73.822&point=18.6186%2C73.8037&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 43844.003,
+  time: 2601089,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'c{aoBatpaMlD|BTRDJ?TGj@?p@AP@`@RdADb@Jx@@b@UvCxARrBr@`AVdAN|@Fv@Jh@JjEjBl@L`@CzAYtACTE`@S|@q@|@]d@Wt...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 502 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.4478%2C73.8792&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4478%2C73.8792&point=18.5679%2C73.9143&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 17311.487,
+  time: 996524,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'waroB}o|aMoDg@_AUWCwANeDPPVLZJ`@TvGDtDa@AGEIOIGy@wEI_AOmE?{@mUtBs@LoBd@aMvB{Jx@yBNwF@qACkRh@kA\\aDxAi...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 191 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.48%2C73.8935&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.8935&point=18.5022%2C73.8878&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 3893.546,
+  time: 294801,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'mnxoBuj_bMmFo@gBYeAnGOxAY~DBd@f@QTE~@I^@ARMAm@BeARWJuDvB}Av@UZyHhEkHmP}AeD]g@y@s@aJ}Fo@]u@Uy@MgAEs@D...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 44 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.6074%2C73.7395&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.6074%2C73.7395&point=18.648%2C73.8173&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 11635.103,
+  time: 764559,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'ihqpBecaaMy@SqB[}DHyDU_@EQ?wBMGi@OUo@kJ?kAF_AN{ARcAf@aBp@wA\\a@bAcCbBuD~AaEdAuCr@qCX{@VsAj@eJNa@A]pDg...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 130 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.48%2C73.8077&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.8077&point=18.5515%2C73.9737&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 25348.599,
+  time: 1526636,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'ihxoBkqnaMUsFi@VuL`EOH_FkH{@_A[WE?IE?EWUwCcBUQuAqAcFgEiHuFqCiCc@k@{BoBq@_@aA_@}@OaCKwDIqCEgAHWFOLmBr...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 325 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.5362%2C73.8454&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.5362%2C73.8454&point=18.4156%2C73.7934&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 17735.143,
+  time: 1302533,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'y`cpBcquaMLE~A[x@CnKGt@kDr@eErAoIPY|@iGj@kD@a@P[@[`AkFDITOV{@j@uCHMTEj@DrDdC~ChC`BhAlBjAdQvJnB`A`B|A...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 242 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.3834%2C73.8077&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.3834%2C73.8077&point=18.5362%2C73.8454&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 32681.949,
+  time: 2011743,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'kgdoB_goaMzAs@Ra@JIj@IfA@h@IxATDANMFAz@Bf@NlAl@nARx@\\l@c@bB_@jC}@tC}@^SdBiA`CoBzB}AC_Ax@P`AJhBAb@A~@...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 395 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+No active weather events, using standard routing
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4709%2C73.7505&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: 'Cannot find point 0: 18.4709,73.7505',
+  hints: [
+    {
+      message: 'Cannot find point 0: 18.4709,73.7505',
+      details: 'com.graphhopper.util.exceptions.PointNotFoundException',
+      point_index: 0
+    }
+  ]
+}
+Error getting weather-aware route: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+GraphHopper API error: Error: GraphHopper API call failed: Request failed with status code 400
+    at callGraphHopper (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:496:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async getBestWeatherAwareRoute (/home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:169:20)
+    at async /home/wraient/Projects/MIT Alandi Hackathon/backend/dist/server.js:643:39
+✅ Bidirectional route found: 1 path(s)
+GraphHopper path data: {
+  distance: 13109.625,
+  time: 932899,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 161 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.486288920376275%2C73.8886461776956&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.47888770055816%2C73.71284369736863&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.486288920376275%2C73.8886461776956&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.47888770055816%2C73.71284369736863&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+✅ Bidirectional route found: 1 path(s)
+Checking 26 route points against 1 weather events
+Avoid areas route penalty: 0
+Trying route with strategic waypoints...
+Generated 2 waypoints: [ [ 18.47888770055816, 73.71284369736863 ], [ 18.48, 73.7076 ] ]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.47888770055816%2C73.71284369736863&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+Checking 26 route points against 1 weather events
+Avoid areas route penalty: 0
+Trying route with strategic waypoints...
+Generated 2 waypoints: [ [ 18.47888770055816, 73.71284369736863 ], [ 18.48, 73.7076 ] ]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.47888770055816%2C73.71284369736863&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+✅ Bidirectional route found: 1 path(s)
+Checking 26 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.47888770055816%2C73.71284369736863&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+Checking 26 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.47888770055816%2C73.71284369736863&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+✅ Bidirectional route found: 1 path(s)
+Checking 94 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/94 (5.3%)
+- Total penalty: 875
+- New duration: 58755770ms (88.50x)
+- New distance: 165401m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.486288920376275, 73.8886461776956 ],
+  [ 18.50737477591024, 73.86381457977852 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.486288920376275%2C73.8886461776956&point=18.50737477591024%2C73.86381457977852&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+Checking 94 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/94 (5.3%)
+- Total penalty: 875
+- New duration: 58755770ms (88.50x)
+- New distance: 165401m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.486288920376275, 73.8886461776956 ],
+  [ 18.50737477591024, 73.86381457977852 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.486288920376275%2C73.8886461776956&point=18.50737477591024%2C73.86381457977852&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.47888770055816%2C73.71284369736863&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.47888770055816%2C73.71284369736863&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.47888770055816%2C73.71284369736863&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.47888770055816%2C73.71284369736863&point=18.48%2C73.7076&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 26 route points against 1 weather events
+Alternative route 0 penalty: 0
+Comparing avoid_areas (penalty: 0) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 0)
+SELECTED: alternative_0 route with penalty: 0
+GraphHopper path data: {
+  distance: 1365.676,
+  time: 265271,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'obxoByb|`MPHZXjBpCtBvB^fAh@|@`@z@p@jDfAdDJbAXt@Ad@Nz@Br@`@bBGnADVj@v@LZiAYsJuBwEu@iAMc@?gCR...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 26 route points
+✅ Bidirectional route found: 1 path(s)
+Checking 26 route points against 1 weather events
+Alternative route 0 penalty: 0
+Comparing avoid_areas (penalty: 0) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 0)
+SELECTED: alternative_0 route with penalty: 0
+GraphHopper path data: {
+  distance: 1365.676,
+  time: 265271,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'obxoByb|`MPHZXjBpCtBvB^fAh@|@`@z@p@jDfAdDJbAXt@Ad@Nz@Br@`@bBGnADVj@v@LZiAYsJuBwEu@iAMc@?gCR...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 26 route points
+✅ Bidirectional route found: 1 path(s)
+Checking 153 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.486288920376275%2C73.8886461776956&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.486288920376275%2C73.8886461776956&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 153 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.486288920376275%2C73.8886461776956&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.486288920376275%2C73.8886461776956&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.486288920376275%2C73.8886461776956&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.486288920376275%2C73.8886461776956&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 94 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/94 (5.3%)
+- Total penalty: 875
+- New duration: 58755770ms (88.50x)
+- New distance: 165401m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 10699.672,
+  time: 772450,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'iryoBak~aMmBpB_BvAc@Jm@XuFzAe@RyCv@]RkCp@mDdAe@VsSbPeD~C{@p@iHfEuAp@m@f@aAjAk@\\}Bn@mNlD}Bf@YCvBvNFLj...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 153 route points
+✅ Bidirectional route found: 1 path(s)
+Checking 94 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/94 (5.3%)
+- Total penalty: 875
+- New duration: 58755770ms (88.50x)
+- New distance: 165401m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 10699.672,
+  time: 772450,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'iryoBak~aMmBpB_BvAc@Jm@XuFzAe@RyCv@]RkCp@mDdAe@VsSbPeD~C{@p@iHfEuAp@m@f@aAjAk@\\}Bn@mNlD}Bf@YCvBvNFLj...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 153 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 291 route points against 1 weather events
+Avoid areas route penalty: 0
+Trying route with strategic waypoints...
+Generated 2 waypoints: [ [ 18.48, 73.7076 ], [ 18.517, 73.857 ] ]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 291 route points against 1 weather events
+Avoid areas route penalty: 0
+Trying route with strategic waypoints...
+Generated 2 waypoints: [ [ 18.48, 73.7076 ], [ 18.517, 73.857 ] ]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 291 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 291 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.48%2C73.7076&point=18.517%2C73.857&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 291 route points against 1 weather events
+Alternative route 0 penalty: 0
+Comparing avoid_areas (penalty: 0) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 0)
+SELECTED: alternative_0 route with penalty: 0
+GraphHopper path data: {
+  distance: 19589.782,
+  time: 1285791,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'sjxoBg}z`MsAXiEnAYFaADsBGkFeAe@Mc@[w@c@aA_Ae@]cE_BmAm@gAs@c@_@a@e@mA_BYg@oAaB_@{@q@kB[mAeEwK_AiB[g@o...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 291 route points
+✅ Bidirectional route found: 1 path(s)
+Checking 291 route points against 1 weather events
+Alternative route 0 penalty: 0
+Comparing avoid_areas (penalty: 0) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 0)
+SELECTED: alternative_0 route with penalty: 0
+GraphHopper path data: {
+  distance: 19589.782,
+  time: 1285791,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'sjxoBg}z`MsAXiEnAYFaADsBGkFeAe@Mc@[w@c@aA_Ae@]cE_BmAm@gAs@c@_@a@e@mA_BYg@oAaB_@{@q@kB[mAeEwK_AiB[g@o...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 291 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points
+Getting weather-aware routes with active avoidance...
+Created avoid area for traffic: 18.539174471936033,73.87358849855022 18.539174471936033,73.90351111082481 18.509251859661443,73.90351111082481 18.509251859661443,73.87358849855022 18.539174471936033,73.87358849855022
+Trying route with avoid areas...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&avoid_polygon=18.539174471936033%2C73.87358849855022+18.539174471936033%2C73.90351111082481+18.509251859661443%2C73.90351111082481+18.509251859661443%2C73.87358849855022+18.539174471936033%2C73.87358849855022&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Avoid areas route penalty: 875
+Trying route with strategic waypoints...
+Route may pass near traffic event, adding detour waypoints
+Generated 3 waypoints: [
+  [ 18.4661, 73.9078 ],
+  [ 18.50624970615145, 73.86461913727443 ],
+  [ 18.5435, 73.8497 ]
+]
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.50624970615145%2C73.86461913727443&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 220 route points against 1 weather events
+Safe waypoints route penalty: 0
+Trying fastest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=fastest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=fastest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+fastest route failed
+Trying shortest route...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&weighting=shortest&ch.disable=true&lm.disable=true&block_area=false&algorithm=dijkstra&encoded_values=road_class%2Croad_environment%2Cmax_speed
+❌ GraphHopper API error: {
+  message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+  hints: [
+    {
+      message: "Since you are using the 'profile' parameter, do not use the 'weighting' parameter. You used 'weighting=shortest'",
+      details: 'java.lang.IllegalArgumentException'
+    }
+  ]
+}
+shortest route failed
+Trying alternative route algorithm...
+🛣️ GraphHopper bidirectional request: http://localhost:9000/route?point=18.4661%2C73.9078&point=18.5435%2C73.8497&type=json&locale=en-US&key=&elevation=false&profile=car&optimize=false&points_encoded=true&details=road_class&instructions=false&calc_points=true&algorithm=dijkstra&alternative_route.max_paths=5&alternative_route.max_weight_factor=3&alternative_route.max_share_factor=0.8&ch.disable=true&lm.disable=true&block_area=false&encoded_values=road_class%2Croad_environment%2Cmax_speed
+✅ Bidirectional route found: 1 path(s)
+Checking 161 route points against 1 weather events
+MAJOR WEATHER PENALTIES APPLIED:
+- Affected points: 5/161 (3.1%)
+- Total penalty: 875
+- New duration: 82561562ms (88.50x)
+- New distance: 242528m
+Alternative route 0 penalty: 875
+Comparing avoid_areas (penalty: 875) vs safe_waypoints (penalty: 0)
+Comparing safe_waypoints (penalty: 0) vs alternative_0 (penalty: 875)
+SELECTED: safe_waypoints route with penalty: 0
+GraphHopper path data: {
+  distance: 14868.687,
+  time: 1041442,
+  points_encoded: true,
+  points_type: 'string',
+  points_sample: 'suuoBicbbMZuAhBj@hBbArAl@jAZhEl@ObNAp@B^ItBEb@IVMVc@j@OL[F}@LiBFi@HUNaAr@gBz@eLlHi@VoCXSC{AZeC\\qCd@u...',
+  weather_penalties: undefined
+}
+Decoding polyline string...
+Successfully decoded 220 route points

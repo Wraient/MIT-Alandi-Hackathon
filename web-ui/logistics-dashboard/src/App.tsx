@@ -345,6 +345,7 @@ const App: React.FC = () => {
       const newDeliveryId = `DEL${String(Date.now()).slice(-6)}`;
       await ApiService.addDelivery({
         id: newDeliveryId,
+        driver_id: nearestDriver.id,
         pickup_latitude: deliveryPair.pickup[0],
         pickup_longitude: deliveryPair.pickup[1],
         delivery_latitude: deliveryPair.delivery[0],
@@ -428,7 +429,7 @@ const App: React.FC = () => {
       [18.5181, 73.8478], // Ghole Road
       [18.5314, 73.8522], // Bund Garden Road
       [18.5435, 73.8640], // Model Colony
-      
+
       // Pimpri-Chinchwad (PCMC) Area
       [18.6298, 73.7997], // Pimpri
       [18.6186, 73.8037], // Chinchwad
@@ -445,7 +446,7 @@ const App: React.FC = () => {
       [18.6708, 73.8456], // Dehu Road
       [18.6956, 73.8173], // Alandi Road
       [18.6480, 73.7804], // Ravet
-      
+
       // Eastern Pune
       [18.5594, 73.9451], // Viman Nagar
       [18.5515, 73.9308], // Airport Road
@@ -462,7 +463,7 @@ const App: React.FC = () => {
       [18.6074, 73.9023], // Tingre Nagar
       [18.5274, 73.9451], // Hadapsar
       [18.5435, 73.9594], // Magarpatta
-      
+
       // Western Pune
       [18.4639, 73.8077], // Warje
       [18.4478, 73.8220], // Karve Nagar
@@ -479,7 +480,7 @@ const App: React.FC = () => {
       [18.4800, 73.8506], // Mayur Colony
       [18.4639, 73.8649], // Sahakarnagar
       [18.4478, 73.8363], // Law College Road
-      
+
       // Northern Pune
       [18.5915, 73.8220], // Sangvi
       [18.6234, 73.8363], // Pimpri Road
@@ -496,7 +497,7 @@ const App: React.FC = () => {
       [18.6714, 73.6648], // Chakan
       [18.7354, 73.6934], // Rajgurunagar
       [18.7514, 73.7220], // Manchar Road
-      
+
       // Southern Pune
       [18.4478, 73.8077], // Sinhgad Road
       [18.4317, 73.7934], // Vadgaon Khurd
@@ -513,7 +514,7 @@ const App: React.FC = () => {
       [18.4961, 73.6933], // Bharati Vidyapeeth
       [18.5122, 73.6790], // Katraj
       [18.5283, 73.6647], // Ambegaon Pathar
-      
+
       // Pune-Solapur Road Area
       [18.4800, 73.9451], // Hadapsar Circle
       [18.4639, 73.9594], // Gadital
@@ -530,7 +531,7 @@ const App: React.FC = () => {
       [18.4961, 74.1024], // Ahmednagar Road
       [18.5122, 74.1167], // Shrirampur
       [18.5283, 74.1310], // Sangamner Road
-      
+
       // Mumbai-Pune Highway
       [18.5435, 73.7219], // Chandni Chowk
       [18.5594, 73.7076], // Pimpri-Chinchwad Link
@@ -547,7 +548,7 @@ const App: React.FC = () => {
       [18.7354, 73.5503], // Panvel Link
       [18.7514, 73.5360], // Rasayani Road
       [18.7674, 73.5217], // Kalamboli Junction
-      
+
       // Pune-Nashik Highway
       [18.5679, 73.8649], // Aundh Road
       [18.5840, 73.8792], // Baner Junction
@@ -564,7 +565,7 @@ const App: React.FC = () => {
       [18.7600, 74.0365], // Sangamner
       [18.7760, 74.0508], // Akole Road
       [18.7920, 74.0651], // Rahuri Road
-      
+
       // Satara Road Area
       [18.4800, 73.8220], // Market Yard
       [18.4639, 73.8077], // Gultekdi
@@ -581,7 +582,7 @@ const App: React.FC = () => {
       [18.2868, 73.6504], // Amanora Park
       [18.2707, 73.6361], // Kharadi IT Park
       [18.2546, 73.6218], // Wagholi IT Park
-      
+
       // Ahmednagar Road
       [18.5755, 73.8935], // Viman Nagar Junction
       [18.5915, 73.9078], // Airport Junction
@@ -598,7 +599,7 @@ const App: React.FC = () => {
       [18.7674, 74.0651], // Ahmednagar Entry
       [18.7834, 74.0794], // Pathardi Road
       [18.7994, 74.0937], // Shrirampur Junction
-      
+
       // Ring Road Connections
       [18.5283, 73.7076], // Katraj Tunnel
       [18.5122, 73.7219], // Bharati Vidyapeeth
@@ -615,7 +616,7 @@ const App: React.FC = () => {
       [18.3351, 73.8792], // Shivajinagar Circle
       [18.3190, 73.8935], // JM Road Circle
       [18.3029, 73.9078], // FC Road Circle
-      
+
       // Industrial Areas
       [18.4800, 73.9880], // Magarpatta Industrial
       [18.4639, 74.0023], // Amanora Industrial
@@ -632,7 +633,7 @@ const App: React.FC = () => {
       [18.2868, 74.1596], // Knowledge Park
       [18.2707, 74.1739], // Business Park
       [18.2546, 74.1882], // Commercial Hub
-      
+
       // Educational Hubs
       [18.4156, 73.8935], // University Circle
       [18.4317, 73.8792], // College Road
@@ -649,7 +650,7 @@ const App: React.FC = () => {
       [18.6088, 73.7219], // Engineering Hub
       [18.6249, 73.7076], // Medical College Area
       [18.6410, 73.6933], // Dental College Road
-      
+
       // Residential Complexes
       [18.5435, 73.8220], // Koregaon Park Extension
       [18.5594, 73.8077], // Kalyani Nagar Extension
@@ -666,7 +667,7 @@ const App: React.FC = () => {
       [18.7354, 73.6504], // Balewadi Extension
       [18.7514, 73.6361], // Wakad Extension
       [18.7674, 73.6218], // Hinjewadi Extension
-      
+
       // Metro Line Coverage
       [18.5089, 73.8077], // Civil Court Metro
       [18.5158, 73.8220], // Budhwar Peth Metro
@@ -683,7 +684,7 @@ const App: React.FC = () => {
       [18.5917, 73.9793], // Balewadi Metro
       [18.5986, 73.9936], // Shivaji Nagar Metro
       [18.6055, 74.0079], // Range Hills Metro
-      
+
       // Hospital Areas
       [18.5196, 73.8220], // Ruby Hall Clinic
       [18.5089, 73.8363], // Sassoon Hospital
@@ -700,7 +701,7 @@ const App: React.FC = () => {
       [18.3912, 73.9936], // Inlaks Hospital
       [18.3805, 74.0079], // Sahyadri Hospital
       [18.3698, 74.0222], // Jupiter Hospital
-      
+
       // Shopping Areas
       [18.5314, 73.8792], // Phoenix Mall
       [18.5435, 73.8649], // Seasons Mall
@@ -717,7 +718,7 @@ const App: React.FC = () => {
       [18.6766, 73.7076], // Reliance Fresh
       [18.6887, 73.6933], // More Supermarket
       [18.7008, 73.6790], // Spencer's Retail
-      
+
       // Religious Places
       [18.5089, 73.8649], // Dagadusheth Temple
       [18.4982, 73.8506], // Pataleshwar Cave
@@ -734,7 +735,7 @@ const App: React.FC = () => {
       [18.3805, 74.0222], // All Saints Church
       [18.3698, 74.0365], // Holy Spirit Church
       [18.3591, 74.0508], // Sacred Heart Church
-      
+
       // Parks and Gardens
       [18.5435, 73.8363], // Shaniwar Wada
       [18.5314, 73.8220], // Bund Garden
@@ -751,7 +752,7 @@ const App: React.FC = () => {
       [18.3983, 73.6647], // Temghar Dam
       [18.3862, 73.6504], // Mulshi Dam
       [18.3741, 73.6361], // Varasgaon Dam
-      
+
       // Sports Complexes
       [18.5556, 73.8506], // Maharashtra Cricket Stadium
       [18.5435, 73.8649], // Pune Football Stadium
@@ -768,7 +769,7 @@ const App: React.FC = () => {
       [18.4104, 74.0222], // Badminton Club
       [18.3983, 74.0365], // Hockey Club
       [18.3862, 74.0508], // Athletic Stadium
-      
+
       // Government Offices
       [18.5314, 73.8506], // Pune Collector Office
       [18.5435, 73.8649], // PMC Building
@@ -1637,7 +1638,7 @@ const App: React.FC = () => {
 
               // Get only the remaining route points ahead of the driver
               const remainingRoute = driver.activeRoute.slice(driver.currentRouteIndex);
-              
+
               // Only show if there are points ahead
               if (remainingRoute.length < 2) {
                 return null;

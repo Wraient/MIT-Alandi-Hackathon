@@ -1,0 +1,157 @@
+/* Mobile Driver View Styles */
+@media (max-width: 768px) {
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Prevent zoom on input focus */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    /* Mobile driver icon styles */
+    .mobile-driver-icon {
+        z-index: 1000;
+    }
+
+    .mobile-marker-icon {
+        z-index: 999;
+    }
+
+    /* Make sure map is touch-friendly */
+    .leaflet-container {
+        font-size: 14px;
+    }
+
+    .leaflet-control-zoom {
+        font-size: 18px;
+    }
+
+    .leaflet-popup-content {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    /* Bottom navigation fixed positioning */
+    .fixed {
+        position: fixed;
+    }
+
+    .bottom-0 {
+        bottom: 0;
+    }
+
+    .left-0 {
+        left: 0;
+    }
+
+    .right-0 {
+        right: 0;
+    }
+
+    /* Ensure content doesn't get hidden behind fixed elements */
+    body {
+        padding-bottom: 80px;
+    }
+}
+
+/* Status indicator styles */
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.status-dot.online {
+    background-color: #10B981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.status-dot.offline {
+    background-color: #EF4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+/* Card animations */
+.card-enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.card-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+/* Loading animation */
+.pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .5;
+    }
+}
+
+/* Button touch targets */
+button {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Form improvements */
+input[type="text"] {
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 8px;
+}
+
+/* Map container improvements */
+.map-container {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Delivery status badges */
+.status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background-color: #FEF3C7;
+    color: #D97706;
+}
+
+.status-badge.picked-up {
+    background-color: #DBEAFE;
+    color: #2563EB;
+}
+
+.status-badge.delivered {
+    background-color: #D1FAE5;
+    color: #059669;
+}
