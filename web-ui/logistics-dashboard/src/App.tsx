@@ -66,11 +66,17 @@ interface WeatherEvent {
 const MapClickHandler: React.FC<{
   placementMode: PlacementMode;
   onMapClick: (latlng: [number, number]) => void;
-}> = ({ placementMode, onMapClick }) => {
+  onMouseMove?: (latlng: [number, number]) => void;
+}> = ({ placementMode, onMapClick, onMouseMove }) => {
   useMapEvents({
     click: (e) => {
       if (placementMode !== 'none') {
         onMapClick([e.latlng.lat, e.latlng.lng]);
+      }
+    },
+    mousemove: (e) => {
+      if (onMouseMove && (placementMode === 'traffic' || placementMode === 'storm')) {
+        onMouseMove([e.latlng.lat, e.latlng.lng]);
       }
     }
   });
@@ -92,6 +98,14 @@ const App: React.FC = () => {
     pickup: [number, number] | null;
     delivery: [number, number] | null;
   }>({ pickup: null, delivery: null });
+
+  // Weather event interactive creation state
+  const [pendingWeatherEvent, setPendingWeatherEvent] = useState<{
+    center: [number, number];
+    type: 'traffic' | 'storm';
+    currentRadius: number;
+    isDragging: boolean;
+  } | null>(null);
 
   // Simulation state
   const [isSimulating, setIsSimulating] = useState(false);
@@ -161,32 +175,33 @@ const App: React.FC = () => {
     }
   };
 
-  const addWeatherEventAtPosition = async (position: [number, number], type: 'traffic' | 'storm') => {
+  const addWeatherEventAtPosition = async (position: [number, number], type: 'traffic' | 'storm', radius: number = 0) => {
     try {
       const newEventId = `W${String(weatherEvents.length + 1).padStart(3, '0')}`;
+      const eventRadius = radius > 0 ? radius : (type === 'traffic' ? 2 : 5); // Default radius if not provided
+
       const newEvent = await ApiService.addWeatherEvent({
         id: newEventId,
         type,
         latitude: position[0],
         longitude: position[1],
-        radius: type === 'traffic' ? Math.random() * 5 + 2 : Math.random() * 10 + 5,
+        radius: eventRadius,
         active: true
       });
       setWeatherEvents([...weatherEvents, newEvent]);
-      setPlacementMode('none');
     } catch (err: any) {
       console.error('Failed to add weather event:', err);
       // Fallback to local state
+      const eventRadius = radius > 0 ? radius : (type === 'traffic' ? 2 : 5);
       const newEvent: WeatherEvent = {
         id: `W${String(weatherEvents.length + 1).padStart(3, '0')}`,
         type,
         latitude: position[0],
         longitude: position[1],
-        radius: type === 'traffic' ? Math.random() * 5 + 2 : Math.random() * 10 + 5,
+        radius: eventRadius,
         active: true
       };
       setWeatherEvents([...weatherEvents, newEvent]);
-      setPlacementMode('none');
     }
   };
 
@@ -555,16 +570,83 @@ const App: React.FC = () => {
     if (placementMode === 'driver' && pendingDriverName) {
       addDriverAtPosition(latlng, pendingDriverName);
     } else if (placementMode === 'traffic') {
-      addWeatherEventAtPosition(latlng, 'traffic');
+      if (!pendingWeatherEvent) {
+        // First click: set center and start dragging
+        setPendingWeatherEvent({
+          center: latlng,
+          type: 'traffic',
+          currentRadius: 500, // Default starting radius
+          isDragging: true
+        });
+      } else if (pendingWeatherEvent.isDragging) {
+        // Second click: finalize the weather event
+        // First stop dragging to prevent mousemove interference
+        setPendingWeatherEvent(prev => prev ? { ...prev, isDragging: false } : null);
+        // Then create the event after a brief delay
+        setTimeout(() => {
+          // Convert radius from meters to kilometers before storing
+          const radiusInKm = pendingWeatherEvent.currentRadius / 1000;
+          addWeatherEventAtPosition(pendingWeatherEvent.center, 'traffic', radiusInKm);
+          setPendingWeatherEvent(null);
+          setPlacementMode('none');
+        }, 50);
+      }
     } else if (placementMode === 'storm') {
-      addWeatherEventAtPosition(latlng, 'storm');
+      if (!pendingWeatherEvent) {
+        // First click: set center and start dragging
+        setPendingWeatherEvent({
+          center: latlng,
+          type: 'storm',
+          currentRadius: 500, // Default starting radius
+          isDragging: true
+        });
+      } else if (pendingWeatherEvent.isDragging) {
+        // Second click: finalize the weather event
+        // First stop dragging to prevent mousemove interference
+        setPendingWeatherEvent(prev => prev ? { ...prev, isDragging: false } : null);
+        // Then create the event after a brief delay
+        setTimeout(() => {
+          // Convert radius from meters to kilometers before storing
+          const radiusInKm = pendingWeatherEvent.currentRadius / 1000;
+          addWeatherEventAtPosition(pendingWeatherEvent.center, 'storm', radiusInKm);
+          setPendingWeatherEvent(null);
+          setPlacementMode('none');
+        }, 50);
+      }
     } else if (placementMode === 'pickup') {
       setCurrentDeliveryPair({ pickup: latlng, delivery: null });
       setPlacementMode('delivery');
     } else if (placementMode === 'delivery' && currentDeliveryPair.pickup) {
       addDeliveryPair({ pickup: currentDeliveryPair.pickup, delivery: latlng });
     }
-  }, [placementMode, pendingDriverName, currentDeliveryPair]);
+  }, [placementMode, pendingDriverName, currentDeliveryPair, pendingWeatherEvent]);
+
+  // Mouse move handler for weather event radius adjustment
+  const handleMouseMove = useCallback((latlng: [number, number]) => {
+    if (pendingWeatherEvent && pendingWeatherEvent.isDragging) {
+      // Calculate distance between center and current position
+      const [lat1, lon1] = pendingWeatherEvent.center;
+      const [lat2, lon2] = latlng;
+
+      // Simple distance calculation (approximate for small distances)
+      const R = 6371000; // Earth's radius in meters
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const distance = R * c;
+
+      // Update the radius (minimum 50m, no maximum limit)
+      const newRadius = Math.max(50, distance);
+
+      setPendingWeatherEvent(prev => prev ? {
+        ...prev,
+        currentRadius: newRadius
+      } : null);
+    }
+  }, [pendingWeatherEvent]);
 
   // Dashboard callbacks
   const handleAddDriver = (name: string) => {
@@ -589,6 +671,7 @@ const App: React.FC = () => {
     setPlacementMode('none');
     setPendingDriverName('');
     setCurrentDeliveryPair({ pickup: null, delivery: null });
+    setPendingWeatherEvent(null);
   };
 
   const toggleWeatherEvent = async (eventId: string) => {
@@ -702,6 +785,7 @@ const App: React.FC = () => {
             <MapClickHandler
               placementMode={placementMode}
               onMapClick={handleMapClick}
+              onMouseMove={handleMouseMove}
             />
 
             {/* Driver Markers */}
@@ -800,6 +884,21 @@ const App: React.FC = () => {
               ))
             }
 
+            {/* Pending Weather Event Preview Circle */}
+            {pendingWeatherEvent && (
+              <Circle
+                center={pendingWeatherEvent.center}
+                radius={pendingWeatherEvent.currentRadius}
+                pathOptions={{
+                  color: pendingWeatherEvent.type === 'traffic' ? '#EF4444' : '#8B5CF6',
+                  fillColor: pendingWeatherEvent.type === 'traffic' ? '#FEE2E2' : '#F3E8FF',
+                  fillOpacity: 0.2,
+                  weight: 3,
+                  dashArray: '10, 5' // Dashed line to indicate it's a preview
+                }}
+              />
+            )}
+
             {/* Temporary markers for delivery placement */}
             {currentDeliveryPair.pickup && (
               <Marker
@@ -818,13 +917,22 @@ const App: React.FC = () => {
                 <div>
                   <p className="text-sm font-medium text-gray-800">
                     {placementMode === 'driver' && 'Click on map to place driver'}
-                    {placementMode === 'traffic' && 'Click on map to add traffic'}
-                    {placementMode === 'storm' && 'Click on map to add storm'}
+                    {placementMode === 'traffic' && !pendingWeatherEvent && 'Click on map to set center of traffic area'}
+                    {placementMode === 'traffic' && pendingWeatherEvent && pendingWeatherEvent.isDragging && 'Move mouse to adjust size, click to confirm'}
+                    {placementMode === 'traffic' && pendingWeatherEvent && !pendingWeatherEvent.isDragging && 'Creating traffic area...'}
+                    {placementMode === 'storm' && !pendingWeatherEvent && 'Click on map to set center of storm area'}
+                    {placementMode === 'storm' && pendingWeatherEvent && pendingWeatherEvent.isDragging && 'Move mouse to adjust size, click to confirm'}
+                    {placementMode === 'storm' && pendingWeatherEvent && !pendingWeatherEvent.isDragging && 'Creating storm area...'}
                     {placementMode === 'pickup' && 'Click on map to set pickup location'}
                     {placementMode === 'delivery' && 'Click on map to set delivery location'}
                   </p>
                   {pendingDriverName && (
                     <p className="text-xs text-blue-600">Driver: {pendingDriverName}</p>
+                  )}
+                  {pendingWeatherEvent && (
+                    <p className="text-xs text-purple-600">
+                      Radius: {(pendingWeatherEvent.currentRadius / 1000).toFixed(1)}km
+                    </p>
                   )}
                 </div>
                 <button
