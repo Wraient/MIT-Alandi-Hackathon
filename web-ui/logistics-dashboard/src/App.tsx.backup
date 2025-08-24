@@ -1,0 +1,654 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, useMapEvents } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import Dashboard from './components/Dashboard';
+import MetricsPanel from './components/MetricsPanel';
+import ApiService, { Driver, Delivery, WeatherEvent } from './services/api';
+import './App.css';
+
+// Fix default markers in react-leaflet
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+
+interface ExtendedDriver extends Driver {
+  deliveries: Delivery[];
+  currentRoute?: [number, number][];
+}
+
+type PlacementMode = 'none' | 'driver' | 'traffic' | 'storm' | 'pickup' | 'delivery';
+
+interface DeliveryPair {
+  pickup: [number, number] | null;
+  delivery: [number, number] | null;
+}
+
+// Map click handler component
+const MapClickHandler: React.FC<{
+  placementMode: PlacementMode;
+  onMapClick: (latlng: [number, number]) => void;
+}> = ({ placementMode, onMapClick }) => {
+  useMapEvents({
+    click: (e) => {
+      if (placementMode !== 'none') {
+        onMapClick([e.latlng.lat, e.latlng.lng]);
+      }
+    }
+  });
+  return null;
+};
+
+function App() {
+  const [drivers, setDrivers] = useState<ExtendedDriver[]>([]);
+  const [weatherEvents, setWeatherEvents] = useState<WeatherEvent[]>([]);
+  const [selectedDriver, setSelectedDriver] = useState<string | null>(null);
+  const [mapCenter] = useState<[number, number]>([19.0760, 72.8777]); // Mumbai coordinates
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // New states for interactive placement
+  const [placementMode, setPlacementMode] = useState<PlacementMode>('none');
+  const [pendingDriverName, setPendingDriverName] = useState<string>('');
+  const [currentDeliveryPair, setCurrentDeliveryPair] = useState<DeliveryPair>({ pickup: null, delivery: null });
+  const [tempMarkers, setTempMarkers] = useState<{
+    position: [number, number];
+    type: 'driver' | 'pickup' | 'delivery';
+    name?: string;
+  }[]>([]);
+
+  const handleMapClick = useCallback((latlng: [number, number]) => {
+    if (placementMode === 'driver') {
+      // For driver placement, we need a name. This will be set when user fills in the name
+      if (pendingDriverName) {
+        addDriverAtPosition(latlng, pendingDriverName);
+      }
+    } else if (placementMode === 'traffic') {
+      addWeatherEventAtPosition(latlng, 'traffic');
+    } else if (placementMode === 'storm') {
+      addWeatherEventAtPosition(latlng, 'storm');
+    } else if (placementMode === 'pickup') {
+      setCurrentDeliveryPair({ pickup: latlng, delivery: null });
+      setPlacementMode('delivery');
+    } else if (placementMode === 'delivery') {
+      if (currentDeliveryPair.pickup) {
+        addDeliveryPair({ pickup: currentDeliveryPair.pickup, delivery: latlng });
+      }
+    }
+  }, [placementMode]);
+
+  const addDriverAtPosition = async (position: [number, number], name: string) => {
+    try {
+      const newDriverId = `D${String(drivers.length + 1).padStart(3, '0')}`;
+      const newDriver = await ApiService.addDriver({
+        id: newDriverId,
+        name: name,
+        latitude: position[0],
+        longitude: position[1]
+      });
+      
+      const extendedDriver: ExtendedDriver = {
+        ...newDriver,
+        deliveries: []
+      };
+      
+      setDrivers([...drivers, extendedDriver]);
+    } catch (err: any) {
+      console.error('Failed to add driver:', err);
+      // Fallback to local state update
+      const newDriver: ExtendedDriver = {
+        id: `D${String(drivers.length + 1).padStart(3, '0')}`,
+        name: name,
+        latitude: position[0],
+        longitude: position[1],
+        deliveries: []
+      };
+      setDrivers([...drivers, newDriver]);
+    }
+  };
+
+  const addWeatherEventAtPosition = async (position: [number, number], type: 'traffic' | 'storm') => {
+    const radius = type === 'storm' ? Math.random() * 10 + 5 : Math.random() * 5 + 2;
+    
+    try {
+      const newEventId = `W${String(weatherEvents.length + 1).padStart(3, '0')}`;
+      const newEvent = await ApiService.addWeatherEvent({
+        id: newEventId,
+        type,
+        latitude: position[0],
+        longitude: position[1],
+        radius,
+        active: true
+      });
+      setWeatherEvents([...weatherEvents, newEvent]);
+    } catch (err: any) {
+      console.error('Failed to add weather event:', err);
+      // Fallback to local state update
+      const newEvent: WeatherEvent = {
+        id: `W${String(weatherEvents.length + 1).padStart(3, '0')}`,
+        type,
+        latitude: position[0],
+        longitude: position[1],
+        radius,
+        active: true
+      };
+      setWeatherEvents([...weatherEvents, newEvent]);
+    }
+  };
+
+  const findNearestDriver = (position: [number, number]): ExtendedDriver | null => {
+    if (drivers.length === 0) return null;
+    
+    let nearestDriver = drivers[0];
+    let minDistance = calculateDistance(position, [nearestDriver.latitude, nearestDriver.longitude]);
+    
+    for (const driver of drivers) {
+      const distance = calculateDistance(position, [driver.latitude, driver.longitude]);
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestDriver = driver;
+      }
+    }
+    
+    return nearestDriver;
+  };
+
+  const calculateDistance = (pos1: [number, number], pos2: [number, number]): number => {
+    const [lat1, lon1] = pos1;
+    const [lat2, lon2] = pos2;
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
+
+  const addDeliveryPair = async (deliveryPair: { pickup: [number, number], delivery: [number, number] }) => {
+    const nearestDriver = findNearestDriver(deliveryPair.pickup);
+    
+    if (!nearestDriver) {
+      alert('No drivers available! Please add a driver first.');
+      return;
+    }
+
+    try {
+      const newDeliveryId = `DEL${String(Date.now()).slice(-6)}`;
+      const newDelivery = await ApiService.addDelivery({
+        id: newDeliveryId,
+        driver_id: nearestDriver.id,
+        pickup_latitude: deliveryPair.pickup[0],
+        pickup_longitude: deliveryPair.pickup[1],
+        delivery_latitude: deliveryPair.delivery[0],
+        delivery_longitude: deliveryPair.delivery[1],
+        status: 'pending'
+      });
+
+      // Update the driver's deliveries
+      setDrivers(drivers.map(driver =>
+        driver.id === nearestDriver.id
+          ? { ...driver, deliveries: [...driver.deliveries, newDelivery] }
+          : driver
+      ));
+
+      // Automatically select the driver to show updated route
+      setSelectedDriver(nearestDriver.id);
+
+    } catch (err: any) {
+      console.error('Failed to add delivery:', err);
+      // Fallback to local state update
+      const newDelivery: Delivery = {
+        id: `DEL${String(Date.now()).slice(-6)}`,
+        pickup_latitude: deliveryPair.pickup[0],
+        pickup_longitude: deliveryPair.pickup[1],
+        delivery_latitude: deliveryPair.delivery[0],
+        delivery_longitude: deliveryPair.delivery[1],
+        status: 'pending'
+      };
+
+      setDrivers(drivers.map(driver =>
+        driver.id === nearestDriver.id
+          ? { ...driver, deliveries: [...driver.deliveries, newDelivery] }
+          : driver
+      ));
+
+      setSelectedDriver(nearestDriver.id);
+    }
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [driversData, deliveriesData, weatherEventsData] = await Promise.all([
+          ApiService.getDrivers(),
+          ApiService.getDeliveries(),
+          ApiService.getWeatherEvents()
+        ]);
+
+        // Combine drivers with their deliveries
+        const extendedDrivers: ExtendedDriver[] = driversData.map(driver => ({
+          ...driver,
+          deliveries: deliveriesData.filter(d => d.driver_id === driver.id)
+        }));
+
+        setDrivers(extendedDrivers);
+        setWeatherEvents(weatherEventsData);
+        setError(null);
+      } catch (err: any) {
+        console.error('Failed to fetch data:', err);
+        setError(err.message || 'Failed to fetch data');
+
+        // Set demo data as fallback
+        const demoDrivers: ExtendedDriver[] = [
+          {
+            id: 'D001',
+            name: 'John Doe',
+            latitude: 19.0760,
+            longitude: 72.8777,
+            deliveries: [
+              {
+                id: 'DEL001',
+                pickup_latitude: 19.0760,
+                pickup_longitude: 72.8777,
+                delivery_latitude: 19.1158,
+                delivery_longitude: 72.8560,
+                status: 'pending'
+              },
+              {
+                id: 'DEL002',
+                pickup_latitude: 19.1158,
+                pickup_longitude: 72.8560,
+                delivery_latitude: 19.0822,
+                delivery_longitude: 72.8411,
+                status: 'pending'
+              }
+            ]
+          },
+          {
+            id: 'D002',
+            name: 'Jane Smith',
+            latitude: 19.1158,
+            longitude: 72.8560,
+            deliveries: [
+              {
+                id: 'DEL003',
+                pickup_latitude: 19.1158,
+                pickup_longitude: 72.8560,
+                delivery_latitude: 19.0596,
+                delivery_longitude: 72.8295,
+                status: 'pending'
+              }
+            ]
+          }
+        ];
+        setDrivers(demoDrivers);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  /*
+  // Legacy functions - replaced by interactive map placement
+  const addDriver = async (driverData: Omit<ExtendedDriver, 'id' | 'deliveries'>) => {
+    try {
+      const newDriverId = `D${String(drivers.length + 1).padStart(3, '0')}`;
+      const newDriver = await ApiService.addDriver({
+        id: newDriverId,
+        name: driverData.name,
+        latitude: driverData.latitude,
+        longitude: driverData.longitude
+      });
+
+      const extendedDriver: ExtendedDriver = {
+        ...newDriver,
+        deliveries: []
+      };
+
+      setDrivers([...drivers, extendedDriver]);
+    } catch (err: any) {
+      console.error('Failed to add driver:', err);
+      // Fallback to local state update
+      const newDriver: ExtendedDriver = {
+        id: `D${String(drivers.length + 1).padStart(3, '0')}`,
+        name: driverData.name,
+        latitude: driverData.latitude,
+        longitude: driverData.longitude,
+        deliveries: []
+      };
+      setDrivers([...drivers, newDriver]);
+    }
+  };
+
+  const addWeatherEvent = async (eventData: Omit<WeatherEvent, 'id'>) => {
+    try {
+      const newEventId = `W${String(weatherEvents.length + 1).padStart(3, '0')}`;
+      const newEvent = await ApiService.addWeatherEvent({
+        id: newEventId,
+        ...eventData
+      });
+      setWeatherEvents([...weatherEvents, newEvent]);
+    } catch (err: any) {
+      console.error('Failed to add weather event:', err);
+      const newEvent = {
+        id: `W${String(weatherEvents.length + 1).padStart(3, '0')}`,
+        ...eventData
+      };
+      setWeatherEvents([...weatherEvents, newEvent]);
+    }
+  };
+  */  const addWeatherEvent = async (eventData: Omit<WeatherEvent, 'id'>) => {
+    try {
+      const newEventId = `W${String(weatherEvents.length + 1).padStart(3, '0')}`;
+      const newEvent = await ApiService.addWeatherEvent({
+        id: newEventId,
+        ...eventData
+      });
+      setWeatherEvents([...weatherEvents, newEvent]);
+    } catch (err: any) {
+      console.error('Failed to add weather event:', err);
+      // Fallback to local state update
+      const newEvent: WeatherEvent = {
+        id: `W${String(weatherEvents.length + 1).padStart(3, '0')}`,
+        ...eventData
+      };
+      setWeatherEvents([...weatherEvents, newEvent]);
+    }
+  };
+
+  const toggleWeatherEvent = async (eventId: string) => {
+    try {
+      const updatedEvent = await ApiService.toggleWeatherEvent(eventId);
+      setWeatherEvents(weatherEvents.map(event =>
+        event.id === eventId ? updatedEvent : event
+      ));
+    } catch (err: any) {
+      console.error('Failed to toggle weather event:', err);
+      // Fallback to local state update
+      setWeatherEvents(weatherEvents.map(event =>
+        event.id === eventId ? { ...event, active: !event.active } : event
+      ));
+    }
+  };
+
+  // Auto-fetch route when driver is selected
+  useEffect(() => {
+    const fetchDriverRoute = async (driverId: string) => {
+      try {
+        const routeData = await ApiService.getDriverRoute(driverId);
+        setDrivers(drivers.map(driver =>
+          driver.id === driverId
+            ? { ...driver, currentRoute: routeData.route }
+            : driver
+        ));
+      } catch (err: any) {
+        console.error('Failed to fetch route:', err);
+      }
+    };
+
+    if (selectedDriver) {
+      fetchDriverRoute(selectedDriver);
+    }
+  }, [selectedDriver, drivers]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading logistics dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-screen bg-gray-100">
+      {error && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+          <p className="text-sm">
+            <strong>Warning:</strong> {error}. Using demo data.
+          </p>
+        </div>
+      )}
+
+      {/* Dashboard Panel */}
+      <div className="w-80 bg-white shadow-lg z-10">
+        <Dashboard
+          drivers={drivers}
+          weatherEvents={weatherEvents}
+          onAddDriver={(name: string) => {
+            setPendingDriverName(name);
+            setPlacementMode('driver');
+          }}
+          onSimulateTraffic={() => setPlacementMode('traffic')}
+          onSimulateStorm={() => setPlacementMode('storm')}
+          onAddDelivery={() => setPlacementMode('pickup')}
+          onToggleWeatherEvent={toggleWeatherEvent}
+          onSelectDriver={setSelectedDriver}
+          selectedDriver={selectedDriver}
+          placementMode={placementMode}
+          onCancelPlacement={() => {
+            setPlacementMode('none');
+            setPendingDriverName('');
+            setCurrentDeliveryPair({ pickup: null, delivery: null });
+            setTempMarkers([]);
+          }}
+        />
+      </div>
+
+      {/* Map Container */}
+      <div className="flex-1 relative">
+        <MapContainer
+          center={mapCenter}
+          zoom={12}
+          className="h-full w-full"
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+
+          {/* Map click handler */}
+          <MapClickHandler placementMode={placementMode} onMapClick={handleMapClick} />
+
+          {/* Weather Event Circles */}
+          {weatherEvents.filter(event => event.active).map((event) => (
+            <Circle
+              key={`circle-${event.id}`}
+              center={[event.latitude, event.longitude]}
+              radius={event.radius * 1000} // Convert km to meters
+              pathOptions={{
+                color: event.type === 'storm' ? '#8b5cf6' : '#f97316',
+                fillColor: event.type === 'storm' ? '#8b5cf6' : '#f97316',
+                fillOpacity: 0.2,
+                weight: 2
+              }}
+            />
+          ))}
+
+          {/* Driver Markers */}
+          {drivers.map((driver) => (
+            <Marker
+              key={driver.id}
+              position={[driver.latitude, driver.longitude]}
+              icon={L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+              })}
+            >
+              <Popup>
+                <div>
+                  <h3 className="font-bold">{driver.name}</h3>
+                  <p>ID: {driver.id}</p>
+                  <p>Deliveries: {driver.deliveries.length}</p>
+                  <button
+                    onClick={() => setSelectedDriver(driver.id)}
+                    className="mt-2 px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+                  >
+                    Show Route
+                  </button>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+
+          {/* Temporary Markers for delivery placement */}
+          {tempMarkers.map((marker, index) => (
+            <Marker
+              key={`temp-${index}`}
+              position={marker.position}
+              icon={L.icon({
+                iconUrl: marker.type === 'pickup' 
+                  ? 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png'
+                  : 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+              })}
+            >
+              <Popup>
+                <div>
+                  <h4 className="font-bold capitalize">{marker.type} Location</h4>
+                  {marker.type === 'pickup' && <p>Click delivery location next</p>}
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+
+          {/* Delivery Markers */}
+          {drivers.map((driver) =>
+            driver.deliveries.map((delivery) => (
+              <React.Fragment key={delivery.id}>
+                <Marker
+                  position={[delivery.pickup_latitude, delivery.pickup_longitude]}
+                  icon={L.icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                  })}
+                >
+                  <Popup>
+                    <div>
+                      <h4 className="font-bold">Pickup: {delivery.id}</h4>
+                      <p>Driver: {driver.name}</p>
+                      <p>Status: {delivery.status}</p>
+                    </div>
+                  </Popup>
+                </Marker>
+                <Marker
+                  position={[delivery.delivery_latitude, delivery.delivery_longitude]}
+                  icon={L.icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                  })}
+                >
+                  <Popup>
+                    <div>
+                      <h4 className="font-bold">Delivery: {delivery.id}</h4>
+                      <p>Driver: {driver.name}</p>
+                      <p>Status: {delivery.status}</p>
+                    </div>
+                  </Popup>
+                </Marker>
+              </React.Fragment>
+            ))
+          )}
+
+          {/* Weather Event Markers */}
+          {weatherEvents.filter(event => event.active).map((event) => (
+            <Marker
+              key={event.id}
+              position={[event.latitude, event.longitude]}
+              icon={L.icon({
+                iconUrl: event.type === 'storm' 
+                  ? 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png'
+                  : 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+              })}
+            >
+              <Popup>
+                <div>
+                  <h4 className="font-bold capitalize">{event.type}</h4>
+                  <p>ID: {event.id}</p>
+                  <p>Radius: {event.radius.toFixed(1)}km</p>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+
+          {/* Route Lines */}
+          {drivers.map((driver) =>
+            driver.currentRoute && (
+              <Polyline
+                key={`route-${driver.id}`}
+                positions={driver.currentRoute}
+                color="blue"
+                weight={4}
+                opacity={0.7}
+              />
+            )
+          )}
+        </MapContainer>        {/* Metrics Panel Overlay */}
+        <div className="absolute top-4 right-4 w-80">
+          <MetricsPanel drivers={drivers} weatherEvents={weatherEvents} />
+        </div>
+
+        {/* Placement Mode Indicator */}
+        {placementMode !== 'none' && (
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-semibold">
+                  {placementMode === 'driver' && `Click map to place driver: ${pendingDriverName}`}
+                  {placementMode === 'traffic' && 'Click map to add traffic jam'}
+                  {placementMode === 'storm' && 'Click map to add storm'}
+                  {placementMode === 'pickup' && 'Click map to set pickup location'}
+                  {placementMode === 'delivery' && 'Click map to set delivery location'}
+                </p>
+                <p className="text-sm">Click anywhere on the map to place</p>
+              </div>
+              <button
+                onClick={() => {
+                  setPlacementMode('none');
+                  setPendingDriverName('');
+                  setCurrentDeliveryPair({ pickup: null, delivery: null });
+                  setTempMarkers([]);
+                }}
+                className="ml-4 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default App;

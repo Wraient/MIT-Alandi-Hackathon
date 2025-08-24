@@ -28,61 +28,42 @@ interface WeatherEvent {
 }
 
 interface DashboardProps {
-    drivers: Driver[];
-    weatherEvents: WeatherEvent[];
-    onAddDriver: (driver: Omit<Driver, 'id' | 'deliveries'>) => void;
-    onAddWeatherEvent: (event: Omit<WeatherEvent, 'id'>) => void;
-    onToggleWeatherEvent: (eventId: string) => void;
-    onSelectDriver: (driverId: string | null) => void;
-    selectedDriver: string | null;
+  drivers: Driver[];
+  weatherEvents: WeatherEvent[];
+  onAddDriver: (name: string) => void;
+  onSimulateTraffic: () => void;
+  onSimulateStorm: () => void;
+  onAddDelivery: () => void;
+  onToggleWeatherEvent: (eventId: string) => void;
+  onSelectDriver: (driverId: string | null) => void;
+  selectedDriver: string | null;
+  placementMode: string;
+  onCancelPlacement: () => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
     drivers,
     weatherEvents,
     onAddDriver,
-    onAddWeatherEvent,
+    onSimulateTraffic,
+    onSimulateStorm,
+    onAddDelivery,
     onToggleWeatherEvent,
     onSelectDriver,
-    selectedDriver
+    selectedDriver,
+    placementMode,
+    onCancelPlacement
 }) => {
     const [showAddDriver, setShowAddDriver] = useState(false);
+    // Remove manual coordinate inputs - now using map-based placement
     const [newDriverName, setNewDriverName] = useState('');
-    const [newDriverLat, setNewDriverLat] = useState('19.0760');
-    const [newDriverLng, setNewDriverLng] = useState('72.8777');
 
     const handleAddDriver = () => {
         if (newDriverName.trim()) {
-            onAddDriver({
-                name: newDriverName.trim(),
-                latitude: parseFloat(newDriverLat),
-                longitude: parseFloat(newDriverLng)
-            });
+            onAddDriver(newDriverName.trim());
             setNewDriverName('');
-            setNewDriverLat('19.0760');
-            setNewDriverLng('72.8777');
             setShowAddDriver(false);
         }
-    };
-
-    const simulateTraffic = () => {
-        onAddWeatherEvent({
-            type: 'traffic',
-            latitude: 19.0760 + (Math.random() - 0.5) * 0.1,
-            longitude: 72.8777 + (Math.random() - 0.5) * 0.1,
-            radius: Math.random() * 5 + 2,
-            active: true
-        });
-    };
-
-    const simulateStorm = () => {
-        onAddWeatherEvent({
-            type: 'storm',
-            latitude: 19.0760 + (Math.random() - 0.5) * 0.1,
-            longitude: 72.8777 + (Math.random() - 0.5) * 0.1,
-            radius: Math.random() * 10 + 5,
-            active: true
-        });
     };
 
     return (
@@ -92,19 +73,48 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <p className="text-sm text-gray-600">Real-time delivery management</p>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                {/* Current Mode Indicator */}
+                {placementMode !== 'none' && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <p className="text-sm font-medium text-blue-800">
+                                    {placementMode === 'driver' && 'Click on map to place driver'}
+                                    {placementMode === 'traffic' && 'Click on map to add traffic'}
+                                    {placementMode === 'storm' && 'Click on map to add storm'}
+                                    {placementMode === 'pickup' && 'Click on map to set pickup location'}
+                                    {placementMode === 'delivery' && 'Click on map to set delivery location'}
+                                </p>
+                                <p className="text-xs text-blue-600">Mode: {placementMode}</p>
+                            </div>
+                            <button
+                                onClick={onCancelPlacement}
+                                className="px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {/* Quick Actions */}
                 <div className="space-y-3">
                     <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
 
                     <button
                         onClick={() => setShowAddDriver(!showAddDriver)}
-                        className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                        disabled={placementMode !== 'none'}
+                        className={`w-full px-4 py-2 rounded transition-colors ${
+                            placementMode !== 'none' 
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : 'bg-blue-500 text-white hover:bg-blue-600'
+                        }`}
                     >
                         Add Driver
                     </button>
 
-                    {showAddDriver && (
+                    {showAddDriver && placementMode === 'none' && (
                         <div className="bg-gray-50 p-3 rounded space-y-2">
                             <input
                                 type="text"
@@ -113,43 +123,49 @@ const Dashboard: React.FC<DashboardProps> = ({
                                 onChange={(e) => setNewDriverName(e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
-                            <div className="flex space-x-2">
-                                <input
-                                    type="text"
-                                    placeholder="Latitude"
-                                    value={newDriverLat}
-                                    onChange={(e) => setNewDriverLat(e.target.value)}
-                                    className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Longitude"
-                                    value={newDriverLng}
-                                    onChange={(e) => setNewDriverLng(e.target.value)}
-                                    className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
                             <button
                                 onClick={handleAddDriver}
                                 className="w-full px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
                             >
-                                Add Driver
+                                Click Map to Place Driver
                             </button>
                         </div>
                     )}
 
                     <button
-                        onClick={simulateTraffic}
-                        className="w-full px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+                        onClick={onSimulateTraffic}
+                        disabled={placementMode !== 'none'}
+                        className={`w-full px-4 py-2 rounded transition-colors ${
+                            placementMode !== 'none'
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : 'bg-orange-500 text-white hover:bg-orange-600'
+                        }`}
                     >
-                        Simulate Traffic
+                        Add Traffic (Click Map)
                     </button>
 
                     <button
-                        onClick={simulateStorm}
-                        className="w-full px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors"
+                        onClick={onSimulateStorm}
+                        disabled={placementMode !== 'none'}
+                        className={`w-full px-4 py-2 rounded transition-colors ${
+                            placementMode !== 'none'
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : 'bg-purple-500 text-white hover:bg-purple-600'
+                        }`}
                     >
-                        Simulate Storm
+                        Add Storm (Click Map)
+                    </button>
+
+                    <button
+                        onClick={onAddDelivery}
+                        disabled={placementMode !== 'none'}
+                        className={`w-full px-4 py-2 rounded transition-colors ${
+                            placementMode !== 'none'
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : 'bg-green-500 text-white hover:bg-green-600'
+                        }`}
+                    >
+                        Add Delivery (Click Map)
                     </button>
                 </div>
 
@@ -216,6 +232,18 @@ const Dashboard: React.FC<DashboardProps> = ({
                             </div>
                         ))}
                     </div>
+                </div>
+
+                {/* Instructions */}
+                <div className="bg-gray-50 p-3 rounded">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">How to Use:</h3>
+                    <ul className="text-xs text-gray-600 space-y-1">
+                        <li>• Click "Add Driver" → Enter name → Click map to place</li>
+                        <li>• Click "Add Traffic/Storm" → Click map to place event</li>
+                        <li>• Click "Add Delivery" → Click pickup → Click delivery location</li>
+                        <li>• Nearest driver will automatically get the new delivery</li>
+                        <li>• Click driver card to view optimized route</li>
+                    </ul>
                 </div>
             </div>
         </div>
