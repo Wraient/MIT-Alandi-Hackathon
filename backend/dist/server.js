@@ -82,30 +82,417 @@ async function initDatabase() {
     }
 }
 // GraphHopper API configuration
-const GRAPHHOPPER_URL = 'http://localhost:8989';
-// Helper function to call GraphHopper API
+const GRAPHHOPPER_URL = 'http://localhost:9000';
+// Helper function to calculate distance between two points (Haversine formula)
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+// Helper function to check if a point is within a weather event radius
+function isPointInWeatherEvent(lat, lon, event) {
+    const distance = calculateDistance(lat, lon, event.latitude, event.longitude);
+    return distance <= event.radius;
+}
+// Helper function to generate avoid areas for GraphHopper
+function generateAvoidAreas(weatherEvents) {
+    const avoidAreas = [];
+    for (const event of weatherEvents) {
+        // Create a polygon around the weather event center
+        const radius = event.radius / 111.32; // Convert km to approximate degrees
+        const centerLat = event.latitude;
+        const centerLon = event.longitude;
+        // Create a square around the weather event (GraphHopper accepts polygon format)
+        const polygon = [
+            `${centerLat + radius},${centerLon - radius}`, // top-left
+            `${centerLat + radius},${centerLon + radius}`, // top-right
+            `${centerLat - radius},${centerLon + radius}`, // bottom-right
+            `${centerLat - radius},${centerLon - radius}`, // bottom-left
+            `${centerLat + radius},${centerLon - radius}` // close polygon
+        ].join(' ');
+        avoidAreas.push(polygon);
+        console.log(`Created avoid area for ${event.type}: ${polygon}`);
+    }
+    return avoidAreas;
+}
+// Helper function to generate strategic waypoints around weather events
+function generateSafeWaypoints(startPoint, endPoint, weatherEvents) {
+    const waypoints = [startPoint];
+    for (const event of weatherEvents) {
+        const eventLat = event.latitude;
+        const eventLon = event.longitude;
+        const radius = event.radius / 111.32; // Convert km to degrees
+        // Calculate if the direct line from start to end passes near the weather event
+        const midLat = (startPoint[0] + endPoint[0]) / 2;
+        const midLon = (startPoint[1] + endPoint[1]) / 2;
+        const distanceToEvent = calculateDistance(midLat, midLon, eventLat, eventLon);
+        if (distanceToEvent < event.radius * 2) { // If route might pass near the weather event
+            console.log(`Route may pass near ${event.type} event, adding detour waypoints`);
+            // Determine which side to detour (left or right of the weather event)
+            const bearing = Math.atan2(endPoint[1] - startPoint[1], endPoint[0] - startPoint[0]);
+            const perpBearing = bearing + Math.PI / 2; // 90 degrees perpendicular
+            // Create waypoints that go around the weather event
+            const detourDistance = radius * 2; // Go well around the event
+            const waypoint1Lat = eventLat + Math.cos(perpBearing) * detourDistance;
+            const waypoint1Lon = eventLon + Math.sin(perpBearing) * detourDistance;
+            const waypoint2Lat = eventLat - Math.cos(perpBearing) * detourDistance;
+            const waypoint2Lon = eventLon - Math.sin(perpBearing) * detourDistance;
+            // Choose the waypoint that's closer to the general direction of travel
+            const dist1 = calculateDistance(startPoint[0], startPoint[1], waypoint1Lat, waypoint1Lon) +
+                calculateDistance(waypoint1Lat, waypoint1Lon, endPoint[0], endPoint[1]);
+            const dist2 = calculateDistance(startPoint[0], startPoint[1], waypoint2Lat, waypoint2Lon) +
+                calculateDistance(waypoint2Lat, waypoint2Lon, endPoint[0], endPoint[1]);
+            if (dist1 < dist2) {
+                waypoints.push([waypoint1Lat, waypoint1Lon]);
+            }
+            else {
+                waypoints.push([waypoint2Lat, waypoint2Lon]);
+            }
+        }
+    }
+    waypoints.push(endPoint);
+    return waypoints;
+}
+// Helper function to get multiple alternative routes and select the best one
+async function getBestWeatherAwareRoute(points, optimize = false) {
+    try {
+        console.log('Getting weather-aware routes with active avoidance...');
+        // Get active weather events first
+        const weatherEvents = await dbAll('SELECT * FROM weather_events WHERE active = 1');
+        if (weatherEvents.length === 0) {
+            console.log('No active weather events, using standard routing');
+            return await callGraphHopper('/route', {
+                point: points.map(([lat, lng]) => `${lat},${lng}`),
+                type: 'json',
+                locale: 'en-US',
+                key: '',
+                elevation: 'false',
+                profile: 'car',
+                optimize: optimize ? 'true' : 'false',
+                points_encoded: 'true',
+                details: 'road_class',
+                instructions: 'false',
+                calc_points: 'true'
+            });
+        }
+        const routeOptions = [];
+        // Generate avoid areas for GraphHopper
+        const avoidAreas = generateAvoidAreas(weatherEvents);
+        // Strategy 1: Use avoid areas to exclude weather zones
+        console.log('Trying route with avoid areas...');
+        try {
+            const avoidParams = {
+                point: points.map(([lat, lng]) => `${lat},${lng}`),
+                type: 'json',
+                locale: 'en-US',
+                key: '',
+                elevation: 'false',
+                profile: 'car',
+                optimize: optimize ? 'true' : 'false',
+                points_encoded: 'true',
+                details: 'road_class',
+                instructions: 'false',
+                calc_points: 'true'
+            };
+            // Add avoid areas
+            avoidAreas.forEach((area, index) => {
+                avoidParams[`avoid_polygon`] = area;
+            });
+            const avoidRoute = await callGraphHopper('/route', avoidParams);
+            const penalizedAvoid = await applyWeatherPenalties(avoidRoute, points);
+            routeOptions.push({ ...penalizedAvoid, routeType: 'avoid_areas' });
+            console.log('Avoid areas route penalty:', penalizedAvoid.paths?.[0]?.weather_penalties?.total_penalty || 0);
+        }
+        catch (e) {
+            console.log('Avoid areas route failed:', e);
+        }
+        // Strategy 2: Use strategic waypoints to force routes around weather
+        if (points.length === 2) { // Only for simple point-to-point routes
+            console.log('Trying route with strategic waypoints...');
+            try {
+                const safeWaypoints = generateSafeWaypoints(points[0], points[1], weatherEvents);
+                console.log(`Generated ${safeWaypoints.length} waypoints:`, safeWaypoints);
+                const waypointRoute = await callGraphHopper('/route', {
+                    point: safeWaypoints.map(([lat, lng]) => `${lat},${lng}`),
+                    type: 'json',
+                    locale: 'en-US',
+                    key: '',
+                    elevation: 'false',
+                    profile: 'car',
+                    optimize: 'false', // Don't optimize when we have strategic waypoints
+                    points_encoded: 'true',
+                    details: 'road_class',
+                    instructions: 'false',
+                    calc_points: 'true'
+                });
+                const penalizedWaypoint = await applyWeatherPenalties(waypointRoute, safeWaypoints);
+                routeOptions.push({ ...penalizedWaypoint, routeType: 'safe_waypoints' });
+                console.log('Safe waypoints route penalty:', penalizedWaypoint.paths?.[0]?.weather_penalties?.total_penalty || 0);
+            }
+            catch (e) {
+                console.log('Safe waypoints route failed:', e);
+            }
+        }
+        // Strategy 3: Try different weighting algorithms
+        const weightings = ['fastest', 'shortest'];
+        for (const weighting of weightings) {
+            console.log(`Trying ${weighting} route...`);
+            try {
+                const weightedRoute = await callGraphHopper('/route', {
+                    point: points.map(([lat, lng]) => `${lat},${lng}`),
+                    type: 'json',
+                    locale: 'en-US',
+                    key: '',
+                    elevation: 'false',
+                    profile: 'car',
+                    optimize: optimize ? 'true' : 'false',
+                    points_encoded: 'true',
+                    details: 'road_class',
+                    instructions: 'false',
+                    calc_points: 'true',
+                    weighting: weighting
+                });
+                const penalizedWeighted = await applyWeatherPenalties(weightedRoute, points);
+                routeOptions.push({ ...penalizedWeighted, routeType: weighting });
+                console.log(`${weighting} route penalty:`, penalizedWeighted.paths?.[0]?.weather_penalties?.total_penalty || 0);
+            }
+            catch (e) {
+                console.log(`${weighting} route failed`);
+            }
+        }
+        // Strategy 4: Force alternative routes with different parameters
+        try {
+            console.log('Trying alternative route algorithm...');
+            const alternativeRoute = await callGraphHopper('/route', {
+                point: points.map(([lat, lng]) => `${lat},${lng}`),
+                type: 'json',
+                locale: 'en-US',
+                key: '',
+                elevation: 'false',
+                profile: 'car',
+                optimize: optimize ? 'true' : 'false',
+                points_encoded: 'true',
+                details: 'road_class',
+                instructions: 'false',
+                calc_points: 'true',
+                algorithm: 'alternative_route',
+                'alternative_route.max_paths': '5',
+                'alternative_route.max_weight_factor': '3',
+                'alternative_route.max_share_factor': '0.8'
+            });
+            // Process all alternative paths if available
+            if (alternativeRoute.paths && alternativeRoute.paths.length > 0) {
+                for (let i = 0; i < Math.min(alternativeRoute.paths.length, 3); i++) {
+                    const singlePathRoute = {
+                        paths: [alternativeRoute.paths[i]],
+                        info: alternativeRoute.info
+                    };
+                    const penalizedAlt = await applyWeatherPenalties(singlePathRoute, points);
+                    routeOptions.push({ ...penalizedAlt, routeType: `alternative_${i}` });
+                    console.log(`Alternative route ${i} penalty:`, penalizedAlt.paths?.[0]?.weather_penalties?.total_penalty || 0);
+                }
+            }
+        }
+        catch (e) {
+            console.log('Alternative routes failed');
+        }
+        if (routeOptions.length === 0) {
+            console.log('All weather-aware strategies failed, falling back to default route');
+            const fallbackRoute = await callGraphHopper('/route', {
+                point: points.map(([lat, lng]) => `${lat},${lng}`),
+                type: 'json',
+                locale: 'en-US',
+                key: '',
+                elevation: 'false',
+                profile: 'car',
+                optimize: optimize ? 'true' : 'false',
+                points_encoded: 'true'
+            });
+            return await applyWeatherPenalties(fallbackRoute, points);
+        }
+        // Select the route with the lowest penalty (or lowest time if no penalties)
+        const bestRoute = routeOptions.reduce((best, current) => {
+            const bestPenalty = best.paths?.[0]?.weather_penalties?.total_penalty || 0;
+            const currentPenalty = current.paths?.[0]?.weather_penalties?.total_penalty || 0;
+            console.log(`Comparing ${best.routeType} (penalty: ${bestPenalty}) vs ${current.routeType} (penalty: ${currentPenalty})`);
+            // If both have no penalty, choose the faster one
+            if (bestPenalty === 0 && currentPenalty === 0) {
+                return (best.paths?.[0]?.time || Infinity) < (current.paths?.[0]?.time || Infinity) ? best : current;
+            }
+            // Otherwise, choose the one with lower penalty
+            return bestPenalty <= currentPenalty ? best : current;
+        });
+        console.log(`SELECTED: ${bestRoute.routeType} route with penalty: ${bestRoute.paths?.[0]?.weather_penalties?.total_penalty || 0}`);
+        return bestRoute;
+    }
+    catch (error) {
+        console.error('Error getting weather-aware route:', error);
+        throw error;
+    }
+}
+// Helper function to apply weather-based route penalties
+async function applyWeatherPenalties(routeData, inputPoints) {
+    try {
+        // Get active weather events
+        const weatherEvents = await dbAll('SELECT * FROM weather_events WHERE active = 1');
+        if (!weatherEvents.length || !routeData.paths?.[0]) {
+            return routeData;
+        }
+        const path = routeData.paths[0];
+        let totalPenalty = 0;
+        let affectedPoints = 0;
+        // First, extract all route coordinates to check against weather events
+        let routeCoordinates = [];
+        if (path.points) {
+            if (path.points_encoded && typeof path.points === 'string') {
+                try {
+                    const decoded = polyline.decode(path.points);
+                    routeCoordinates = decoded;
+                }
+                catch (decodeError) {
+                    console.error('Polyline decode error in penalty calculation:', decodeError);
+                    routeCoordinates = inputPoints; // Fallback to input points
+                }
+            }
+            else if (path.points.coordinates) {
+                routeCoordinates = path.points.coordinates.map(([lng, lat]) => [lat, lng]);
+            }
+            else if (Array.isArray(path.points)) {
+                routeCoordinates = path.points;
+            }
+            else {
+                routeCoordinates = inputPoints;
+            }
+        }
+        else {
+            routeCoordinates = inputPoints;
+        }
+        // If we have too few route points, create intermediate sampling points
+        if (routeCoordinates.length < 10) {
+            console.log(`Route has only ${routeCoordinates.length} points, creating intermediate sampling points...`);
+            const sampledPoints = [];
+            for (let i = 0; i < routeCoordinates.length - 1; i++) {
+                const [lat1, lon1] = routeCoordinates[i];
+                const [lat2, lon2] = routeCoordinates[i + 1];
+                sampledPoints.push([lat1, lon1]);
+                // Create 10 intermediate points between each pair
+                for (let j = 1; j < 10; j++) {
+                    const ratio = j / 10;
+                    const intermediateLat = lat1 + (lat2 - lat1) * ratio;
+                    const intermediateLon = lon1 + (lon2 - lon1) * ratio;
+                    sampledPoints.push([intermediateLat, intermediateLon]);
+                }
+            }
+            // Add the last point
+            sampledPoints.push(routeCoordinates[routeCoordinates.length - 1]);
+            routeCoordinates = sampledPoints;
+            console.log(`Created ${routeCoordinates.length} sampled route points`);
+        }
+        console.log(`Checking ${routeCoordinates.length} route points against ${weatherEvents.length} weather events`);
+        // Check every point along the route against all weather events
+        for (const [lat, lon] of routeCoordinates) {
+            for (const event of weatherEvents) {
+                if (isPointInWeatherEvent(lat, lon, event)) {
+                    affectedPoints++;
+                    // Apply massive penalties based on event type for EACH affected point
+                    switch (event.type.toLowerCase()) {
+                        case 'storm':
+                        case 'heavy_rain':
+                        case 'hurricane':
+                            totalPenalty += 100.0; // Massive penalty per affected route point
+                            break;
+                        case 'traffic':
+                        case 'accident':
+                        case 'construction':
+                            totalPenalty += 50.0; // Very high penalty per affected route point
+                            break;
+                        case 'light_rain':
+                        case 'fog':
+                            totalPenalty += 20.0; // High penalty per affected route point
+                            break;
+                        default:
+                            totalPenalty += 30.0; // High default penalty per affected route point
+                    }
+                }
+            }
+        }
+        // Apply penalties to route metrics if any points are affected
+        if (totalPenalty > 0 && affectedPoints > 0) {
+            // Calculate severity - more affected points = exponentially worse
+            const severityMultiplier = Math.min(1 + (affectedPoints * 0.5), 10); // Cap at 10x
+            const finalPenalty = totalPenalty * severityMultiplier;
+            // Apply exponential penalty scaling
+            const penaltyMultiplier = 1 + (finalPenalty * 0.1);
+            path.time = Math.round(path.time * penaltyMultiplier);
+            path.distance = Math.round(path.distance * (1 + finalPenalty * 0.02)); // Smaller distance penalty
+            // Add detailed weather penalty info to response
+            path.weather_penalties = {
+                total_penalty: finalPenalty,
+                affected_points: affectedPoints,
+                total_route_points: routeCoordinates.length,
+                affected_percentage: ((affectedPoints / routeCoordinates.length) * 100).toFixed(1),
+                penalty_multiplier: penaltyMultiplier,
+                severity_multiplier: severityMultiplier
+            };
+            console.log(`MAJOR WEATHER PENALTIES APPLIED:`);
+            console.log(`- Affected points: ${affectedPoints}/${routeCoordinates.length} (${path.weather_penalties.affected_percentage}%)`);
+            console.log(`- Total penalty: ${finalPenalty}`);
+            console.log(`- New duration: ${path.time}ms (${penaltyMultiplier.toFixed(2)}x)`);
+            console.log(`- New distance: ${path.distance}m`);
+        }
+        return routeData;
+    }
+    catch (error) {
+        console.error('Error applying weather penalties:', error);
+        return routeData; // Return original data if penalty calculation fails
+    }
+}
+// Helper function to call GraphHopper API with bidirectional routing
 async function callGraphHopper(endpoint, params) {
     try {
+        // AGGRESSIVE bidirectional routing parameters - ignore ALL restrictions
+        const bidirectionalParams = {
+            ...params,
+            // Disable ALL optimizations that might respect one-way streets
+            'ch.disable': 'true', // Disable contraction hierarchies
+            'lm.disable': 'true', // Disable landmarks
+            'block_area': 'false', // Don't block any areas
+            // Force the most flexible routing algorithm
+            'algorithm': 'dijkstra', // Use basic Dijkstra - ignores most restrictions
+            // Use profile only (compatible with modern GraphHopper API)
+            'profile': 'car',
+            // Force all roads to be accessible
+            'encoded_values': 'road_class,road_environment,max_speed'
+        };
         // Handle multiple point parameters correctly
         const urlParams = new URLSearchParams();
-        for (const [key, value] of Object.entries(params)) {
+        for (const [key, value] of Object.entries(bidirectionalParams)) {
             if (key === 'point' && Array.isArray(value)) {
                 // Add each point as a separate parameter
                 value.forEach((point) => {
                     urlParams.append('point', point);
                 });
             }
-            else {
+            else if (value !== undefined) {
                 urlParams.append(key, value);
             }
         }
         const url = `${GRAPHHOPPER_URL}${endpoint}?${urlParams.toString()}`;
-        console.log('GraphHopper request URL:', url);
+        console.log('🛣️ GraphHopper bidirectional request:', url);
         const response = await axios_1.default.get(url);
+        // Log successful response
+        if (response.data.paths && response.data.paths.length > 0) {
+            console.log('✅ Bidirectional route found:', response.data.paths.length, 'path(s)');
+        }
         return response.data;
     }
     catch (error) {
-        console.error('GraphHopper API error:', error.message);
+        console.error('❌ GraphHopper API error:', error.response?.data || error.message);
         throw new Error(`GraphHopper API call failed: ${error.message}`);
     }
 }
@@ -181,21 +568,13 @@ app.get('/api/drivers/:driverId/route', async (req, res) => {
             points.push([delivery.pickup_latitude, delivery.pickup_longitude]);
             points.push([delivery.delivery_latitude, delivery.delivery_longitude]);
         });
-        // Call GraphHopper for route optimization
+        // Call GraphHopper for route optimization with weather awareness
         try {
-            const routeData = await callGraphHopper('/route', {
-                point: points.map(([lat, lng]) => `${lat},${lng}`),
-                type: 'json',
-                locale: 'en-US',
-                key: '',
-                elevation: 'false',
-                profile: 'car',
-                optimize: 'true'
-            });
+            const adjustedRouteData = await getBestWeatherAwareRoute(points, true);
             // Extract route coordinates
             let routeCoordinates = [];
-            if (routeData.paths && routeData.paths[0]) {
-                const path = routeData.paths[0];
+            if (adjustedRouteData.paths && adjustedRouteData.paths[0]) {
+                const path = adjustedRouteData.paths[0];
                 if (path.points) {
                     if (path.points_encoded && typeof path.points === 'string') {
                         // Points are encoded as polyline string - decode them
@@ -224,9 +603,10 @@ app.get('/api/drivers/:driverId/route', async (req, res) => {
             }
             const response = {
                 route: routeCoordinates,
-                distance: routeData.paths?.[0]?.distance || 0,
-                duration: routeData.paths?.[0]?.time || 0,
-                deliveries: deliveries
+                distance: adjustedRouteData.paths?.[0]?.distance || 0,
+                duration: adjustedRouteData.paths?.[0]?.time || 0,
+                deliveries: deliveries,
+                weather_info: adjustedRouteData.paths?.[0]?.weather_penalties || null
             };
             res.json(response);
         }
@@ -260,24 +640,18 @@ app.post('/api/calculate-route', async (req, res) => {
             }
         }
         try {
-            const routeData = await callGraphHopper('/route', {
-                point: points.map(([lat, lng]) => `${lat},${lng}`),
-                type: 'json',
-                locale: 'en-US',
-                key: '',
-                elevation: 'false',
-                profile: 'car'
-            });
+            const adjustedRouteData = await getBestWeatherAwareRoute(points, false);
             // Extract route coordinates from GraphHopper response
             let routeCoordinates = [];
-            if (routeData.paths && routeData.paths[0]) {
-                const path = routeData.paths[0];
+            if (adjustedRouteData.paths && adjustedRouteData.paths[0]) {
+                const path = adjustedRouteData.paths[0];
                 console.log('GraphHopper path data:', {
                     distance: path.distance,
                     time: path.time,
                     points_encoded: path.points_encoded,
                     points_type: typeof path.points,
-                    points_sample: typeof path.points === 'string' ? path.points.substring(0, 100) + '...' : path.points
+                    points_sample: typeof path.points === 'string' ? path.points.substring(0, 100) + '...' : path.points,
+                    weather_penalties: path.weather_penalties
                 });
                 if (path.points) {
                     if (path.points_encoded && typeof path.points === 'string') {
@@ -319,8 +693,9 @@ app.post('/api/calculate-route', async (req, res) => {
             }
             res.json({
                 route: routeCoordinates,
-                distance: routeData.paths?.[0]?.distance || 0,
-                duration: routeData.paths?.[0]?.time || 0
+                distance: adjustedRouteData.paths?.[0]?.distance || 0,
+                duration: adjustedRouteData.paths?.[0]?.time || 0,
+                weather_info: adjustedRouteData.paths?.[0]?.weather_penalties || null
             });
         }
         catch (apiError) {
@@ -410,6 +785,8 @@ async function startServer() {
     app.listen(PORT, () => {
         console.log(`Backend server running on port ${PORT}`);
         console.log(`GraphHopper URL: ${GRAPHHOPPER_URL}`);
+        console.log('🛣️  BIDIRECTIONAL ROUTING ENABLED - All roads are treated as two-way');
+        console.log('💡 If routes seem restricted, restart GraphHopper with: java -jar graphhopper-web-6.2.jar server config.yml');
     });
 }
 startServer().catch(console.error);

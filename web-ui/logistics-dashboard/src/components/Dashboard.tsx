@@ -46,6 +46,7 @@ interface DashboardProps {
     onSpeedChange: (speed: number) => void;
     onAddRandomDriver: () => void;
     onAddRandomDelivery: () => void;
+    isRecalculatingRoutes?: boolean;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -66,7 +67,8 @@ const Dashboard: React.FC<DashboardProps> = ({
     onStopSimulation,
     onSpeedChange,
     onAddRandomDriver,
-    onAddRandomDelivery
+    onAddRandomDelivery,
+    isRecalculatingRoutes = false
 }) => {
     const [showAddDriver, setShowAddDriver] = useState(false);
     // Removed manual name input - now uses random names
@@ -216,6 +218,14 @@ const Dashboard: React.FC<DashboardProps> = ({
                                 {isSimulating ? 'Running' : 'Stopped'}
                             </span>
                         </div>
+
+                        {/* Dynamic Route Recalculation Status */}
+                        {isRecalculatingRoutes && isSimulating && (
+                            <div className="flex items-center space-x-2 text-blue-600 text-xs bg-blue-50 p-2 rounded">
+                                <div className="animate-spin rounded-full h-3 w-3 border-b border-blue-500"></div>
+                                <span className="font-medium">Recalculating routes due to weather changes...</span>
+                            </div>
+                        )}
 
                         <div className="space-y-2">
                             <div className="flex justify-between items-center">
@@ -393,6 +403,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                         <li>• <strong>Smart Delivery:</strong> Click "🎯 Add Random Delivery" for connected routes &lt;50km</li>
                         <li>• <strong>Routes:</strong> Click driver card to view optimized route</li>
                         <li>• <strong>Simulation:</strong> Adjust speed (10-500 km/h) even while running</li>
+                        <li>• <strong>Dynamic:</strong> Add weather during simulation to see live route changes</li>
                     </ul>
                 </div>
             </div>

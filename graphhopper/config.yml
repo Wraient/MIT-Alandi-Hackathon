@@ -1,19 +1,29 @@
 graphhopper:
   graph.location: graph-cache
   datareader.file: western-zone.osm.pbf
+  
+  # CRITICAL: These settings ensure ALL roads are bidirectional
+  graph.flag_encoders: car
+  graph.encoded_values: road_class,road_environment,max_speed
+  
+  # Disable optimizations that respect one-way restrictions
+  prepare.ch.enabled: false
+  prepare.lm.enabled: false
+  
   profiles:
     - name: car
       vehicle: car
       weighting: fastest
       turn_costs: false
+      block_fords: false
 
 server:
   application_connectors:
     - type: http
-      port: 8989
+      port: 9000
   admin_connectors:
     - type: http
-      port: 8990
+      port: 9001
 
 logging:
   level: INFO

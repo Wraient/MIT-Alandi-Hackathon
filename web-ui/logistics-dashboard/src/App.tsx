@@ -155,6 +155,7 @@ const App: React.FC = () => {
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulationSpeed, setSimulationSpeed] = useState(50); // km/h
   const [simulationIntervalId, setSimulationIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [isRecalculatingRoutes, setIsRecalculatingRoutes] = useState(false);
 
   // Load initial data
   useEffect(() => {
@@ -217,6 +218,79 @@ const App: React.FC = () => {
     }
   };
 
+  // Dynamic route recalculation during simulation
+  const recalculateRoutesForActiveDrivers = async (updatedWeatherEvents?: WeatherEvent[]) => {
+    console.log('🔄 Recalculating routes for active drivers due to weather changes...');
+    setIsRecalculatingRoutes(true);
+    
+    // Use provided weather events or current state
+    const currentWeatherEvents = updatedWeatherEvents || weatherEvents;
+    
+    setDrivers(prevDrivers => {
+      const recalculateDriverRoutes = async () => {
+        try {
+          const updatedDrivers = await Promise.all(
+            prevDrivers.map(async (driver) => {
+              // Only recalculate for drivers who are currently moving and have deliveries
+              if (!driver.isMoving || !driver.simulationPosition || driver.deliveries.length === 0) {
+                return driver;
+              }
+
+              const currentDelivery = driver.deliveries[driver.currentDeliveryIndex || 0];
+              if (!currentDelivery) {
+                return driver;
+              }
+
+              try {
+                let targetPos: [number, number];
+                
+                // Determine where the driver should be going next
+                if (driver.currentTarget === 'pickup') {
+                  targetPos = [currentDelivery.pickup_latitude, currentDelivery.pickup_longitude];
+                } else {
+                  targetPos = [currentDelivery.delivery_latitude, currentDelivery.delivery_longitude];
+                }
+
+                // Calculate new route from current position to target
+                const routeRequestPoints = [driver.simulationPosition, targetPos];
+                console.log(`🚗 Recalculating route for ${driver.name} from ${routeRequestPoints[0]} to ${routeRequestPoints[1]}`);
+                
+                const routeResult = await apiService.calculateRoute(routeRequestPoints);
+                const newRoutePoints = routeResult.route || routeRequestPoints;
+                
+                console.log(`✅ New route calculated for ${driver.name}: ${newRoutePoints.length} points`);
+                console.log(`⚠️ Weather penalty: ${routeResult.weather_info?.total_penalty || 'none'}`);
+                
+                return {
+                  ...driver,
+                  activeRoute: newRoutePoints,
+                  currentRouteIndex: 0 // Reset to start of new route
+                };
+                
+              } catch (error) {
+                console.error(`❌ Failed to recalculate route for driver ${driver.name}:`, error);
+                // Keep the driver's current route if recalculation fails
+                return driver;
+              }
+            })
+          );
+
+          // Update the drivers state with new routes
+          setDrivers(updatedDrivers);
+          console.log('🎯 Route recalculation complete for all active drivers');
+        } finally {
+          setIsRecalculatingRoutes(false);
+        }
+      };
+
+      // Execute the async recalculation
+      recalculateDriverRoutes();
+      
+      // Return the current state immediately (will be updated by the async function)
+      return prevDrivers;
+    });
+  };
+
   const addWeatherEventAtPosition = async (position: [number, number], type: 'traffic' | 'storm', radius: number = 0) => {
     try {
       const newEventId = `W${String(weatherEvents.length + 1).padStart(3, '0')}`;
@@ -231,6 +305,12 @@ const App: React.FC = () => {
         active: true
       });
       setWeatherEvents([...weatherEvents, newEvent]);
+
+      // If simulation is running, recalculate routes for all active drivers
+      if (isSimulating) {
+        console.log('🌪️ New weather event added during simulation - recalculating routes for all active drivers');
+        await recalculateRoutesForActiveDrivers([...weatherEvents, newEvent]);
+      }
     } catch (err: any) {
       console.error('Failed to add weather event:', err);
       // Fallback to local state
@@ -244,6 +324,12 @@ const App: React.FC = () => {
         active: true
       };
       setWeatherEvents([...weatherEvents, newEvent]);
+
+      // If simulation is running, recalculate routes for all active drivers
+      if (isSimulating) {
+        console.log('🌪️ New weather event added during simulation - recalculating routes for all active drivers');
+        await recalculateRoutesForActiveDrivers([...weatherEvents, newEvent]);
+      }
     }
   };
 
@@ -1020,15 +1106,29 @@ const App: React.FC = () => {
   const toggleWeatherEvent = async (eventId: string) => {
     try {
       const updatedEvent = await ApiService.toggleWeatherEvent(eventId);
-      setWeatherEvents(weatherEvents.map(event =>
+      const newWeatherEvents = weatherEvents.map(event =>
         event.id === eventId ? updatedEvent : event
-      ));
+      );
+      setWeatherEvents(newWeatherEvents);
+
+      // If simulation is running, recalculate routes for all active drivers
+      if (isSimulating) {
+        console.log(`🌪️ Weather event ${eventId} toggled during simulation - recalculating routes for all active drivers`);
+        await recalculateRoutesForActiveDrivers(newWeatherEvents);
+      }
     } catch (err: any) {
       console.error('Failed to toggle weather event:', err);
       // Fallback to local state update
-      setWeatherEvents(weatherEvents.map(event =>
+      const newWeatherEvents = weatherEvents.map(event =>
         event.id === eventId ? { ...event, active: !event.active } : event
-      ));
+      );
+      setWeatherEvents(newWeatherEvents);
+
+      // If simulation is running, recalculate routes for all active drivers
+      if (isSimulating) {
+        console.log(`🌪️ Weather event ${eventId} toggled during simulation - recalculating routes for all active drivers`);
+        await recalculateRoutesForActiveDrivers(newWeatherEvents);
+      }
     }
   };
 
@@ -1104,6 +1204,7 @@ const App: React.FC = () => {
           onSpeedChange={handleSpeedChange}
           onAddRandomDriver={handleAddRandomDriver}
           onAddRandomDelivery={handleAddRandomDelivery}
+          isRecalculatingRoutes={isRecalculatingRoutes}
         />
       </div>
 
@@ -1311,6 +1412,19 @@ const App: React.FC = () => {
                 >
                   Cancel
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Route Recalculation Status */}
+          {isRecalculatingRoutes && isSimulating && (
+            <div className="absolute top-4 right-4 bg-blue-50 border-l-4 border-blue-400 rounded-lg shadow-lg p-3 z-1000">
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2"></div>
+                <div>
+                  <p className="text-sm font-medium text-blue-800">Recalculating Routes</p>
+                  <p className="text-xs text-blue-600">Updating paths due to weather changes...</p>
+                </div>
               </div>
             </div>
           )}
