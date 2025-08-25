@@ -11,9 +11,12 @@ body {
 }
 
 /* Ensure html and body have full height for proper map rendering */
-html, body, #root {
+html,
+body,
+#root {
   height: 100vh;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
 }
 
 /* Fix any potential leaflet icon issues */

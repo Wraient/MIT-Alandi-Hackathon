@@ -1389,7 +1389,7 @@ const App: React.FC = () => {
             heading: driver.heading,
             isMoving: driver.isMoving
           });
-          
+
           // Send to backend API for mobile view consumption
           fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/drivers/${driver.id}/position`, {
             method: 'PUT',
@@ -1398,7 +1398,7 @@ const App: React.FC = () => {
           }).catch(error => {
             console.log('📡 API position update failed (this is ok):', error);
           });
-          
+
           // Also update AppContext for local coordination
           updateSharedDriver(driver.id, sharedData);
         } else {

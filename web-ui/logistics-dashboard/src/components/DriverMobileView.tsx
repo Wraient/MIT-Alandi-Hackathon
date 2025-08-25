@@ -9,23 +9,23 @@ import '../mobile.css';
 // Google Maps-like interface component with rotation
 const DriverTracker: React.FC<{ driver: any; bearing: number; navigationMode: boolean }> = ({ driver, bearing, navigationMode }) => {
     const map = useMap();
-    
+
     useEffect(() => {
         if (driver?.simulationPosition && map) {
             // Center map on driver position
             map.setView(driver.simulationPosition, 18, { animate: true, duration: 0.3 });
-            
+
             // Rotate map only in navigation mode
             if (navigationMode && bearing !== null && bearing !== undefined && driver?.isMoving) {
                 // Set the bearing (rotation) of the map
                 // In Leaflet, bearing is the angle from north, so we need to rotate opposite direction
                 const mapContainer = map.getContainer();
                 const mapBearing = -bearing; // Negative to rotate map opposite to movement direction
-                
+
                 mapContainer.style.transform = `rotate(${mapBearing}deg)`;
                 mapContainer.style.transformOrigin = 'center';
                 mapContainer.style.transition = 'transform 0.5s ease-out';
-                
+
                 console.log(`🗺️ Map rotated to ${mapBearing}° (driver bearing: ${bearing}°)`);
             } else if (!navigationMode || !driver?.isMoving) {
                 // Reset rotation when navigation mode is off or when stopped
@@ -33,11 +33,11 @@ const DriverTracker: React.FC<{ driver: any; bearing: number; navigationMode: bo
                 mapContainer.style.transform = 'rotate(0deg)';
                 mapContainer.style.transition = 'transform 1s ease-out';
             }
-            
+
             console.log(`🗺️ Map updated - position:`, driver.simulationPosition, `bearing: ${bearing}°, moving: ${driver?.isMoving}, nav: ${navigationMode}`);
         }
     }, [driver?.simulationPosition, bearing, driver?.isMoving, navigationMode, map]);
-    
+
     return null;
 };
 
@@ -45,11 +45,11 @@ const DriverTracker: React.FC<{ driver: any; bearing: number; navigationMode: bo
 const createDriverArrow = (bearing: number = 0, isMoving: boolean = false, navigationMode: boolean = true) => {
     const color = isMoving ? '#10B981' : '#3B82F6'; // Green when moving, blue when stopped
     const size = 28;
-    
+
     // In navigation mode (map rotates), arrow always points up (0°)
     // In normal mode (map doesn't rotate), arrow points to bearing direction
     const arrowRotation = navigationMode && isMoving ? 0 : bearing;
-    
+
     return new DivIcon({
         className: 'driver-arrow-icon',
         html: `
@@ -71,7 +71,7 @@ const createDriverArrow = (bearing: number = 0, isMoving: boolean = false, navig
             </div>
         `,
         iconSize: [size, size],
-        iconAnchor: [size/2, size/2]
+        iconAnchor: [size / 2, size / 2]
     });
 };
 
@@ -79,7 +79,7 @@ const DriverMobileView: React.FC = () => {
     // Parse URL parameters
     const urlParams = Object.fromEntries(new URLSearchParams(window.location.search));
     const driverId = urlParams.driver || 'D001';
-    
+
     // App context for shared driver data
     const { getSharedDriver, appState, updateSharedDriver } = useAppContext();
 
@@ -93,7 +93,7 @@ const DriverMobileView: React.FC = () => {
     const [isSimulating, setIsSimulating] = useState(false);
     const [simulationInterval, setSimulationInterval] = useState<NodeJS.Timeout | null>(null);
     const [navigationMode, setNavigationMode] = useState(true); // Enable navigation mode by default
-    
+
     const mapRef = useRef<any>(null);
 
     // Get real-time driver data from web UI (passive display only)
@@ -106,18 +106,18 @@ const DriverMobileView: React.FC = () => {
             try {
                 const drivers = await ApiService.getDrivers();
                 const foundDriver = drivers.find((d: any) => d.id === driverId);
-                
+
                 if (foundDriver) {
                     const deliveries = await ApiService.getDeliveries();
                     const driverDeliveries = deliveries.filter((d: any) => d.driver_id === foundDriver.id);
-                    
+
                     const driverWithDeliveries = {
                         ...foundDriver,
                         deliveries: driverDeliveries,
                         isMoving: false,
                         speed: 0
                     };
-                    
+
                     console.log(`📱 Initial driver data loaded:`, driverWithDeliveries);
                     setDriver(driverWithDeliveries);
                     setIsConnected(true);
@@ -147,11 +147,11 @@ const DriverMobileView: React.FC = () => {
                     position: sharedDriver.simulationPosition,
                     bearing: sharedDriver.movementDirection || sharedDriver.heading
                 });
-                
+
                 setDriver(sharedDriver);
                 setIsConnected(true);
                 setError(null);
-                
+
                 // Update bearing from shared data
                 if (sharedDriver.movementDirection !== undefined) {
                     setCurrentBearing(sharedDriver.movementDirection);
@@ -169,39 +169,39 @@ const DriverMobileView: React.FC = () => {
     // Mobile view now fetches data from backend and runs its own simulation
     useEffect(() => {
         setLoading(false);
-        
+
         if (driverId) {
             console.log(`📱 Mobile view initialized for driver: ${driverId}`);
-            
+
             const fetchDriverData = async () => {
                 try {
                     // Fetch driver data from backend API
                     const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/drivers/${driverId}/simulation-state`);
                     const driverData = await response.json();
-                    
+
                     console.log(`📱 Fetched driver data from API:`, driverData);
-                    
+
                     // Update local state with fetched data
                     setDriver(driverData);
-                    
+
                     // If driver has deliveries and we need to start simulation
                     if (driverData.deliveries?.length > 0 && !driverData.simulationPosition) {
                         console.log(`📱 Driver has ${driverData.deliveries.length} deliveries, initializing simulation...`);
                         await initializeDriverSimulation(driverData);
                     }
-                    
+
                 } catch (error) {
                     console.error('📱 Error fetching driver data:', error);
                     setError(`Failed to fetch driver data: ${error}`);
                 }
             };
-            
+
             // Fetch data immediately
             fetchDriverData();
-            
+
             // Poll for updates every 2 seconds to check if dashboard has new data
             const pollInterval = setInterval(fetchDriverData, 2000);
-            
+
             return () => clearInterval(pollInterval);
         }
     }, [driverId]);
@@ -210,9 +210,9 @@ const DriverMobileView: React.FC = () => {
     const initializeDriverSimulation = async (driverData: any) => {
         try {
             if (!driverData.deliveries?.length) return;
-            
+
             console.log(`📱 Initializing simulation for ${driverData.name}`);
-            
+
             // Get the first pending delivery
             const currentDelivery = driverData.deliveries.find((d: any) => d.status === 'pending') || driverData.deliveries[0];
             if (!currentDelivery) return;
@@ -222,18 +222,18 @@ const DriverMobileView: React.FC = () => {
                 [driverData.latitude, driverData.longitude],
                 [currentDelivery.pickup_latitude, currentDelivery.pickup_longitude]
             ];
-            
+
             console.log(`📱 Calculating route from ${routePoints[0]} to ${routePoints[1]}`);
-            
+
             const routeResponse = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/calculate-route`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ points: routePoints })
             });
-            
+
             const routeResult = await routeResponse.json();
             console.log(`📱 Received route with ${routeResult.route?.length || 0} points`);
-            
+
             // Update driver with simulation data
             setDriver((prev: any) => ({
                 ...prev,
@@ -245,10 +245,10 @@ const DriverMobileView: React.FC = () => {
                 currentRouteIndex: 0,
                 speed: 50 // Default speed
             }));
-            
+
             // Start the mobile simulation
             setIsSimulating(true);
-            
+
         } catch (error) {
             console.error('📱 Error initializing simulation:', error);
         }
@@ -261,7 +261,7 @@ const DriverMobileView: React.FC = () => {
         }
 
         console.log(`📱 Starting movement simulation for ${driver.name}`);
-        
+
         const moveDriver = () => {
             setDriver((prevDriver: any) => {
                 if (!prevDriver?.isMoving || !prevDriver?.simulationPosition || !prevDriver?.activeRoute?.length) {
@@ -269,11 +269,11 @@ const DriverMobileView: React.FC = () => {
                 }
 
                 const currentRouteIndex = prevDriver.currentRouteIndex || 0;
-                
+
                 if (currentRouteIndex >= prevDriver.activeRoute.length) {
                     // Reached end of current route
                     console.log(`📱 Driver ${prevDriver.name} reached end of route`);
-                    
+
                     const currentDelivery = prevDriver.deliveries[prevDriver.currentDeliveryIndex || 0];
                     if (!currentDelivery) return prevDriver;
 
@@ -286,14 +286,14 @@ const DriverMobileView: React.FC = () => {
                         // Reached delivery, move to next delivery or stop
                         console.log(`📱 Reached delivery`);
                         const nextDeliveryIndex = (prevDriver.currentDeliveryIndex || 0) + 1;
-                        
+
                         if (nextDeliveryIndex < prevDriver.deliveries.length) {
                             const nextDelivery = prevDriver.deliveries[nextDeliveryIndex];
                             calculateNextRoute(prevDriver, [nextDelivery.pickup_latitude, nextDelivery.pickup_longitude], 'pickup', nextDeliveryIndex);
                             return {
                                 ...prevDriver,
                                 deliveries: prevDriver.deliveries.map((d: any, idx: number) =>
-                                    idx === (prevDriver.currentDeliveryIndex || 0) ? {...d, status: 'delivered'} : d
+                                    idx === (prevDriver.currentDeliveryIndex || 0) ? { ...d, status: 'delivered' } : d
                                 )
                             };
                         } else {
@@ -304,7 +304,7 @@ const DriverMobileView: React.FC = () => {
                                 ...prevDriver,
                                 isMoving: false,
                                 deliveries: prevDriver.deliveries.map((d: any, idx: number) =>
-                                    idx === (prevDriver.currentDeliveryIndex || 0) ? {...d, status: 'delivered'} : d
+                                    idx === (prevDriver.currentDeliveryIndex || 0) ? { ...d, status: 'delivered' } : d
                                 )
                             };
                         }
@@ -314,8 +314,8 @@ const DriverMobileView: React.FC = () => {
                 // Move towards next route point
                 const targetPoint = prevDriver.activeRoute[currentRouteIndex];
                 const newPos = moveTowardsTarget(
-                    prevDriver.simulationPosition, 
-                    targetPoint, 
+                    prevDriver.simulationPosition,
+                    targetPoint,
                     prevDriver.speed || 50, // Default 50 km/h
                     100 // 100ms interval
                 );
@@ -351,16 +351,16 @@ const DriverMobileView: React.FC = () => {
     const calculateNextRoute = async (currentDriver: any, targetPos: [number, number], targetType: 'pickup' | 'delivery', deliveryIndex?: number) => {
         try {
             const routePoints = [currentDriver.simulationPosition, targetPos];
-            
+
             const routeResponse = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/calculate-route`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ points: routePoints })
             });
-            
+
             const routeResult = await routeResponse.json();
             console.log(`📱 Calculated route to ${targetType}:`, routeResult.route?.length || 0, 'points');
-            
+
             setDriver((prev: any) => ({
                 ...prev,
                 currentTarget: targetType,
@@ -368,8 +368,8 @@ const DriverMobileView: React.FC = () => {
                 activeRoute: routeResult.route || [],
                 currentRouteIndex: 0,
                 deliveries: prev.deliveries.map((d: any, idx: number) =>
-                    idx === (prev.currentDeliveryIndex || 0) && targetType === 'delivery' 
-                        ? {...d, status: 'picked_up'} 
+                    idx === (prev.currentDeliveryIndex || 0) && targetType === 'delivery'
+                        ? { ...d, status: 'picked_up' }
                         : d
                 )
             }));
@@ -411,28 +411,28 @@ const DriverMobileView: React.FC = () => {
         const distanceKm = calculateDistance(currentPos, targetPos);
         const speedKmPerMs = speedKmh / (1000 * 60 * 60);
         const moveDistanceKm = speedKmPerMs * deltaTimeMs;
-        
+
         if (distanceKm <= moveDistanceKm) {
             return targetPos;
         }
-        
+
         const bearing = calculateBearing(currentPos, targetPos) * Math.PI / 180;
         const R = 6371;
         const [lat1, lng1] = currentPos;
         const lat1Rad = lat1 * Math.PI / 180;
         const lng1Rad = lng1 * Math.PI / 180;
         const angularDistance = moveDistanceKm / R;
-        
+
         const lat2Rad = Math.asin(
             Math.sin(lat1Rad) * Math.cos(angularDistance) +
             Math.cos(lat1Rad) * Math.sin(angularDistance) * Math.cos(bearing)
         );
-        
+
         const lng2Rad = lng1Rad + Math.atan2(
             Math.sin(bearing) * Math.sin(angularDistance) * Math.cos(lat1Rad),
             Math.cos(angularDistance) - Math.sin(lat1Rad) * Math.sin(lat2Rad)
         );
-        
+
         return [lat2Rad * 180 / Math.PI, lng2Rad * 180 / Math.PI];
     };
 
@@ -456,10 +456,10 @@ const DriverMobileView: React.FC = () => {
     // Get driver route with real-time updates
     const getDriverRoute = () => {
         if (!driver) return [];
-        
+
         // Check multiple route sources in priority order
         let route = [];
-        
+
         // 1. Active route (currently being followed)
         if (driver.activeRoute && driver.activeRoute.length > 0) {
             route = driver.activeRoute;
@@ -478,7 +478,7 @@ const DriverMobileView: React.FC = () => {
         else {
             console.log(`📍 No route found for driver ${driver.id}`);
         }
-        
+
         return route;
     };
 
@@ -533,7 +533,7 @@ const DriverMobileView: React.FC = () => {
                     )}
                 </div>
                 <div className="status-right">
-                    <button 
+                    <button
                         className="info-toggle"
                         onClick={() => setShowInfo(!showInfo)}
                     >
@@ -556,16 +556,16 @@ const DriverMobileView: React.FC = () => {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; OpenStreetMap contributors'
                     />
-                    
+
                     {/* Driver tracking component */}
                     <DriverTracker driver={driver} bearing={currentBearing} navigationMode={navigationMode} />
-                    
+
                     {/* Driver Marker with Navigation-style Rotation */}
                     {(() => {
                         console.log(`🚗 Driver marker at:`, driverPosition, `moving: ${isMoving}, bearing: ${currentBearing}°, navigation: ${navigationMode}`);
                         return (
-                            <Marker 
-                                position={driverPosition} 
+                            <Marker
+                                position={driverPosition}
                                 icon={createDriverArrow(currentBearing, isMoving, navigationMode)}
                             />
                         );
@@ -593,14 +593,14 @@ const DriverMobileView: React.FC = () => {
                     <div className="driver-info">
                         <div className="info-header">
                             <h3>{driver?.name || driverId}</h3>
-                            <button 
+                            <button
                                 className="close-btn"
                                 onClick={() => setShowInfo(false)}
                             >
                                 ×
                             </button>
                         </div>
-                        
+
                         <div className="info-grid">
                             <div className="info-item">
                                 <span className="label">Status</span>
@@ -608,7 +608,7 @@ const DriverMobileView: React.FC = () => {
                                     {isMoving ? '🚗 Moving' : '⏹️ Stopped'}
                                 </span>
                             </div>
-                            
+
                             <div className="info-item">
                                 <span className="label">Speed</span>
                                 <span className="value">{speed} km/h</span>
@@ -620,17 +620,17 @@ const DriverMobileView: React.FC = () => {
                                     {isSimulating ? '🟢 Active' : '🔴 Inactive'}
                                 </span>
                             </div>
-                            
+
                             <div className="info-item">
                                 <span className="label">Route Points</span>
                                 <span className="value">{driverRoute.length}</span>
                             </div>
-                            
+
                             <div className="info-item">
                                 <span className="label">Deliveries</span>
                                 <span className="value">{driver?.deliveries?.length || 0}</span>
                             </div>
-                            
+
                             <div className="info-item">
                                 <span className="label">Position</span>
                                 <span className="value">
@@ -675,19 +675,19 @@ const DriverMobileView: React.FC = () => {
 
             {/* Google Maps-like Controls */}
             <div className="map-controls">
-                <button 
+                <button
                     className="zoom-btn"
                     onClick={() => mapRef.current?.zoomIn()}
                 >
                     +
                 </button>
-                <button 
+                <button
                     className="zoom-btn"
                     onClick={() => mapRef.current?.zoomOut()}
                 >
                     -
                 </button>
-                <button 
+                <button
                     className={`nav-btn ${navigationMode ? 'active' : ''}`}
                     onClick={() => {
                         setNavigationMode(!navigationMode);

@@ -32,7 +32,7 @@ const DriverMobileView: React.FC = () => {
     // Parse URL parameters
     const urlParams = Object.fromEntries(new URLSearchParams(window.location.search));
     const driverId = urlParams.driver || 'D001';
-    
+
     // App context for shared driver data
     const { getSharedDriver } = useAppContext();
 
@@ -44,7 +44,7 @@ const DriverMobileView: React.FC = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [autoCenter, setAutoCenter] = useState(false);
     const [userInteracted, setUserInteracted] = useState(false);
-    
+
     const mapRef = useRef<any>(null);
 
     // Custom driver icon
@@ -188,7 +188,7 @@ const DriverMobileView: React.FC = () => {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
-                    
+
                     {/* Driver Marker */}
                     {driver && (
                         <Marker position={driverPosition} icon={driverIcon}>
@@ -246,7 +246,7 @@ const DriverMobileView: React.FC = () => {
                         </div>
 
                         <div className="controls-section">
-                            <button 
+                            <button
                                 onClick={handleRecenter}
                                 className="mobile-btn recenter-btn"
                                 disabled={!driver?.simulationPosition}
