@@ -6,26 +6,49 @@ import ApiService, { Driver } from '../services/api';
 import 'leaflet/dist/leaflet.css';
 import '../mobile.css';
 
-// Google Maps-like interface component
-const DriverTracker: React.FC<{ driver: any; bearing: number }> = ({ driver, bearing }) => {
+// Google Maps-like interface component with rotation
+const DriverTracker: React.FC<{ driver: any; bearing: number; navigationMode: boolean }> = ({ driver, bearing, navigationMode }) => {
     const map = useMap();
     
     useEffect(() => {
-        if (driver?.simulationPosition) {
-            // Center map on driver position (Google Maps style - no rotation)
-            map.setView(driver.simulationPosition, 18, { animate: true, duration: 0.5 });
+        if (driver?.simulationPosition && map) {
+            // Center map on driver position
+            map.setView(driver.simulationPosition, 18, { animate: true, duration: 0.3 });
             
-            console.log(`🗺️ Map centered on driver at:`, driver.simulationPosition, `bearing: ${bearing}°`);
+            // Rotate map only in navigation mode
+            if (navigationMode && bearing !== null && bearing !== undefined && driver?.isMoving) {
+                // Set the bearing (rotation) of the map
+                // In Leaflet, bearing is the angle from north, so we need to rotate opposite direction
+                const mapContainer = map.getContainer();
+                const mapBearing = -bearing; // Negative to rotate map opposite to movement direction
+                
+                mapContainer.style.transform = `rotate(${mapBearing}deg)`;
+                mapContainer.style.transformOrigin = 'center';
+                mapContainer.style.transition = 'transform 0.5s ease-out';
+                
+                console.log(`🗺️ Map rotated to ${mapBearing}° (driver bearing: ${bearing}°)`);
+            } else if (!navigationMode || !driver?.isMoving) {
+                // Reset rotation when navigation mode is off or when stopped
+                const mapContainer = map.getContainer();
+                mapContainer.style.transform = 'rotate(0deg)';
+                mapContainer.style.transition = 'transform 1s ease-out';
+            }
+            
+            console.log(`🗺️ Map updated - position:`, driver.simulationPosition, `bearing: ${bearing}°, moving: ${driver?.isMoving}, nav: ${navigationMode}`);
         }
-    }, [driver?.simulationPosition, map]); // Removed bearing from dependencies to avoid constant updates
+    }, [driver?.simulationPosition, bearing, driver?.isMoving, navigationMode, map]);
     
     return null;
 };
 
-// Rotating driver arrow icon
-const createDriverArrow = (bearing: number = 0, isMoving: boolean = false) => {
+// Rotating driver arrow icon that always points "forward" in navigation mode
+const createDriverArrow = (bearing: number = 0, isMoving: boolean = false, navigationMode: boolean = true) => {
     const color = isMoving ? '#10B981' : '#3B82F6'; // Green when moving, blue when stopped
-    const size = 24;
+    const size = 28;
+    
+    // In navigation mode (map rotates), arrow always points up (0°)
+    // In normal mode (map doesn't rotate), arrow points to bearing direction
+    const arrowRotation = navigationMode && isMoving ? 0 : bearing;
     
     return new DivIcon({
         className: 'driver-arrow-icon',
@@ -33,15 +56,17 @@ const createDriverArrow = (bearing: number = 0, isMoving: boolean = false) => {
             <div style="
                 width: ${size}px; 
                 height: ${size}px;
-                transform: rotate(${bearing}deg);
+                transform: rotate(${arrowRotation}deg);
                 transition: transform 0.3s ease;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
             ">
                 <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none">
                     <path d="M12 2L22 20H12H2L12 2Z" fill="${color}" stroke="white" stroke-width="2"/>
-                    <circle cx="12" cy="16" r="3" fill="white"/>
+                    <circle cx="12" cy="16" r="2" fill="white"/>
+                    <circle cx="12" cy="8" r="1" fill="white"/>
                 </svg>
             </div>
         `,
@@ -67,6 +92,7 @@ const DriverMobileView: React.FC = () => {
     const [showInfo, setShowInfo] = useState(false);
     const [isSimulating, setIsSimulating] = useState(false);
     const [simulationInterval, setSimulationInterval] = useState<NodeJS.Timeout | null>(null);
+    const [navigationMode, setNavigationMode] = useState(true); // Enable navigation mode by default
     
     const mapRef = useRef<any>(null);
 
@@ -532,15 +558,15 @@ const DriverMobileView: React.FC = () => {
                     />
                     
                     {/* Driver tracking component */}
-                    <DriverTracker driver={driver} bearing={currentBearing} />
+                    <DriverTracker driver={driver} bearing={currentBearing} navigationMode={navigationMode} />
                     
-                    {/* Driver Marker with Rotation */}
+                    {/* Driver Marker with Navigation-style Rotation */}
                     {(() => {
-                        console.log(`🚗 Driver marker at:`, driverPosition, `moving: ${isMoving}, bearing: ${currentBearing}°`);
+                        console.log(`🚗 Driver marker at:`, driverPosition, `moving: ${isMoving}, bearing: ${currentBearing}°, navigation: ${navigationMode}`);
                         return (
                             <Marker 
                                 position={driverPosition} 
-                                icon={createDriverArrow(currentBearing, isMoving)}
+                                icon={createDriverArrow(currentBearing, isMoving, navigationMode)}
                             />
                         );
                     })()}
@@ -647,7 +673,7 @@ const DriverMobileView: React.FC = () => {
                 )}
             </div>
 
-            {/* Google Maps-like Zoom Controls */}
+            {/* Google Maps-like Controls */}
             <div className="map-controls">
                 <button 
                     className="zoom-btn"
@@ -660,6 +686,23 @@ const DriverMobileView: React.FC = () => {
                     onClick={() => mapRef.current?.zoomOut()}
                 >
                     -
+                </button>
+                <button 
+                    className={`nav-btn ${navigationMode ? 'active' : ''}`}
+                    onClick={() => {
+                        setNavigationMode(!navigationMode);
+                        if (!navigationMode) {
+                            // Reset map rotation when disabling navigation mode
+                            const mapContainer = mapRef.current?.getContainer();
+                            if (mapContainer) {
+                                mapContainer.style.transform = 'rotate(0deg)';
+                                mapContainer.style.transition = 'transform 0.5s ease-out';
+                            }
+                        }
+                    }}
+                    title={navigationMode ? 'Disable Navigation Mode' : 'Enable Navigation Mode'}
+                >
+                    🧭
                 </button>
             </div>
 
