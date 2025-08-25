@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import { useAppContext } from '../contexts/AppContext';
 import ApiService, { Driver, Delivery } from '../services/api';
 import 'leaflet/dist/leaflet.css';
+import '../mobile.css';
 
 // Extended driver interface for simulation data
 interface ExtendedDriver extends Driver {
@@ -16,6 +17,16 @@ interface ExtendedDriver extends Driver {
     speed?: number;
     [key: string]: any; // Allow additional properties
 }
+
+// Map events handler component
+const MapEventHandler: React.FC<{ onMapInteraction: () => void }> = ({ onMapInteraction }) => {
+    useMapEvents({
+        movestart: onMapInteraction,
+        zoomstart: onMapInteraction,
+        dragstart: onMapInteraction,
+    });
+    return null;
+};
 
 const DriverMobileView: React.FC = () => {
     // Parse URL parameters
@@ -31,7 +42,8 @@ const DriverMobileView: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isConnected, setIsConnected] = useState(false);
-    const [autoCenter, setAutoCenter] = useState(true);
+    const [autoCenter, setAutoCenter] = useState(false);
+    const [userInteracted, setUserInteracted] = useState(false);
     
     const mapRef = useRef<any>(null);
 
@@ -84,12 +96,29 @@ const DriverMobileView: React.FC = () => {
         return () => clearInterval(interval);
     }, [driverId, getSharedDriver]);
 
-    // Auto-center map on driver position
+    // Auto-center map on driver position only when explicitly enabled and user hasn't interacted
     useEffect(() => {
-        if (autoCenter && driver?.simulationPosition && mapRef.current) {
+        if (autoCenter && driver?.simulationPosition && mapRef.current && !userInteracted) {
             mapRef.current.setView(driver.simulationPosition, 16);
         }
-    }, [driver?.simulationPosition, autoCenter]);
+    }, [driver?.simulationPosition, autoCenter, userInteracted]);
+
+    // Handle manual recenter
+    const handleRecenter = () => {
+        if (driver?.simulationPosition && mapRef.current) {
+            mapRef.current.setView(driver.simulationPosition, 16);
+            setUserInteracted(false); // Reset user interaction flag
+            setAutoCenter(true); // Enable auto-center
+        }
+    };
+
+    // Handle map interaction events
+    const handleMapInteraction = () => {
+        if (autoCenter) {
+            setUserInteracted(true); // Mark that user has interacted
+            setAutoCenter(false); // Disable auto-center
+        }
+    };
 
     // Load available drivers on mount
     useEffect(() => {
@@ -154,6 +183,7 @@ const DriverMobileView: React.FC = () => {
                     style={{ height: '60vh', width: '100%' }}
                     ref={mapRef}
                 >
+                    <MapEventHandler onMapInteraction={handleMapInteraction} />
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -217,11 +247,19 @@ const DriverMobileView: React.FC = () => {
 
                         <div className="controls-section">
                             <button 
-                                onClick={() => setAutoCenter(!autoCenter)}
-                                className={`mobile-btn ${autoCenter ? 'active' : ''}`}
+                                onClick={handleRecenter}
+                                className="mobile-btn recenter-btn"
+                                disabled={!driver?.simulationPosition}
                             >
-                                {autoCenter ? '📍 Auto-Center On' : '📍 Auto-Center Off'}
+                                📍 Recenter on Driver
                             </button>
+                            <div className="auto-center-status">
+                                {autoCenter && !userInteracted ? (
+                                    <span className="status-text">� Auto-following</span>
+                                ) : (
+                                    <span className="status-text">⭕ Manual control</span>
+                                )}
+                            </div>
                         </div>
                     </>
                 ) : (
