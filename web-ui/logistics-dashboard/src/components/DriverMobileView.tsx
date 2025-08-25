@@ -1,289 +1,467 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
-import * as L from 'leaflet';
-import ApiService from '../services/api';
+import React, { useState, useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Polyline, useMap } from 'react-leaflet';
+import { Icon, DivIcon } from 'leaflet';
+import { useAppContext } from '../contexts/AppContext';
+import ApiService, { Driver } from '../services/api';
 import 'leaflet/dist/leaflet.css';
 import '../mobile.css';
 
-// Custom driver icon for mobile
-const createMobileDriverIcon = (isMoving: boolean = false) => {
-    const color = isMoving ? '#10B981' : '#3B82F6';
-    return new L.DivIcon({
-        className: 'mobile-driver-icon',
+// Google Maps-like interface component
+const DriverTracker: React.FC<{ driver: any; bearing: number }> = ({ driver, bearing }) => {
+    const map = useMap();
+    
+    useEffect(() => {
+        if (driver?.simulationPosition) {
+            // Center map on driver position (Google Maps style - no rotation)
+            map.setView(driver.simulationPosition, 18, { animate: true, duration: 0.5 });
+            
+            console.log(`🗺️ Map centered on driver at:`, driver.simulationPosition, `bearing: ${bearing}°`);
+        }
+    }, [driver?.simulationPosition, map]); // Removed bearing from dependencies to avoid constant updates
+    
+    return null;
+};
+
+// Rotating driver arrow icon
+const createDriverArrow = (bearing: number = 0, isMoving: boolean = false) => {
+    const color = isMoving ? '#10B981' : '#3B82F6'; // Green when moving, blue when stopped
+    const size = 24;
+    
+    return new DivIcon({
+        className: 'driver-arrow-icon',
         html: `
-      <div style="
-        width: 24px; 
-        height: 24px; 
-        background-color: ${color};
-        border: 3px solid white;
-        border-radius: 50%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-      "></div>
-    `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
+            <div style="
+                width: ${size}px; 
+                height: ${size}px;
+                transform: rotate(${bearing}deg);
+                transition: transform 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">
+                <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L22 20H12H2L12 2Z" fill="${color}" stroke="white" stroke-width="2"/>
+                    <circle cx="12" cy="16" r="3" fill="white"/>
+                </svg>
+            </div>
+        `,
+        iconSize: [size, size],
+        iconAnchor: [size/2, size/2]
     });
 };
-
-// Pickup and delivery icons
-const createMobileIcon = (color: string) => {
-    return new L.DivIcon({
-        className: 'mobile-marker-icon',
-        html: `<div style="background-color: ${color}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
-        iconSize: [16, 16],
-        iconAnchor: [8, 8]
-    });
-};
-
-const pickupIcon = createMobileIcon('#10B981');
-const deliveryIcon = createMobileIcon('#F59E0B');
-
-interface Driver {
-    id: string;
-    name: string;
-    latitude: number;
-    longitude: number;
-    deliveries: Delivery[];
-    currentRoute?: [number, number][];
-    isMoving?: boolean;
-    currentTarget?: 'pickup' | 'delivery';
-    currentDeliveryIndex?: number;
-    simulationPosition?: [number, number];
-    activeRoute?: [number, number][];
-    currentRouteIndex?: number;
-}
-
-interface Delivery {
-    id: string;
-    pickup_latitude: number;
-    pickup_longitude: number;
-    delivery_latitude: number;
-    delivery_longitude: number;
-    status: 'pending' | 'picked_up' | 'delivered';
-}
 
 const DriverMobileView: React.FC = () => {
-    const [driverId, setDriverId] = useState<string>('');
-    const [driver, setDriver] = useState<Driver | null>(null);
-    const [loading, setLoading] = useState(false);
+    // Parse URL parameters
+    const urlParams = Object.fromEntries(new URLSearchParams(window.location.search));
+    const driverId = urlParams.driver || 'D001';
+    
+    // App context for shared driver data
+    const { getSharedDriver, appState, updateSharedDriver } = useAppContext();
+
+    // State for Google Maps-like interface
+    const [driver, setDriver] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [eta, setEta] = useState<string>('--:--');
-    const [distance, setDistance] = useState<string>('--');
     const [isConnected, setIsConnected] = useState(false);
+    const [currentBearing, setCurrentBearing] = useState(0);
+    const [showInfo, setShowInfo] = useState(false);
+    const [isSimulating, setIsSimulating] = useState(false);
+    const [simulationInterval, setSimulationInterval] = useState<NodeJS.Timeout | null>(null);
+    
+    const mapRef = useRef<any>(null);
 
-    const calculateETA = useCallback(async (driverData: Driver) => {
-        if (!driverData.deliveries.length) return;
-
-        try {
-            // Get current position (simulation or actual)
-            const currentPos: [number, number] = driverData.simulationPosition || [driverData.latitude, driverData.longitude];
-
-            // Get next target based on delivery status
-            let targetPos: [number, number];
-            const currentDelivery = driverData.deliveries.find(d => d.status === 'pending') || driverData.deliveries[0];
-
-            if (!currentDelivery) {
-                setEta('All deliveries completed');
-                setDistance('0 km');
-                return;
-            }
-
-            // Determine target: pickup if pending, delivery if picked up
-            if (currentDelivery.status === 'pending') {
-                targetPos = [currentDelivery.pickup_latitude, currentDelivery.pickup_longitude];
-            } else {
-                targetPos = [currentDelivery.delivery_latitude, currentDelivery.delivery_longitude];
-            }
-
-            // Calculate route and ETA
-            const routeResult = await ApiService.calculateRoute([currentPos, targetPos]);
-
-            if (routeResult.distance && routeResult.duration) {
-                const distanceKm = (routeResult.distance / 1000).toFixed(1);
-
-                setDistance(`${distanceKm} km`);
-
-                // Calculate ETA
-                const now = new Date();
-                const etaTime = new Date(now.getTime() + (routeResult.duration * 1000));
-                setEta(etaTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-            }
-
-        } catch (err) {
-            console.error('Failed to calculate ETA:', err);
-        }
-    }, []);
-
-    // Real-time updates
+    // Get real-time driver data from web UI (passive display only)
     useEffect(() => {
         if (!driverId) return;
 
-        const fetchDriverData = async () => {
+        console.log(`📱 Mobile view starting for driver: ${driverId}`);
+
+        const fetchInitialDriverData = async () => {
             try {
-                setLoading(true);
-                setError(null);
-
-                // Get all drivers and find the specific one
                 const drivers = await ApiService.getDrivers();
-
-                // Flexible driver ID matching
-                let foundDriver: any = null;
-
-                // Try exact match first
-                foundDriver = drivers.find(d => d.id.toLowerCase() === driverId.toLowerCase());
-
-                // If no exact match, try flexible matching
-                if (!foundDriver) {
-                    const searchId = driverId.toLowerCase();
-                    foundDriver = drivers.find(d => {
-                        const driverIdLower = d.id.toLowerCase();
-                        // Match formats like: "1" -> "d001", "01" -> "d001", "d1" -> "d001"
-                        if (searchId.match(/^\d+$/)) {
-                            // Pure number: pad to 3 digits and add D prefix
-                            const paddedId = `d${searchId.padStart(3, '0')}`;
-                            return driverIdLower === paddedId;
-                        } else if (searchId.match(/^d\d+$/)) {
-                            // D + number: pad the number part
-                            const numberPart = searchId.substring(1);
-                            const paddedId = `d${numberPart.padStart(3, '0')}`;
-                            return driverIdLower === paddedId;
-                        }
-                        // Fallback: partial match
-                        return driverIdLower.includes(searchId) || searchId.includes(driverIdLower);
-                    });
+                const foundDriver = drivers.find((d: any) => d.id === driverId);
+                
+                if (foundDriver) {
+                    const deliveries = await ApiService.getDeliveries();
+                    const driverDeliveries = deliveries.filter((d: any) => d.driver_id === foundDriver.id);
+                    
+                    const driverWithDeliveries = {
+                        ...foundDriver,
+                        deliveries: driverDeliveries,
+                        isMoving: false,
+                        speed: 0
+                    };
+                    
+                    console.log(`📱 Initial driver data loaded:`, driverWithDeliveries);
+                    setDriver(driverWithDeliveries);
+                    setIsConnected(true);
+                    setError(null);
+                } else {
+                    setError(`Driver ${driverId} not found`);
                 }
-
-                if (!foundDriver) {
-                    const availableIds = drivers.map(d => d.id).join(', ');
-                    console.log('Available driver IDs:', availableIds);
-                    setError(`Driver not found. Available drivers: ${availableIds || 'None'}`);
-                    setDriver(null);
-                    return;
-                }
-
-                // Get deliveries for this driver
-                const deliveries = await ApiService.getDeliveries();
-                const driverDeliveries = deliveries.filter(d => d.driver_id === foundDriver.id);
-
-                const driverWithDeliveries = {
-                    ...foundDriver,
-                    deliveries: driverDeliveries
-                };
-
-                setDriver(driverWithDeliveries);
-                setIsConnected(true);
-
-                // Calculate ETA if driver has deliveries
-                if (driverDeliveries.length > 0) {
-                    await calculateETA(driverWithDeliveries);
-                }
-
-            } catch (err: any) {
-                console.error('Failed to fetch driver data:', err);
+            } catch (error) {
+                console.error('📱 Error fetching initial driver data:', error);
                 setError('Failed to load driver data');
-                setIsConnected(false);
             } finally {
                 setLoading(false);
             }
         };
 
-        // Initial fetch
-        fetchDriverData();
+        fetchInitialDriverData();
 
-        // Set up real-time polling every 2 seconds
-        const interval = setInterval(fetchDriverData, 2000);
-
-        return () => clearInterval(interval);
-    }, [driverId, calculateETA]);
-
-    const handleDriverIdSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (driverId.trim()) {
-            // Auto-format the driver ID for better user experience
-            let formattedId = driverId.trim().toUpperCase();
-            if (formattedId.match(/^\d+$/)) {
-                // If user entered just numbers, add D prefix and pad
-                formattedId = `D${formattedId.padStart(3, '0')}`;
+        // Poll for shared driver data from admin UI every 100ms
+        const sharedDataInterval = setInterval(() => {
+            const sharedDriver = getSharedDriver(driverId);
+            if (sharedDriver) {
+                console.log(`📱 Received shared driver data:`, {
+                    id: sharedDriver.id,
+                    name: sharedDriver.name,
+                    isMoving: sharedDriver.isMoving,
+                    speed: sharedDriver.speed,
+                    position: sharedDriver.simulationPosition,
+                    bearing: sharedDriver.movementDirection || sharedDriver.heading
+                });
+                
+                setDriver(sharedDriver);
+                setIsConnected(true);
+                setError(null);
+                
+                // Update bearing from shared data
+                if (sharedDriver.movementDirection !== undefined) {
+                    setCurrentBearing(sharedDriver.movementDirection);
+                } else if (sharedDriver.heading !== undefined) {
+                    setCurrentBearing(sharedDriver.heading);
+                }
             }
-            setDriverId(formattedId);
+        }, 100);
+
+        return () => {
+            clearInterval(sharedDataInterval);
+        };
+    }, [driverId, getSharedDriver]);
+
+    // Mobile view now fetches data from backend and runs its own simulation
+    useEffect(() => {
+        setLoading(false);
+        
+        if (driverId) {
+            console.log(`📱 Mobile view initialized for driver: ${driverId}`);
+            
+            const fetchDriverData = async () => {
+                try {
+                    // Fetch driver data from backend API
+                    const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/drivers/${driverId}/simulation-state`);
+                    const driverData = await response.json();
+                    
+                    console.log(`📱 Fetched driver data from API:`, driverData);
+                    
+                    // Update local state with fetched data
+                    setDriver(driverData);
+                    
+                    // If driver has deliveries and we need to start simulation
+                    if (driverData.deliveries?.length > 0 && !driverData.simulationPosition) {
+                        console.log(`📱 Driver has ${driverData.deliveries.length} deliveries, initializing simulation...`);
+                        await initializeDriverSimulation(driverData);
+                    }
+                    
+                } catch (error) {
+                    console.error('📱 Error fetching driver data:', error);
+                    setError(`Failed to fetch driver data: ${error}`);
+                }
+            };
+            
+            // Fetch data immediately
+            fetchDriverData();
+            
+            // Poll for updates every 2 seconds to check if dashboard has new data
+            const pollInterval = setInterval(fetchDriverData, 2000);
+            
+            return () => clearInterval(pollInterval);
+        }
+    }, [driverId]);
+
+    // Initialize simulation when driver has deliveries
+    const initializeDriverSimulation = async (driverData: any) => {
+        try {
+            if (!driverData.deliveries?.length) return;
+            
+            console.log(`📱 Initializing simulation for ${driverData.name}`);
+            
+            // Get the first pending delivery
+            const currentDelivery = driverData.deliveries.find((d: any) => d.status === 'pending') || driverData.deliveries[0];
+            if (!currentDelivery) return;
+
+            // Calculate route from driver position to pickup location using our API
+            const routePoints = [
+                [driverData.latitude, driverData.longitude],
+                [currentDelivery.pickup_latitude, currentDelivery.pickup_longitude]
+            ];
+            
+            console.log(`📱 Calculating route from ${routePoints[0]} to ${routePoints[1]}`);
+            
+            const routeResponse = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/calculate-route`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ points: routePoints })
+            });
+            
+            const routeResult = await routeResponse.json();
+            console.log(`📱 Received route with ${routeResult.route?.length || 0} points`);
+            
+            // Update driver with simulation data
+            setDriver((prev: any) => ({
+                ...prev,
+                simulationPosition: [driverData.latitude, driverData.longitude],
+                isMoving: true,
+                currentTarget: 'pickup',
+                currentDeliveryIndex: 0,
+                activeRoute: routeResult.route || [],
+                currentRouteIndex: 0,
+                speed: 50 // Default speed
+            }));
+            
+            // Start the mobile simulation
+            setIsSimulating(true);
+            
+        } catch (error) {
+            console.error('📱 Error initializing simulation:', error);
         }
     };
 
-    const getCurrentDelivery = () => {
-        if (!driver) return null;
-        return driver.deliveries.find(d => d.status !== 'delivered') || driver.deliveries[0];
-    };
-
-    const getDriverStatus = () => {
-        if (!driver) return 'Not connected';
-        if (driver.deliveries.length === 0) return 'No deliveries assigned';
-        if (driver.isMoving) {
-            const currentDelivery = getCurrentDelivery();
-            if (!currentDelivery) return 'All deliveries completed';
-            return currentDelivery.status === 'pending' ? 'Going to pickup' : 'Delivering';
-        }
-        return 'Ready to start';
-    };
-
-    const getRouteToShow = () => {
-        if (!driver) return [];
-
-        // If driver is moving and has an active route, show remaining route
-        if (driver.activeRoute && driver.isMoving && driver.currentRouteIndex !== undefined) {
-            return driver.activeRoute.slice(driver.currentRouteIndex);
+    // Mobile simulation logic - runs independent movement simulation
+    useEffect(() => {
+        if (!isSimulating || !driver?.simulationPosition || !driver?.activeRoute?.length) {
+            return;
         }
 
-        // Otherwise show planned route if available
-        return driver.currentRoute || [];
+        console.log(`📱 Starting movement simulation for ${driver.name}`);
+        
+        const moveDriver = () => {
+            setDriver((prevDriver: any) => {
+                if (!prevDriver?.isMoving || !prevDriver?.simulationPosition || !prevDriver?.activeRoute?.length) {
+                    return prevDriver;
+                }
+
+                const currentRouteIndex = prevDriver.currentRouteIndex || 0;
+                
+                if (currentRouteIndex >= prevDriver.activeRoute.length) {
+                    // Reached end of current route
+                    console.log(`📱 Driver ${prevDriver.name} reached end of route`);
+                    
+                    const currentDelivery = prevDriver.deliveries[prevDriver.currentDeliveryIndex || 0];
+                    if (!currentDelivery) return prevDriver;
+
+                    if (prevDriver.currentTarget === 'pickup') {
+                        // Reached pickup, calculate route to delivery
+                        console.log(`📱 Reached pickup, going to delivery`);
+                        calculateNextRoute(prevDriver, [currentDelivery.delivery_latitude, currentDelivery.delivery_longitude], 'delivery');
+                        return prevDriver;
+                    } else {
+                        // Reached delivery, move to next delivery or stop
+                        console.log(`📱 Reached delivery`);
+                        const nextDeliveryIndex = (prevDriver.currentDeliveryIndex || 0) + 1;
+                        
+                        if (nextDeliveryIndex < prevDriver.deliveries.length) {
+                            const nextDelivery = prevDriver.deliveries[nextDeliveryIndex];
+                            calculateNextRoute(prevDriver, [nextDelivery.pickup_latitude, nextDelivery.pickup_longitude], 'pickup', nextDeliveryIndex);
+                            return {
+                                ...prevDriver,
+                                deliveries: prevDriver.deliveries.map((d: any, idx: number) =>
+                                    idx === (prevDriver.currentDeliveryIndex || 0) ? {...d, status: 'delivered'} : d
+                                )
+                            };
+                        } else {
+                            // All deliveries completed
+                            console.log(`📱 All deliveries completed for ${prevDriver.name}`);
+                            setIsSimulating(false);
+                            return {
+                                ...prevDriver,
+                                isMoving: false,
+                                deliveries: prevDriver.deliveries.map((d: any, idx: number) =>
+                                    idx === (prevDriver.currentDeliveryIndex || 0) ? {...d, status: 'delivered'} : d
+                                )
+                            };
+                        }
+                    }
+                }
+
+                // Move towards next route point
+                const targetPoint = prevDriver.activeRoute[currentRouteIndex];
+                const newPos = moveTowardsTarget(
+                    prevDriver.simulationPosition, 
+                    targetPoint, 
+                    prevDriver.speed || 50, // Default 50 km/h
+                    100 // 100ms interval
+                );
+
+                // Calculate bearing
+                const bearing = calculateBearing(prevDriver.simulationPosition, targetPoint);
+                setCurrentBearing(bearing);
+
+                // Check if reached current route point
+                const distanceToPoint = calculateDistance(newPos, targetPoint);
+                const hasReachedPoint = distanceToPoint < 0.01; // Within 10 meters
+
+                const updatedDriver = {
+                    ...prevDriver,
+                    simulationPosition: hasReachedPoint ? targetPoint : newPos,
+                    currentRouteIndex: hasReachedPoint ? currentRouteIndex + 1 : currentRouteIndex,
+                    heading: bearing
+                };
+
+                return updatedDriver;
+            });
+        };
+
+        const interval = setInterval(moveDriver, 100); // Update every 100ms
+        setSimulationInterval(interval);
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [isSimulating, driver?.simulationPosition, driver?.activeRoute]);
+
+    // Helper function to calculate next route
+    const calculateNextRoute = async (currentDriver: any, targetPos: [number, number], targetType: 'pickup' | 'delivery', deliveryIndex?: number) => {
+        try {
+            const routePoints = [currentDriver.simulationPosition, targetPos];
+            
+            const routeResponse = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/calculate-route`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ points: routePoints })
+            });
+            
+            const routeResult = await routeResponse.json();
+            console.log(`📱 Calculated route to ${targetType}:`, routeResult.route?.length || 0, 'points');
+            
+            setDriver((prev: any) => ({
+                ...prev,
+                currentTarget: targetType,
+                currentDeliveryIndex: deliveryIndex !== undefined ? deliveryIndex : prev.currentDeliveryIndex,
+                activeRoute: routeResult.route || [],
+                currentRouteIndex: 0,
+                deliveries: prev.deliveries.map((d: any, idx: number) =>
+                    idx === (prev.currentDeliveryIndex || 0) && targetType === 'delivery' 
+                        ? {...d, status: 'picked_up'} 
+                        : d
+                )
+            }));
+        } catch (error) {
+            console.error('📱 Error calculating next route:', error);
+        }
     };
 
-    if (!driverId) {
-        return (
-            <div className="min-h-screen bg-blue-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                    <div className="text-center mb-6">
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Driver Portal</h1>
-                        <p className="text-gray-600">Enter your driver ID to access your route</p>
-                        <p className="text-sm text-gray-500 mt-1">Examples: 1, 01, D001, or D1</p>
-                    </div>
+    // Movement utility functions
+    const calculateDistance = (pos1: [number, number], pos2: [number, number]): number => {
+        const [lat1, lng1] = pos1;
+        const [lat2, lng2] = pos2;
+        const R = 6371; // Earth's radius in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    };
 
-                    <form onSubmit={handleDriverIdSubmit} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Driver ID
-                            </label>
-                            <input
-                                type="text"
-                                value={driverId}
-                                onChange={(e) => setDriverId(e.target.value)}
-                                placeholder="Enter: 1, D001, etc."
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-                                required
-                            />
-                            <p className="mt-1 text-xs text-gray-500">
-                                You can enter just the number (e.g., "1" for D001)
-                            </p>
-                        </div>
+    const calculateBearing = (pos1: [number, number], pos2: [number, number]): number => {
+        const [lat1, lng1] = pos1;
+        const [lat2, lng2] = pos2;
+        const dLng = (lng2 - lng1) * Math.PI / 180;
+        const lat1Rad = lat1 * Math.PI / 180;
+        const lat2Rad = lat2 * Math.PI / 180;
 
-                        <button
-                            type="submit"
-                            className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors font-medium text-lg"
-                            disabled={!driverId.trim()}
-                        >
-                            Connect
-                        </button>
-                    </form>
-                </div>
-            </div>
+        const y = Math.sin(dLng) * Math.cos(lat2Rad);
+        const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) -
+            Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLng);
+
+        const bearing = Math.atan2(y, x) * 180 / Math.PI;
+        return (bearing + 360) % 360;
+    };
+
+    const moveTowardsTarget = (currentPos: [number, number], targetPos: [number, number], speedKmh: number, deltaTimeMs: number): [number, number] => {
+        const distanceKm = calculateDistance(currentPos, targetPos);
+        const speedKmPerMs = speedKmh / (1000 * 60 * 60);
+        const moveDistanceKm = speedKmPerMs * deltaTimeMs;
+        
+        if (distanceKm <= moveDistanceKm) {
+            return targetPos;
+        }
+        
+        const bearing = calculateBearing(currentPos, targetPos) * Math.PI / 180;
+        const R = 6371;
+        const [lat1, lng1] = currentPos;
+        const lat1Rad = lat1 * Math.PI / 180;
+        const lng1Rad = lng1 * Math.PI / 180;
+        const angularDistance = moveDistanceKm / R;
+        
+        const lat2Rad = Math.asin(
+            Math.sin(lat1Rad) * Math.cos(angularDistance) +
+            Math.cos(lat1Rad) * Math.sin(angularDistance) * Math.cos(bearing)
         );
-    }
+        
+        const lng2Rad = lng1Rad + Math.atan2(
+            Math.sin(bearing) * Math.sin(angularDistance) * Math.cos(lat1Rad),
+            Math.cos(angularDistance) - Math.sin(lat1Rad) * Math.sin(lat2Rad)
+        );
+        
+        return [lat2Rad * 180 / Math.PI, lng2Rad * 180 / Math.PI];
+    };
 
-    if (loading && !driver) {
+    // Clean up simulation on unmount
+    useEffect(() => {
+        return () => {
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+            }
+        };
+    }, [simulationInterval]);
+
+    // Get driver position
+    const getDriverPosition = (): [number, number] => {
+        if (driver?.simulationPosition) {
+            return driver.simulationPosition;
+        }
+        return driver ? [driver.latitude, driver.longitude] : [18.5204, 73.8567];
+    };
+
+    // Get driver route with real-time updates
+    const getDriverRoute = () => {
+        if (!driver) return [];
+        
+        // Check multiple route sources in priority order
+        let route = [];
+        
+        // 1. Active route (currently being followed)
+        if (driver.activeRoute && driver.activeRoute.length > 0) {
+            route = driver.activeRoute;
+            console.log(`📍 Using activeRoute with ${route.length} points`);
+        }
+        // 2. Current route (planned route)
+        else if (driver.currentRoute && driver.currentRoute.length > 0) {
+            route = driver.currentRoute;
+            console.log(`📍 Using currentRoute with ${route.length} points`);
+        }
+        // 3. Check if there's a route in the driver data
+        else if (driver.route && driver.route.length > 0) {
+            route = driver.route;
+            console.log(`📍 Using driver.route with ${route.length} points`);
+        }
+        else {
+            console.log(`📍 No route found for driver ${driver.id}`);
+        }
+        
+        return route;
+    };
+
+    if (loading) {
         return (
-            <div className="min-h-screen bg-blue-50 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Connecting to driver {driverId}...</p>
+            <div className="google-maps-container">
+                <div className="loading-overlay">
+                    <div className="loading-spinner"></div>
+                    <p>Loading GPS...</p>
                 </div>
             </div>
         );
@@ -291,173 +469,207 @@ const DriverMobileView: React.FC = () => {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md text-center">
-                    <div className="text-red-500 text-4xl mb-4">⚠️</div>
-                    <h2 className="text-xl font-bold text-red-800 mb-2">Connection Error</h2>
-                    <p className="text-red-600 mb-4">{error}</p>
-                    <button
-                        onClick={() => setDriverId('')}
-                        className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors"
-                    >
-                        Try Again
-                    </button>
+            <div className="google-maps-container">
+                <div className="error-overlay">
+                    <div className="error-icon">⚠️</div>
+                    <p>GPS Connection Error</p>
+                    <small>{error}</small>
                 </div>
             </div>
         );
     }
 
-    const currentDelivery = getCurrentDelivery();
-    const driverPosition = driver?.simulationPosition || [driver?.latitude || 0, driver?.longitude || 0];
-    const routeToShow = getRouteToShow();
+    const driverPosition = getDriverPosition();
+    const driverRoute = getDriverRoute();
+    const isMoving = driver?.isMoving || false;
+    const speed = driver?.speed || driver?.simulationSpeed || 0;
+
+    console.log(`📱 Mobile View Status:`, {
+        driverId,
+        isConnected,
+        hasDriver: !!driver,
+        driverPosition,
+        routePoints: driverRoute.length,
+        isMoving,
+        speed,
+        bearing: currentBearing
+    });
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            {/* Header */}
-            <div className="bg-white shadow-sm">
-                <div className="p-4 flex items-center justify-between">
-                    <div>
-                        <h1 className="text-xl font-bold text-gray-900">{driver?.name}</h1>
-                        <p className="text-sm text-gray-600">ID: {driver?.id}</p>
-                    </div>
-                    <div className="flex items-center">
-                        <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'} mr-2`}></div>
-                        <span className="text-sm text-gray-600">{isConnected ? 'Live' : 'Offline'}</span>
-                    </div>
+        <div className="google-maps-container">
+            {/* Google Maps-like Status Bar */}
+            <div className="status-bar">
+                <div className="status-left">
+                    <div className={`connection-dot ${isConnected ? 'connected' : 'disconnected'}`}></div>
+                    <span className="driver-name">{driver?.name || driverId}</span>
+                    {driver && getSharedDriver(driverId) && (
+                        <span className="sync-indicator">🔄 LIVE</span>
+                    )}
+                </div>
+                <div className="status-right">
+                    <button 
+                        className="info-toggle"
+                        onClick={() => setShowInfo(!showInfo)}
+                    >
+                        ℹ️
+                    </button>
                 </div>
             </div>
 
-            {/* Status Cards */}
-            <div className="p-4 space-y-4">
-                {/* ETA Card */}
-                <div className="bg-white rounded-lg shadow-sm p-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-600">ETA</p>
-                            <p className="text-2xl font-bold text-blue-600">{eta}</p>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-sm text-gray-600">Distance</p>
-                            <p className="text-lg font-semibold text-gray-900">{distance}</p>
-                        </div>
-                    </div>
-                </div>
+            {/* Full-Screen Map */}
+            <div className="full-screen-map">
+                <MapContainer
+                    center={driverPosition}
+                    zoom={18}
+                    style={{ height: '100%', width: '100%' }}
+                    ref={mapRef}
+                    zoomControl={false}
+                    attributionControl={false}
+                >
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; OpenStreetMap contributors'
+                    />
+                    
+                    {/* Driver tracking component */}
+                    <DriverTracker driver={driver} bearing={currentBearing} />
+                    
+                    {/* Driver Marker with Rotation */}
+                    {(() => {
+                        console.log(`🚗 Driver marker at:`, driverPosition, `moving: ${isMoving}, bearing: ${currentBearing}°`);
+                        return (
+                            <Marker 
+                                position={driverPosition} 
+                                icon={createDriverArrow(currentBearing, isMoving)}
+                            />
+                        );
+                    })()}
 
-                {/* Status Card */}
-                <div className="bg-white rounded-lg shadow-sm p-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-600">Status</p>
-                            <p className="text-lg font-semibold text-gray-900">{getDriverStatus()}</p>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-sm text-gray-600">Deliveries</p>
-                            <p className="text-lg font-semibold text-gray-900">
-                                {driver?.deliveries.filter(d => d.status === 'delivered').length || 0}/
-                                {driver?.deliveries.length || 0}
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                    {/* Route Path */}
+                    {driverRoute.length > 0 && (
+                        <>
+                            <Polyline
+                                positions={driverRoute}
+                                color="#4285F4"
+                                weight={5}
+                                opacity={0.8}
+                                dashArray={isMoving ? undefined : "10, 10"}
+                            />
+                            {console.log(`🛣️ Rendering route with ${driverRoute.length} points:`, driverRoute.slice(0, 3), '...')}
+                        </>
+                    )}
+                </MapContainer>
+            </div>
 
-                {/* Current Delivery Card */}
-                {currentDelivery && (
-                    <div className="bg-white rounded-lg shadow-sm p-4">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Current Delivery</h3>
-                        <div className="space-y-2">
-                            <div className="flex justify-between">
-                                <span className="text-sm text-gray-600">Delivery ID:</span>
-                                <span className="text-sm font-medium">{currentDelivery.id}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-sm text-gray-600">Status:</span>
-                                <span className={`text-sm font-medium capitalize ${currentDelivery.status === 'pending' ? 'text-orange-600' :
-                                        currentDelivery.status === 'picked_up' ? 'text-blue-600' : 'text-green-600'
-                                    }`}>
-                                    {currentDelivery.status.replace('_', ' ')}
+            {/* Google Maps-like Bottom Panel */}
+            <div className={`bottom-panel ${showInfo ? 'expanded' : 'collapsed'}`}>
+                {showInfo ? (
+                    <div className="driver-info">
+                        <div className="info-header">
+                            <h3>{driver?.name || driverId}</h3>
+                            <button 
+                                className="close-btn"
+                                onClick={() => setShowInfo(false)}
+                            >
+                                ×
+                            </button>
+                        </div>
+                        
+                        <div className="info-grid">
+                            <div className="info-item">
+                                <span className="label">Status</span>
+                                <span className={`value ${isMoving ? 'moving' : 'stopped'}`}>
+                                    {isMoving ? '🚗 Moving' : '⏹️ Stopped'}
                                 </span>
                             </div>
-                            {currentDelivery.status === 'pending' && (
-                                <div className="text-sm text-gray-600">
-                                    Next: Go to pickup location
-                                </div>
-                            )}
-                            {currentDelivery.status === 'picked_up' && (
-                                <div className="text-sm text-gray-600">
-                                    Next: Deliver to customer
-                                </div>
-                            )}
+                            
+                            <div className="info-item">
+                                <span className="label">Speed</span>
+                                <span className="value">{speed} km/h</span>
+                            </div>
+
+                            <div className="info-item">
+                                <span className="label">Simulation</span>
+                                <span className={`value ${isSimulating ? 'active' : 'inactive'}`}>
+                                    {isSimulating ? '🟢 Active' : '🔴 Inactive'}
+                                </span>
+                            </div>
+                            
+                            <div className="info-item">
+                                <span className="label">Route Points</span>
+                                <span className="value">{driverRoute.length}</span>
+                            </div>
+                            
+                            <div className="info-item">
+                                <span className="label">Deliveries</span>
+                                <span className="value">{driver?.deliveries?.length || 0}</span>
+                            </div>
+                            
+                            <div className="info-item">
+                                <span className="label">Position</span>
+                                <span className="value">
+                                    {driverPosition[0].toFixed(4)}, {driverPosition[1].toFixed(4)}
+                                </span>
+                            </div>
+                        </div>
+
+                        {driver?.deliveries && driver.deliveries.length > 0 && (
+                            <div className="deliveries-list">
+                                <h4>Active Deliveries</h4>
+                                {driver.deliveries.slice(0, 3).map((delivery: any, index: number) => (
+                                    <div key={delivery.id} className="delivery-card">
+                                        <div className="delivery-header">
+                                            <span className="delivery-number">#{index + 1}</span>
+                                            <span className={`delivery-status ${delivery.status}`}>
+                                                {delivery.status.replace('_', ' ')}
+                                            </span>
+                                        </div>
+                                        <p className="delivery-address">
+                                            {delivery.delivery_address || 'Address not available'}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <div className="quick-status">
+                        <div className="quick-info">
+                            <span className={`status-badge ${isMoving ? 'moving' : 'stopped'}`}>
+                                {isMoving ? '🚗 Moving' : '⏹️ Stopped'}
+                            </span>
+                            <span className="speed-display">{speed} km/h</span>
+                        </div>
+                        <div className="deliveries-count">
+                            {driver?.deliveries?.length || 0} deliveries
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* Map */}
-            <div className="p-4">
-                <div className="bg-white rounded-lg shadow-sm overflow-hidden" style={{ height: '400px' }}>
-                    <MapContainer
-                        center={driverPosition}
-                        zoom={15}
-                        className="h-full w-full"
-                    >
-                        <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                        />
-
-                        {/* Driver Marker */}
-                        {driver && (
-                            <Marker
-                                position={driverPosition}
-                                icon={createMobileDriverIcon(driver.isMoving)}
-                            />
-                        )}
-
-                        {/* Route Path (only ahead) */}
-                        {routeToShow.length > 1 && (
-                            <Polyline
-                                positions={routeToShow}
-                                color="#10B981"
-                                weight={4}
-                                opacity={0.8}
-                                dashArray="10, 5"
-                            />
-                        )}
-
-                        {/* Pickup/Delivery Markers for current delivery */}
-                        {currentDelivery && (
-                            <>
-                                <Marker
-                                    position={[currentDelivery.pickup_latitude, currentDelivery.pickup_longitude]}
-                                    icon={pickupIcon}
-                                />
-                                <Marker
-                                    position={[currentDelivery.delivery_latitude, currentDelivery.delivery_longitude]}
-                                    icon={deliveryIcon}
-                                />
-                            </>
-                        )}
-                    </MapContainer>
-                </div>
+            {/* Google Maps-like Zoom Controls */}
+            <div className="map-controls">
+                <button 
+                    className="zoom-btn"
+                    onClick={() => mapRef.current?.zoomIn()}
+                >
+                    +
+                </button>
+                <button 
+                    className="zoom-btn"
+                    onClick={() => mapRef.current?.zoomOut()}
+                >
+                    -
+                </button>
             </div>
 
-            {/* Bottom Navigation */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
-                <div className="flex space-x-2">
-                    <button
-                        onClick={() => setDriverId('')}
-                        className="flex-1 bg-gray-500 text-white py-3 px-4 rounded-lg hover:bg-gray-600 transition-colors font-medium"
-                    >
-                        Disconnect
-                    </button>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="flex-1 bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors font-medium"
-                    >
-                        Refresh
-                    </button>
+            {/* Floating Speed Display */}
+            {isMoving && (
+                <div className="speed-overlay">
+                    <div className="speed-value">{speed}</div>
+                    <div className="speed-unit">km/h</div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

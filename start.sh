@@ -208,10 +208,6 @@ start_backend() {
     
     cd "$BACKEND_DIR"
     
-    # Install dependencies if needed
-    print_status "Installing backend dependencies..."
-    npm install
-    
     # Build TypeScript every time
     print_status "Building backend..."
     npm run build
@@ -254,11 +250,7 @@ start_frontend() {
     fi
     
     cd "$FRONTEND_DIR"
-    
-    # Install dependencies every time
-    print_status "Installing frontend dependencies..."
-    npm install
-    
+
     # Build the frontend (optional - for production builds)
     # Uncomment the next line if you want to build before serving
     # print_status "Building frontend..."

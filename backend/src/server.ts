@@ -867,10 +867,81 @@ app.get('/api/health', async (req, res) => {
             status: 'healthy',
             timestamp: new Date().toISOString(),
             services: {
-                database: 'connected',
+                database: graphhopperStatus,
                 graphhopper: graphhopperStatus
             }
         });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Driver simulation state management endpoints
+let driverSimulationStates: { [key: string]: any } = {};
+
+// Update driver position (called by admin dashboard during simulation)
+app.put('/api/drivers/:driverId/position', async (req, res) => {
+    try {
+        const { driverId } = req.params;
+        const simulationData = req.body;
+        
+        console.log(`📍 Admin updating position for driver ${driverId}:`, simulationData);
+        
+        // Store the simulation state
+        driverSimulationStates[driverId] = {
+            ...simulationData,
+            lastUpdate: Date.now()
+        };
+        
+        res.json({ success: true, driverId, timestamp: Date.now() });
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get driver simulation state (called by mobile view)
+app.get('/api/drivers/:driverId/simulation-state', async (req, res) => {
+    try {
+        const { driverId } = req.params;
+        
+        const simulationState = driverSimulationStates[driverId];
+        
+        if (!simulationState) {
+            // Return basic driver data if no simulation state exists
+            const driver = await dbGet('SELECT * FROM drivers WHERE id = ?', [driverId]);
+            if (!driver) {
+                return res.status(404).json({ error: 'Driver not found' });
+            }
+            
+            // Get deliveries for the driver
+            const deliveries = await dbAll('SELECT * FROM deliveries WHERE driver_id = ?', [driverId]);
+            
+            return res.json({
+                ...driver,
+                deliveries,
+                isSimulating: false,
+                simulationPosition: null,
+                heading: 0
+            });
+        }
+        
+        console.log(`📱 Mobile requesting state for driver ${driverId}`);
+        res.json(simulationState);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get all drivers with their simulation states (for dashboard)
+app.get('/api/simulation/drivers', async (req, res) => {
+    try {
+        const drivers = await dbAll('SELECT * FROM drivers');
+        const driversWithSimulation = drivers.map(driver => ({
+            ...driver,
+            simulationState: driverSimulationStates[driver.id] || null
+        }));
+        
+        res.json(driversWithSimulation);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

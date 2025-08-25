@@ -5,7 +5,16 @@ import * as L from 'leaflet';
 import Dashboard from './components/Dashboard';
 import MetricsPanel from './components/MetricsPanel';
 import ApiService from './services/api';
+import { useAppContext } from './contexts/AppContext';
 import 'leaflet/dist/leaflet.css';
+
+// Fix leaflet default marker icon issue
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
 
 // Initialize API service
 const apiService = ApiService;
@@ -156,6 +165,9 @@ const App: React.FC = () => {
   const [simulationSpeed, setSimulationSpeed] = useState(50); // km/h
   const [simulationIntervalId, setSimulationIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [isRecalculatingRoutes, setIsRecalculatingRoutes] = useState(false);
+
+  // AppContext for sharing state with mobile view
+  const { appState, updateSharedDriver, setGlobalSimulation, setGlobalSimulationSpeed } = useAppContext();
 
   // Load initial data
   useEffect(() => {
@@ -1059,6 +1071,7 @@ const App: React.FC = () => {
     if (isSimulating) return;
 
     setIsSimulating(true);
+    setGlobalSimulation(true); // Notify mobile views
 
     // Initialize simulation state for drivers with deliveries
     const updatedDrivers = await Promise.all(
@@ -1095,6 +1108,29 @@ const App: React.FC = () => {
 
     setDrivers(updatedDrivers);
 
+    // Share initial driver data with mobile views when simulation starts
+    console.log(`🔄 Sharing initial driver data for ${updatedDrivers.length} drivers`);
+    updatedDrivers.forEach(driver => {
+      if (driver.simulationPosition || (driver.latitude && driver.longitude)) {
+        const position = driver.simulationPosition || [driver.latitude, driver.longitude];
+        const sharedData = {
+          ...driver,
+          latitude: position[0],
+          longitude: position[1],
+          simulationPosition: position,
+          heading: driver.heading || 0,
+          movementDirection: driver.heading || 0,
+          lastUpdate: Date.now()
+        };
+        console.log(`🔄 Initial share for ${driver.name} (${driver.id}):`, {
+          position: position,
+          isMoving: driver.isMoving,
+          hasDeliveries: driver.deliveries?.length || 0
+        });
+        updateSharedDriver(driver.id, sharedData);
+      }
+    });
+
     const intervalId = setInterval(() => {
       updateDriverPositions();
     }, 100); // Update every 100ms for smooth animation
@@ -1106,6 +1142,7 @@ const App: React.FC = () => {
     if (!isSimulating) return;
 
     setIsSimulating(false);
+    setGlobalSimulation(false); // Notify mobile views
 
     if (simulationIntervalId) {
       clearInterval(simulationIntervalId);
@@ -1127,6 +1164,7 @@ const App: React.FC = () => {
   };
 
   const updateDriverPositions = () => {
+    console.log(`🔄 updateDriverPositions called. Moving drivers:`, drivers.filter(d => d.isMoving).map(d => d.name));
     setDrivers(prevDrivers => prevDrivers.map(driver => {
       if (!driver.isMoving || !driver.simulationPosition || driver.deliveries.length === 0) {
         return driver;
@@ -1327,6 +1365,48 @@ const App: React.FC = () => {
         heading
       };
     }));
+
+    // Share updated driver data with AppContext for mobile sync (separate call to avoid issues)
+    setDrivers(prevDrivers => {
+      console.log(`🔄 Attempting to share data for ${prevDrivers.length} drivers`);
+      prevDrivers.forEach(driver => {
+        // Share data for ALL drivers during simulation, not just moving ones
+        if (driver.simulationPosition || (driver.latitude && driver.longitude)) {
+          // Share simulation data with mobile views
+          const position = driver.simulationPosition || [driver.latitude, driver.longitude];
+          const sharedData = {
+            ...driver,
+            latitude: position[0],
+            longitude: position[1],
+            simulationPosition: position,
+            heading: driver.heading || 0,
+            movementDirection: driver.heading || 0,
+            lastUpdate: Date.now()
+          };
+          console.log(`🔄 Admin sharing driver data for ${driver.name} (${driver.id}):`, {
+            id: driver.id,
+            position: position,
+            heading: driver.heading,
+            isMoving: driver.isMoving
+          });
+          
+          // Send to backend API for mobile view consumption
+          fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/drivers/${driver.id}/position`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(sharedData)
+          }).catch(error => {
+            console.log('📡 API position update failed (this is ok):', error);
+          });
+          
+          // Also update AppContext for local coordination
+          updateSharedDriver(driver.id, sharedData);
+        } else {
+          console.log(`🔄 No position data for driver ${driver.name}`);
+        }
+      });
+      return prevDrivers; // Return unchanged since we're just sharing data
+    });
   };
 
   // Clean up interval on unmount
@@ -1425,6 +1505,7 @@ const App: React.FC = () => {
 
   const handleSpeedChange = (newSpeed: number) => {
     setSimulationSpeed(newSpeed);
+    setGlobalSimulationSpeed(newSpeed); // Notify mobile views
 
     // Update speed for all currently moving drivers in real-time
     if (isSimulating) {
@@ -1573,15 +1654,19 @@ const App: React.FC = () => {
         </div>
 
         {/* Map Container */}
-        <div className="flex-1 relative">
+        <div className="flex-1 relative" style={{ minHeight: '400px' }}>
           <MapContainer
             center={[18.5204, 73.8567]}
             zoom={12}
             className="h-full w-full"
+            style={{ height: '100%', width: '100%', zIndex: 1 }}
+            key="main-map" // Force remount if needed
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              maxZoom={19}
+              tileSize={256}
             />
 
             {/* Map Click Handler */}
