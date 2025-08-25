@@ -1610,7 +1610,7 @@ const App: React.FC = () => {
           <p className="text-red-600">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+            className="mt-6 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-semibold shadow-lg hover:from-red-600 hover:to-red-700 hover:shadow-xl transform hover:scale-105 transition-all duration-300"
           >
             Retry
           </button>
@@ -1620,9 +1620,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex bg-gray-100">
+    <div className="h-screen flex bg-gray-900">
       {/* Left Panel - Dashboard */}
-      <div className="w-80 bg-white shadow-lg">
+      <div className="w-80 bg-gray-800 shadow-lg border-r border-gray-700">
         <Dashboard
           drivers={drivers}
           weatherEvents={weatherEvents}
@@ -1647,14 +1647,14 @@ const App: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-gray-900">
         {/* Top Metrics Panel */}
-        <div className="h-32 bg-white shadow-sm">
+        <div className="h-32 bg-gray-800 shadow-sm border-b border-gray-700">
           <MetricsPanel drivers={drivers} weatherEvents={weatherEvents} />
         </div>
 
         {/* Map Container */}
-        <div className="flex-1 relative" style={{ minHeight: '400px' }}>
+        <div className="flex-1 relative bg-gray-900" style={{ minHeight: '400px' }}>
           <MapContainer
             center={[18.5204, 73.8567]}
             zoom={12}
@@ -1842,10 +1842,10 @@ const App: React.FC = () => {
 
           {/* Placement Status */}
           {placementMode !== 'none' && (
-            <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-3 z-1000">
+            <div className="absolute top-4 left-4 bg-gray-800 border border-gray-600 rounded-lg shadow-lg p-3 z-1000">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-800">
+                  <p className="text-sm font-medium text-gray-100">
                     {placementMode === 'driver' && 'Click on map to place driver'}
                     {placementMode === 'traffic' && !pendingWeatherEvent && 'Click on map to set center of traffic area'}
                     {placementMode === 'traffic' && pendingWeatherEvent && pendingWeatherEvent.isDragging && 'Move mouse to adjust size, click to confirm'}
@@ -1857,14 +1857,14 @@ const App: React.FC = () => {
                     {placementMode === 'delivery' && 'Click on map to set delivery location'}
                   </p>
                   {pendingWeatherEvent && (
-                    <p className="text-xs text-purple-600">
+                    <p className="text-xs text-purple-300">
                       Radius: {(pendingWeatherEvent.currentRadius / 1000).toFixed(1)}km
                     </p>
                   )}
                 </div>
                 <button
                   onClick={handleCancelPlacement}
-                  className="ml-3 px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600"
+                  className="ml-4 px-4 py-2 text-xs bg-gradient-to-r from-red-600 to-red-700 text-black rounded-lg font-semibold shadow-md hover:from-red-700 hover:to-red-800 hover:shadow-lg transform hover:scale-105 transition-all duration-200 border border-red-500"
                 >
                   Cancel
                 </button>
