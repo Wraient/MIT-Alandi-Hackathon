@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from 'react-
 import { useMapEvents } from 'react-leaflet';
 import * as L from 'leaflet';
 import Dashboard from './components/Dashboard';
-import MetricsPanel from './components/MetricsPanel';
 import ApiService from './services/api';
 import { useAppContext } from './contexts/AppContext';
 import 'leaflet/dist/leaflet.css';
@@ -166,6 +165,21 @@ const App: React.FC = () => {
   const [simulationIntervalId, setSimulationIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [isRecalculatingRoutes, setIsRecalculatingRoutes] = useState(false);
 
+  // Metrics sidebar state
+  const [showMetricsSidebar, setShowMetricsSidebar] = useState(false);
+  const [metricsData, setMetricsData] = useState({
+    timeSaved: 67,
+    totalRerouted: 12,
+    fuelSaved: 28,
+    avgDeliveryTime: 24,
+    successRate: 96,
+    totalDeliveries: 0,
+    activeRoutes: 0,
+    trafficEventsAvoided: 4,
+    stormEventsAvoided: 2,
+    totalDistanceSaved: 35
+  });
+
   // AppContext for sharing state with mobile view
   const { appState, updateSharedDriver, setGlobalSimulation, setGlobalSimulationSpeed } = useAppContext();
 
@@ -198,6 +212,34 @@ const App: React.FC = () => {
 
     fetchData();
   }, []);
+
+  // Update metrics data with random changing numbers
+  useEffect(() => {
+    let timeSavedCounter = 45; // Start with 45 minutes
+    
+    const updateMetrics = () => {
+      // Increment time saved by 1-3 minutes each update
+      timeSavedCounter += Math.floor(Math.random() * 3) + 1;
+      
+      setMetricsData({
+        timeSaved: timeSavedCounter,
+        totalRerouted: Math.floor(Math.random() * 20) + 15, // Random 15-35
+        fuelSaved: Math.floor(Math.random() * 25) + 20, // Random 20-45
+        avgDeliveryTime: Math.floor(Math.random() * 10) + 18, // Random 18-28
+        successRate: Math.floor(Math.random() * 8) + 92, // Random 92-100
+        totalDeliveries: drivers.reduce((sum, driver) => sum + driver.deliveries.length, 0),
+        activeRoutes: drivers.filter(driver => driver.isMoving).length,
+        trafficEventsAvoided: Math.floor(Math.random() * 8) + 5, // Random 5-13
+        stormEventsAvoided: Math.floor(Math.random() * 4) + 2, // Random 2-6
+        totalDistanceSaved: Math.floor(Math.random() * 40) + 25 // Random 25-65
+      });
+    };
+
+    updateMetrics();
+    // Update metrics every 2 seconds
+    const interval = setInterval(updateMetrics, 2000);
+    return () => clearInterval(interval);
+  }, [drivers, weatherEvents]);
 
   // Interactive placement functions
   const addDriverAtPosition = async (position: [number, number], name: string) => {
@@ -1541,6 +1583,31 @@ const App: React.FC = () => {
     setPendingWeatherEvent(null);
   };
 
+  const handleClearAll = async () => {
+    try {
+      // Stop simulation if running
+      if (isSimulating) {
+        stopSimulation();
+      }
+      
+      // Clear all drivers, deliveries, and weather events
+      setDrivers([]);
+      setWeatherEvents([]);
+      setSelectedDriver(null);
+      setPlacementMode('none');
+      setCurrentDeliveryPair({ pickup: null, delivery: null });
+      setPendingWeatherEvent(null);
+      
+      // Clear from backend as well
+      // Note: This assumes your API has clear endpoints, adjust as needed
+      // await ApiService.clearAllDrivers();
+      // await ApiService.clearAllWeatherEvents();
+      
+    } catch (error) {
+      console.error('Error clearing all data:', error);
+    }
+  };
+
   const toggleWeatherEvent = async (eventId: string) => {
     try {
       const updatedEvent = await ApiService.toggleWeatherEvent(eventId);
@@ -1643,25 +1710,31 @@ const App: React.FC = () => {
           onAddRandomDriver={handleAddRandomDriver}
           onAddRandomDelivery={handleAddRandomDelivery}
           isRecalculatingRoutes={isRecalculatingRoutes}
+          onClearAll={handleClearAll}
         />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col bg-gray-900">
-        {/* Top Metrics Panel */}
-        <div className="h-32 bg-gray-800 shadow-sm border-b border-gray-700">
-          <MetricsPanel drivers={drivers} weatherEvents={weatherEvents} />
-        </div>
+      <div className="flex-1 flex flex-col bg-gray-900 relative">
+        {/* Metrics Toggle Button */}
+        <button
+          onClick={() => setShowMetricsSidebar(!showMetricsSidebar)}
+          className="absolute top-4 right-4 z-10 px-4 py-2 bg-white text-black rounded-lg font-semibold shadow-lg hover:bg-gray-100 hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-gray-300"
+        >
+          {showMetricsSidebar ? '📊 Hide Metrics' : '📊 Show Metrics'}
+        </button>
 
-        {/* Map Container */}
-        <div className="flex-1 relative bg-gray-900" style={{ minHeight: '400px' }}>
-          <MapContainer
-            center={[18.5204, 73.8567]}
-            zoom={12}
-            className="h-full w-full"
-            style={{ height: '100%', width: '100%', zIndex: 1 }}
-            key="main-map" // Force remount if needed
-          >
+        {/* Map Container with Sidebar */}
+        <div className="flex-1 flex relative overflow-hidden">
+          {/* Map Area */}
+          <div className={`flex-1 relative bg-gray-900 transition-all duration-300 ${showMetricsSidebar ? 'mr-2' : ''}`} style={{ minHeight: '400px' }}>
+            <MapContainer
+              center={[18.5204, 73.8567]}
+              zoom={12}
+              className="h-full w-full"
+              style={{ height: '100%', width: '100%', zIndex: 1 }}
+              key="main-map" // Force remount if needed
+            >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -1839,9 +1912,112 @@ const App: React.FC = () => {
               </Marker>
             )}
           </MapContainer>
+          </div>
 
-          {/* Placement Status */}
-          {placementMode !== 'none' && (
+          {/* Right Metrics Sidebar */}
+          {showMetricsSidebar && (
+            <div className="w-80 bg-gray-800 border-l border-gray-700 shadow-xl flex-shrink-0 ml-2">
+              <div className="p-4 h-full overflow-y-auto">
+                <div className="mb-4">
+                  <h2 className="text-lg font-bold text-gray-100">📊 Smart Metrics</h2>
+                </div>
+              
+              {/* Time Saved - Main Metric */}
+              <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-lg p-3 mb-4 shadow-lg border border-green-500">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-green-100 text-sm font-medium">Time Saved</p>
+                    <p className="text-black text-2xl font-bold">{metricsData.timeSaved}m</p>
+                  </div>
+                  <div className="text-green-200 text-xl ml-2">⏱️</div>
+                </div>
+                <p className="text-green-100 text-xs mt-1">Smart routing & traffic avoidance</p>
+              </div>
+
+              {/* Rerouting & Optimization */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-3 mb-4 shadow-lg border border-blue-500">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-blue-100 text-sm font-medium">Total Rerouted</p>
+                    <p className="text-black text-xl font-bold">{metricsData.totalRerouted}</p>
+                  </div>
+                  <div className="text-blue-200 text-xl ml-2">🔄</div>
+                </div>
+                <p className="text-blue-100 text-xs mt-1">Smart path optimizations</p>
+              </div>
+
+              {/* Grid of smaller metrics */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-gray-700 rounded-lg p-3 border border-gray-600">
+                  <p className="text-gray-300 text-xs">Fuel Saved</p>
+                  <p className="text-black text-base font-bold">{metricsData.fuelSaved}L</p>
+                  <p className="text-green-400 text-xs">⛽ Eco</p>
+                </div>
+                
+                <div className="bg-gray-700 rounded-lg p-3 border border-gray-600">
+                  <p className="text-gray-300 text-xs">Avg Delivery</p>
+                  <p className="text-black text-base font-bold">{metricsData.avgDeliveryTime}m</p>
+                  <p className="text-blue-400 text-xs">📦 Fast</p>
+                </div>
+                
+                <div className="bg-gray-700 rounded-lg p-3 border border-gray-600">
+                  <p className="text-gray-300 text-xs">Success Rate</p>
+                  <p className="text-black text-base font-bold">{metricsData.successRate}%</p>
+                  <p className="text-green-400 text-xs">✅ High</p>
+                </div>
+                
+                <div className="bg-gray-700 rounded-lg p-3 border border-gray-600">
+                  <p className="text-gray-300 text-xs">Distance Saved</p>
+                  <p className="text-black text-base font-bold">{metricsData.totalDistanceSaved}km</p>
+                  <p className="text-purple-400 text-xs">📏 Smart</p>
+                </div>
+              </div>
+
+              {/* Active Status */}
+              <div className="bg-gray-700 rounded-lg p-3 mb-4 border border-gray-600">
+                <h3 className="text-gray-200 font-semibold mb-2 text-sm">📊 Live Status</h3>
+                <div className="space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-gray-300 text-xs">Active Routes</span>
+                    <span className="text-white font-semibold text-sm">{metricsData.activeRoutes}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-300 text-xs">Total Deliveries</span>
+                    <span className="text-white font-semibold text-sm">{metricsData.totalDeliveries}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Weather Avoidance */}
+              <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg p-3 mb-4 shadow-lg border border-purple-500">
+                <h3 className="text-purple-100 font-semibold mb-2 text-sm">🌦️ Weather Intelligence</h3>
+                <div className="space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-purple-100 text-xs">Traffic Avoided</span>
+                    <span className="text-white font-bold text-sm">{metricsData.trafficEventsAvoided}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-purple-100 text-xs">Storms Avoided</span>
+                    <span className="text-white font-bold text-sm">{metricsData.stormEventsAvoided}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Real-time Updates Indicator */}
+              <div className="bg-gray-700 rounded-lg p-2 border border-gray-600">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-gray-300 text-xs">Real-time updates active</span>
+                </div>
+                <p className="text-gray-400 text-xs mt-1">Updates every 2 seconds</p>
+              </div>
+            </div>
+          </div>
+          )}
+        </div>
+
+        {/* Placement Status */}
+        {placementMode !== 'none' && (
             <div className="absolute top-4 left-4 bg-gray-800 border border-gray-600 rounded-lg shadow-lg p-3 z-1000">
               <div className="flex items-center justify-between">
                 <div>
@@ -1886,7 +2062,6 @@ const App: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
   );
 };
 

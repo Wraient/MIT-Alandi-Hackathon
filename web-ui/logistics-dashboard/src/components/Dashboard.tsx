@@ -47,6 +47,7 @@ interface DashboardProps {
     onAddRandomDriver: () => void;
     onAddRandomDelivery: () => void;
     isRecalculatingRoutes?: boolean;
+    onClearAll: () => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -68,7 +69,8 @@ const Dashboard: React.FC<DashboardProps> = ({
     onSpeedChange,
     onAddRandomDriver,
     onAddRandomDelivery,
-    isRecalculatingRoutes = false
+    isRecalculatingRoutes = false,
+    onClearAll
 }) => {
     const [showAddDriver, setShowAddDriver] = useState(false);
     // Removed manual name input - now uses random names
@@ -221,6 +223,23 @@ const Dashboard: React.FC<DashboardProps> = ({
                     </div>
                 </div>
 
+                {/* Clear All Button */}
+                <div className="space-y-3">
+                    <button
+                        onClick={() => {
+                            if (window.confirm('Are you sure you want to clear everything from the map? This will remove all drivers, deliveries, and weather events.')) {
+                                onClearAll();
+                            }
+                        }}
+                        className="w-full px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-black rounded-xl font-semibold shadow-lg hover:from-red-700 hover:to-red-800 hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-red-500"
+                    >
+                        🗑️ Clear All
+                    </button>
+                    <p className="text-xs text-gray-400 text-center">
+                        Remove all drivers, deliveries, and weather events
+                    </p>
+                </div>
+
                 {/* Simulation Controls */}
                 <div className="space-y-3">
                     <h2 className="text-lg font-semibold text-gray-100">Simulation Controls</h2>
@@ -274,22 +293,22 @@ const Dashboard: React.FC<DashboardProps> = ({
                                     Normal (50)
                                 </button>
                                 <button
-                                    onClick={() => onSpeedChange(100)}
+                                    onClick={() => onSpeedChange(250)}
                                     className="flex-1 px-3 py-2 text-xs bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg font-medium shadow-sm transform hover:scale-105 transition-all duration-200 text-black border border-blue-500"
                                 >
-                                    Fast (100)
-                                </button>
-                                <button
-                                    onClick={() => onSpeedChange(250)}
-                                    className="flex-1 px-3 py-2 text-xs bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 rounded-lg font-medium shadow-sm transform hover:scale-105 transition-all duration-200 text-black border border-yellow-500"
-                                >
-                                    Super (250)
+                                    Fast (250)
                                 </button>
                                 <button
                                     onClick={() => onSpeedChange(500)}
+                                    className="flex-1 px-3 py-2 text-xs bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 rounded-lg font-medium shadow-sm transform hover:scale-105 transition-all duration-200 text-black border border-yellow-500"
+                                >
+                                    Super (500)
+                                </button>
+                                <button
+                                    onClick={() => onSpeedChange(2000)}
                                     className="flex-1 px-3 py-2 text-xs bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg font-medium shadow-sm text-black transform hover:scale-105 transition-all duration-200 border border-red-500"
                                 >
-                                    MAX (500)
+                                    MAX (2000)
                                 </button>
                             </div>
                         </div>
